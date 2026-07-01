@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>项目管理工具</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+      <div>
+        <h1>项目管理工具</h1>
+        <p>简化开发流程，一键启动项目</p>
+      </div>
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">🌙</button>
+    </div>
+  </div>
+  
+  <div class="main-content">
+    <div class="sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-header">
+          <h3>分组管理</h3>
+        </div>
+        <div class="sidebar-body">
+          <ul class="group-list" id="groupList">
+            <li class="group-item active" onclick="selectGroup('全部')">
+              <span class="group-name">全部项目</span>
+              <span class="group-count" id="allCount">0</span>
+            </li>
+          </ul>
+          <button class="add-group-btn" onclick="openAddGroupModal()">+ 新建分组</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="content-area">
+      <div class="operation">
+        <div class="actions">
+            <button class="btn btn-primary" onclick="openImportModal()">
+              <span>+</span> 导入项目
+            </button>
+            <button class="btn btn-success" onclick="openScanModal()">
+              <span>📁</span> 批量扫描
+            </button>
+            <button class="btn btn-danger" onclick="batchDelete()" id="batchDeleteBtn" disabled>
+                <span>🗑️</span> 批量删除
+            </button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <select id="statusFilter" class="status-filter" onchange="filterProjects()">
+            <option value="all">全部状态</option>
+            <option value="running">运行中</option>
+            <option value="starting">启动中</option>
+            <option value="stopped">已停止</option>
+          </select>
+          <input type="text" class="search-box" id="searchInput" placeholder="搜索项目..." oninput="filterProjects()">
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <label style="display: flex; align-items: center; gap: 6px;">
+              <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+              <span style="font-size: 14px; color: #6b7280;">全选</span>
+            </label>
+            <h2 id="currentGroupTitle">项目列表</h2>
+          </div>
+          <span id="projectCount" style="color: #6b7280; font-size: 14px;">共 0 个项目</span>
+        </div>
+        <div class="card-body">
+          <div id="projectList" class="project-list">
+            <div class="empty-state">
+              <div class="icon">📋</div>
+              <h3>暂无项目</h3>
+              <p>点击上方按钮导入或扫描项目</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="importModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">导入项目</h2>
+        <button class="modal-close" onclick="closeModal('importModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>项目路径</label>
+          <div class="path-row">
+            <input type="text" id="importPath" placeholder="例如: /Users/username/projects/my-project">
+            <button class="browse-btn" onclick="browseFolderForImport()">浏览...</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>分组</label>
+          <select id="importGroup">
+            <option value="默认分组">默认分组</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="closeModal('importModal')">取消</button>
+          <button class="btn btn-primary" onclick="importProject()">导入</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="scanModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">批量扫描项目</h2>
+        <button class="modal-close" onclick="closeModal('scanModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>扫描目录</label>
+          <div class="path-row">
+            <input type="text" id="scanPath" placeholder="例如: /Users/username/projects">
+            <button class="browse-btn" onclick="browseFolderForScan()">浏览...</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>分组</label>
+          <select id="scanGroup">
+            <option value="默认分组">默认分组</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="scanProjects()" style="width: 100%; margin-bottom: 16px;">开始扫描</button>
+        <div id="scanResults" class="scan-results" style="display: none;"></div>
+        <div class="form-actions" id="scanActions" style="display: none;">
+          <button class="btn btn-secondary" onclick="closeModal('scanModal')">取消</button>
+          <button class="btn btn-success" onclick="importScannedProjects()">导入选中</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="editModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">编辑项目</h2>
+        <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editId">
+        <div class="form-group">
+          <label>项目名称</label>
+          <input type="text" id="editName">
+        </div>
+        <div class="form-group">
+          <label>分组</label>
+          <select id="editGroup">
+            <option value="默认分组">默认分组</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>端口</label>
+          <input type="number" id="editPort" min="1" max="65535">
+        </div>
+        <div class="form-group">
+          <label>Node版本</label>
+          <input type="text" id="editNodeVersion" placeholder="例如: >=18.0.0">
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="closeModal('editModal')">取消</button>
+          <button class="btn btn-primary" onclick="saveEdit(event)">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="addGroupModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">新建分组</h2>
+        <button class="modal-close" onclick="closeModal('addGroupModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>分组名称</label>
+          <input type="text" id="newGroupName" placeholder="输入分组名称">
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="closeModal('addGroupModal')">取消</button>
+          <button class="btn btn-primary" onclick="addGroup()">创建</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="renameGroupModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">重命名分组</h2>
+        <button class="modal-close" onclick="closeModal('renameGroupModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="renameOldName">
+        <div class="form-group">
+          <label>新分组名称</label>
+          <input type="text" id="renameNewName" placeholder="输入新分组名称">
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="closeModal('renameGroupModal')">取消</button>
+          <button class="btn btn-primary" onclick="renameGroup()">确认</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="logsModal" class="modal-overlay">
+    <div class="modal" style="max-width: 800px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="logsTitle">项目日志</h2>
+        <button class="modal-close" onclick="closeModal('logsModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="logsContent" class="logs-container"></div>
+        <div class="progress-bar" id="logsProgress" style="display: none;">
+          <div class="progress"></div>
+        </div>
+        <div class="form-actions" style="margin-top: 16px;">
+          <button class="btn btn-danger" id="stopProjectBtn" onclick="stopProjectFromLogs()" style="display: none;">停止项目</button>
+          <button class="btn btn-secondary" onclick="closeModal('logsModal')">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal-overlay">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="confirmTitle">确认操作</h2>
+        <button class="modal-close" onclick="closeModal('confirmModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmMessage" style="text-align: center; margin-bottom: 20px;">确定要执行此操作吗？</p>
+        <div class="form-actions" style="justify-content: center;">
+          <button class="btn btn-secondary" onclick="closeModal('confirmModal')">取消</button>
+          <button class="btn btn-danger" id="confirmActionBtn">确认</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="packageJsonModal" class="modal-overlay">
+    <div class="modal" style="max-width: 900px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="packageJsonTitle">package.json</h2>
+        <button class="modal-close" onclick="closeModal('packageJsonModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="packageJsonContent" class="code-display"></div>
+        <div class="form-actions" style="margin-top: 16px;">
+          <button class="btn btn-secondary" onclick="closeModal('packageJsonModal')">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <button class="scroll-to-top" id="scrollToTopBtn" onclick="scrollToTop()" title="回到顶部">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+  <script src="app.js"></script>
+</body>
+</html>

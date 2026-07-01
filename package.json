@@ -1,0 +1,13 @@
+{
+  "name": "project-manager",
+  "version": "1.0.0",
+  "description": "开发项目管理工具 - 简化项目启动流程",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["project", "manager", "development", "npm", "node"],
+  "author": "",
+  "license": "MIT"
+}
