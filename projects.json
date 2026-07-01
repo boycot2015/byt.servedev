@@ -1,7 +1,7 @@
 [
   {
     "id": 1782900895521.6042,
-    "name": "yudao-ui-admin-vue3",
+    "name": "yzh.b2b.cloudAdminVue3",
     "version": "2025.11-snapshot",
     "nodeVersion": ">= 16.0.0",
     "projectPath": "/Users/boycott/Desktop/yzh-project/B2B/yzh.b2b.cloudAdminVue3",
@@ -30,7 +30,7 @@
       "lint:style": "stylelint --fix \"./src/**/*.{vue,less,postcss,css,scss}\" --cache --cache-location node_modules/.cache/stylelint/",
       "lint:lint-staged": "lint-staged -c "
     },
-    "status": "stopped"
+    "status": "running"
   },
   {
     "id": 1782900895521.5793,
@@ -86,7 +86,7 @@
       "test:mp-baidu": "cross-env UNI_PLATFORM=mp-baidu jest -i",
       "test:mp-weixin": "cross-env UNI_PLATFORM=mp-weixin jest -i"
     },
-    "status": "stopped"
+    "status": "running"
   },
   {
     "id": 1782900895521.4526,
@@ -106,7 +106,8 @@
       "lint-fix": "eslint --ext .js,.jsx,.ts,.vue src --fix",
       "preview": "vite preview",
       "format": "npx prettier --write ."
-    }
+    },
+    "status": "running"
   },
   {
     "id": 1782900895521.5312,
@@ -132,7 +133,8 @@
       "jindie-hd-build": "vue-cli-service build --mode jindie-hd && node ./scripts/jindie-hd.js",
       "lint": "vue-cli-service lint",
       "lint:prettier": "prettier --write \"**/*.{js,ts,json,css,less,scss,vue,html,md}\""
-    }
+    },
+    "status": "running"
   },
   {
     "id": 1782900895521.5015,
@@ -540,7 +542,7 @@
     "version": "1.0.4",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/my-project/byt.github",
-    "port": 1024,
+    "port": 4321,
     "group": "Boycot",
     "scripts": {
       "dev": "astro dev",
@@ -554,7 +556,8 @@
       "offdev": "astro preferences disable devToolbar",
       "ondev": "astro preferences enable devToolbar",
       "deploy": "NODE_ENV=github astro build && gh-pages -d dist --repo git@github.com:boycot2015/boycot2015.github.io.git"
-    }
+    },
+    "status": "running"
   },
   {
     "id": 1782902217927.0398,
@@ -638,7 +641,7 @@
     "version": "0.1.2",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/my-project/byt.music",
-    "port": 1024,
+    "port": 5173,
     "group": "Boycot",
     "scripts": {
       "dev": "vite",
@@ -646,7 +649,8 @@
       "preview": "vite preview",
       "lint": "eslint . --fix",
       "format": "prettier --write src/"
-    }
+    },
+    "status": "running"
   },
   {
     "id": 1782902217928.8376,

@@ -68,6 +68,11 @@ function renderGroups() {
 function selectGroup(group) {
   currentGroup = group;
   renderGroups();
+  // 重置筛选字段
+  const statusFilter = document.getElementById('statusFilter');
+  const searchInput = document.getElementById('searchInput');
+  if (statusFilter) statusFilter.value = 'all';
+  if (searchInput) searchInput.value = '';
   renderProjects();
   document.getElementById('currentGroupTitle').textContent = group === '全部' ? '项目列表' : `${group} - 项目列表`;
   updateBatchDeleteBtn();

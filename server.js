@@ -479,8 +479,75 @@ async function handleApi(req, res) {
 
     const nodeModulesPath = path.join(project.projectPath, 'node_modules');
     if (!fs.existsSync(nodeModulesPath)) {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: '项目缺少依赖，请先执行 npm install' }));
+      console.log(`项目 ${project.name} 缺少依赖，正在自动执行 npm install...`);
+      
+      // 初始化日志进程
+      RUNNING_PROCESSES[id] = {
+        process: null,
+        logs: [
+          { type: 'system', content: '检测到缺少依赖，正在自动执行 npm install...' },
+          { type: 'system', content: '请等待安装完成后重新启动项目' },
+          { type: 'stdout', content: '> npm install' }
+        ],
+        pid: null,
+        nodeVersion: null,
+        actualPort: null,
+        status: 'installing'
+      };
+      
+      // 返回正在安装的状态
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ 
+        success: true, 
+        installing: true,
+        message: '正在安装项目依赖，请查看日志...' 
+      }));
+      
+      // 使用 spawn 执行 npm install 捕获实时日志
+      const installProcess = spawn('npm', ['install'], { 
+        cwd: project.projectPath,
+        shell: true,
+        detached: true
+      });
+      
+      RUNNING_PROCESSES[id].process = installProcess;
+      RUNNING_PROCESSES[id].pid = installProcess.pid;
+      
+      installProcess.stdout.on('data', (data) => {
+        const log = data.toString();
+        if (RUNNING_PROCESSES[id]) {
+          RUNNING_PROCESSES[id].logs.push({ type: 'stdout', content: log });
+        }
+      });
+      
+      installProcess.stderr.on('data', (data) => {
+        const log = data.toString();
+        if (RUNNING_PROCESSES[id]) {
+          RUNNING_PROCESSES[id].logs.push({ type: 'stderr', content: log });
+        }
+      });
+      
+      installProcess.on('close', (code) => {
+        if (RUNNING_PROCESSES[id]) {
+          if (code === 0) {
+            RUNNING_PROCESSES[id].logs.push({ type: 'system', content: '✓ 依赖安装完成！可以启动项目了' });
+            RUNNING_PROCESSES[id].status = 'stopped';
+            console.log(`项目 ${project.name} 依赖安装完成`);
+          } else {
+            RUNNING_PROCESSES[id].logs.push({ type: 'system', content: `✗ 依赖安装失败，退出码: ${code}` });
+            RUNNING_PROCESSES[id].status = 'stopped';
+            console.error(`项目 ${project.name} npm install 失败，退出码: ${code}`);
+          }
+        }
+      });
+      
+      installProcess.on('error', (err) => {
+        if (RUNNING_PROCESSES[id]) {
+          RUNNING_PROCESSES[id].logs.push({ type: 'system', content: `✗ 依赖安装出错: ${err.message}` });
+          RUNNING_PROCESSES[id].status = 'stopped';
+        }
+      });
+      
       return;
     }
 
