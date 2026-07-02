@@ -276,8 +276,9 @@ async function handleApi(req, res) {
       }
 
       const projects = readProjects();
+      const now = Date.now();
       const newProject = {
-        id: Date.now(),
+        id: now,
         name: pkg.name || '未命名项目',
         version: pkg.version || '1.0.0',
         nodeVersion: pkg.engines?.node || '未指定',
@@ -285,7 +286,8 @@ async function handleApi(req, res) {
         port: 1024,
         group: group || '默认分组',
         scripts: pkg.scripts || {},
-        description: pkg.description || getProjectDescription(projectPath)
+        description: pkg.description || getProjectDescription(projectPath),
+        createdAt: now
       };
 
       projects.push(newProject);
@@ -309,8 +311,9 @@ async function handleApi(req, res) {
         if (pkg) {
           const existing = projects.find(p => p.projectPath === projectPath);
           if (!existing) {
+            const now = Date.now() + Math.random();
             const newProject = {
-            id: Date.now() + Math.random(),
+            id: now,
             name: pkg.name || '未命名项目',
             version: pkg.version || '1.0.0',
             nodeVersion: pkg.engines?.node || '未指定',
@@ -318,7 +321,8 @@ async function handleApi(req, res) {
             port: 1024,
             group: group || '默认分组',
             scripts: pkg.scripts || {},
-            description: pkg.description || getProjectDescription(projectPath)
+            description: pkg.description || getProjectDescription(projectPath),
+            createdAt: now
           };
             projects.push(newProject);
             addedProjects.push(newProject);
@@ -342,7 +346,11 @@ async function handleApi(req, res) {
       const index = projects.findIndex(p => p.id === id);
       
       if (index !== -1) {
-        projects[index] = { ...projects[index], ...updates };
+        projects[index] = { 
+          ...projects[index], 
+          ...updates,
+          updatedAt: Date.now()
+        };
         writeProjects(projects);
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(projects[index]));
@@ -390,6 +398,110 @@ async function handleApi(req, res) {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ path: folderPath }));
       }
+    });
+  }
+
+  else if (url === '/api/git/clone' && method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', async () => {
+      const { repoUrl, targetPath, action, group } = JSON.parse(body);
+
+      // 解析仓库名称
+      const repoNameMatch = repoUrl.match(/\/([^\/]+?)(\.git)?$/);
+      const repoName = repoNameMatch ? repoNameMatch[1] : 'unknown-project';
+      const projectPath = path.join(targetPath, repoName);
+
+      // 检查项目是否已存在
+      const projects = readProjects();
+      const existingProject = projects.find(p => p.projectPath === projectPath);
+      const folderExists = fs.existsSync(projectPath);
+
+      // 如果只是检查冲突，返回冲突信息
+      if (action === 'check') {
+        if (existingProject || folderExists) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ 
+            conflict: true, 
+            projectName: repoName,
+            projectPath,
+            existsInList: !!existingProject,
+            folderExists
+          }));
+          return;
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ conflict: false, projectName: repoName, projectPath }));
+        return;
+      }
+
+      // 执行克隆操作
+      if (folderExists) {
+        if (action === 'skip') {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ skipped: true, projectPath }));
+          return;
+        } else if (action === 'overwrite') {
+          // 删除已存在的文件夹
+          fs.rmSync(projectPath, { recursive: true, force: true });
+        }
+      }
+
+      // 执行 git clone
+      exec(`git clone "${repoUrl}" "${projectPath}"`, async (err, stdout, stderr) => {
+        if (err) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: `克隆失败: ${stderr || err.message}` }));
+          return;
+        }
+
+        // 检查是否有 package.json
+        const pkg = getPackageJson(projectPath);
+        if (!pkg) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ 
+            success: true, 
+            warning: '项目已克隆，但未找到 package.json',
+            projectPath 
+          }));
+          return;
+        }
+
+        // 如果已存在项目列表中，更新；否则添加
+        if (existingProject && action === 'overwrite') {
+          const index = projects.findIndex(p => p.projectPath === projectPath);
+          projects[index] = {
+            ...projects[index],
+            name: pkg.name || '未命名项目',
+            version: pkg.version || '1.0.0',
+            nodeVersion: pkg.engines?.node || '未指定',
+            scripts: pkg.scripts || {},
+            description: pkg.description || getProjectDescription(projectPath),
+            updatedAt: Date.now()
+          };
+          writeProjects(projects);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, project: projects[index], overwritten: true }));
+        } else {
+            const now = Date.now();
+            const newProject = {
+              id: now,
+              name: pkg.name || '未命名项目',
+              version: pkg.version || '1.0.0',
+              nodeVersion: pkg.engines?.node || '未指定',
+              projectPath: projectPath,
+              port: 1024,
+              group: group || '默认分组',
+              scripts: pkg.scripts || {},
+              description: pkg.description || getProjectDescription(projectPath),
+              createdAt: now
+            };
+          projects.push(newProject);
+          writeProjects(projects);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, project: newProject }));
+        }
+      });
     });
   }
 

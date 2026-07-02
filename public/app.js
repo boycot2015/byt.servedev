@@ -98,7 +98,7 @@ function renderGroups() {
 
 
 function updateGroupSelects() {
-  const selects = ['importGroup', 'scanGroup', 'editGroup'];
+  const selects = ['importGroup', 'scanGroup', 'editGroup', 'gitImportGroup'];
   selects.forEach(id => {
     const select = document.getElementById(id);
     if (select) {
@@ -123,12 +123,152 @@ async function browseFolderForScan() {
   }
 }
 
+let gitImportState = {
+  action: null,
+  conflictChecked: false
+};
+
+function openGitImportModal() {
+  document.getElementById('gitRepoUrl').value = '';
+  document.getElementById('gitTargetPath').value = '';
+  document.getElementById('gitConflictInfo').style.display = 'none';
+  document.getElementById('gitImportBtn').textContent = '导入';
+  document.getElementById('gitImportBtn').disabled = false;
+  gitImportState = { action: null, conflictChecked: false };
+  document.getElementById('gitImportModal').classList.add('show');
+}
+
+function closeGitImportModal() {
+  document.getElementById('gitImportModal').classList.remove('show');
+}
+
+async function browseFolderForGitImport() {
+  const response = await fetch('/api/browse-folder', { method: 'POST' });
+  const result = await response.json();
+  if (result.path) {
+    document.getElementById('gitTargetPath').value = result.path;
+  }
+}
+
+function setGitAction(action) {
+  gitImportState.action = action;
+  const btn = document.getElementById('gitImportBtn');
+  btn.textContent = action === 'skip' ? '确认跳过' : '确认覆盖';
+  btn.disabled = false;
+}
+
+async function importFromGit() {
+  const repoUrl = document.getElementById('gitRepoUrl').value.trim();
+  const targetPath = document.getElementById('gitTargetPath').value.trim();
+  const group = document.getElementById('gitImportGroup').value;
+
+  if (!repoUrl) {
+    alert('请输入仓库地址');
+    return;
+  }
+  if (!targetPath) {
+    alert('请选择保存路径');
+    return;
+  }
+
+  const btn = document.getElementById('gitImportBtn');
+
+  // 如果还没有检查冲突，先检查冲突
+  if (!gitImportState.conflictChecked) {
+    btn.disabled = true;
+    btn.textContent = '检查中...';
+
+    const checkResponse = await fetch('/api/git/clone', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ repoUrl, targetPath, action: 'check' })
+    });
+
+    const checkResult = await checkResponse.json();
+
+    if (checkResult.conflict) {
+      gitImportState.conflictChecked = true;
+      const conflictInfo = document.getElementById('gitConflictInfo');
+      const conflictMessage = document.getElementById('conflictMessage');
+      
+      let message = `项目 "${checkResult.projectName}" 已存在于: ${checkResult.projectPath}`;
+      if (checkResult.existsInList) {
+        message += '\n（该项目已在列表中）';
+      }
+      conflictMessage.textContent = message;
+      conflictInfo.style.display = 'block';
+      
+      btn.textContent = '请选择操作';
+      btn.disabled = true;
+      return;
+    }
+
+    // 没有冲突，直接导入
+    gitImportState.conflictChecked = true;
+    gitImportState.action = 'new';
+  }
+
+  btn.disabled = true;
+  btn.textContent = '克隆中...';
+
+  const response = await fetch('/api/git/clone', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      repoUrl, 
+      targetPath, 
+      action: gitImportState.action,
+      group 
+    })
+  });
+
+  const result = await response.json();
+
+  if (result.error) {
+    alert(result.error);
+    btn.disabled = false;
+    btn.textContent = '导入';
+    return;
+  }
+
+  if (result.skipped) {
+    alert('已跳过该项目');
+  } else if (result.warning) {
+    alert(result.warning);
+  } else if (result.overwritten) {
+    alert('项目已覆盖并重新导入');
+  } else {
+    alert('导入成功');
+  }
+
+  await loadProjects();
+  closeGitImportModal();
+}
+
 async function loadProjects() {
   const response = await fetch('/api/projects');
   projects = await response.json();
   renderGroups();
   renderProjects();
   updateBatchDeleteBtn();
+}
+
+function formatTimestamp(timestamp) {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  // console.log(diffDays, 'diffDays');
+  if (diffDays === 0) {
+    return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  } else if (diffDays === 1) {
+    return '昨天 ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  } else if (diffDays < 7) {
+    return `${diffDays}天前`;
+  } else {
+    return date.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
+  }
 }
 
 function renderProjects() {
@@ -145,6 +285,10 @@ function renderProjects() {
   if (statusFilter !== 'all') {
     filtered = filtered.filter(p => p.status === statusFilter);
   }
+  
+  // 按修改时间倒序排序，新的在前面
+  // 兼容旧数据：优先用 updatedAt，其次 createdAt，最后用 id
+  filtered.sort((a, b) => (b.updatedAt || b.createdAt || b.id) - (a.updatedAt || a.createdAt || a.id));
   
   document.getElementById('projectCount').textContent = `共 ${filtered.length} 个项目`;
   
@@ -185,6 +329,11 @@ function renderProjects() {
         <div class="info-item">
           <span class="icon">🔌</span>
           <span>端口: ${project.port}</span>
+        </div>
+        <div class="info-item" style="margin-left: auto;">
+          <span class="icon">🕐</span>
+          <span class="time-label">创建: ${formatTimestamp(project.createdAt || project.id || Date.now())}</span>
+          ${project.updatedAt ? `<span class="time-label time-label-edited" style="margin-left: 8px;">编辑: ${formatTimestamp(project.updatedAt)}</span>` : ''}
         </div>
       </div>
       ${project.description ? `<div class="project-description"><div class="line-clamp-2" title="${project.description}">${project.description}</div></div>` : ''}

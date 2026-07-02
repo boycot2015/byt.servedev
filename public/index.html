@@ -46,6 +46,9 @@
             <button class="btn btn-primary" onclick="openImportModal()">
               <span>+</span> 导入项目
             </button>
+            <button class="btn btn-info" onclick="openGitImportModal()">
+              <span>🔗</span> Git 导入
+            </button>
             <button class="btn btn-success" onclick="openScanModal()">
               <span>📁</span> 批量扫描
             </button>
@@ -111,6 +114,48 @@
         <div class="form-actions">
           <button class="btn btn-secondary" onclick="closeModal('importModal')">取消</button>
           <button class="btn btn-primary" onclick="importProject()">导入</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="gitImportModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">从 Git 仓库导入</h2>
+        <button class="modal-close" onclick="closeGitImportModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>仓库地址 (支持 GitLab / GitHub / 局域网 Git)</label>
+          <input type="text" id="gitRepoUrl" placeholder="例如: https://github.com/username/project.git 或 git@gitlab.local:group/project.git">
+        </div>
+        <div class="form-group">
+          <label>保存路径</label>
+          <div class="path-row">
+            <input type="text" id="gitTargetPath" placeholder="例如: /Users/username/projects">
+            <button class="browse-btn" onclick="browseFolderForGitImport()">浏览...</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>分组</label>
+          <select id="gitImportGroup">
+            <option value="默认分组">默认分组</option>
+          </select>
+        </div>
+        <div id="gitConflictInfo" style="display: none; background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 12px; margin-bottom: 16px;">
+          <div style="font-weight: 500; color: #92400e; margin-bottom: 8px;">⚠️ 项目已存在</div>
+          <div style="font-size: 12px; color: #b45309; margin-bottom: 12px;">
+            <span id="conflictMessage"></span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary btn-sm" onclick="setGitAction('skip')">跳过</button>
+            <button class="btn btn-danger btn-sm" onclick="setGitAction('overwrite')">覆盖</button>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="closeGitImportModal()">取消</button>
+          <button class="btn btn-primary" id="gitImportBtn" onclick="importFromGit()">导入</button>
         </div>
       </div>
     </div>

@@ -746,5 +746,22 @@
       "postinstall": "nuxt prepare"
     },
     "status": "running"
+  },
+  {
+    "id": 1782963809153,
+    "name": "yunzhonghe111",
+    "version": "0.1.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/yzh-project/yzh.dashboard",
+    "port": 1024,
+    "group": "B2B",
+    "scripts": {
+      "serve": "vue-cli-service serve",
+      "build": "vue-cli-service build",
+      "lint": "vue-cli-service lint",
+      "show": "vue-cli-service build --mode show"
+    },
+    "description": "hello-world  Project setup yarn install   Compiles and hot-reloads for development yarn serve   Compiles and minifies for production yarn build   Lints and fixes files yarn lint   Customize configuration See Configuration Reference.",
+    "updatedAt": 1782964157078
   }
 ]
