@@ -257,16 +257,23 @@ function formatTimestamp(timestamp) {
   if (!timestamp) return '';
   const date = new Date(timestamp);
   const now = new Date();
-  const diffMs = now - date;
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  // console.log(diffDays, 'diffDays');
+  
+  // 按凌晨0点分界计算天数差
+  const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const dateMidnight = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const diffDays = Math.floor((todayMidnight - dateMidnight) / (1000 * 60 * 60 * 24));
+  
   if (diffDays === 0) {
+    // 今天，显示时间
     return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
   } else if (diffDays === 1) {
+    // 昨天
     return '昨天 ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
   } else if (diffDays < 7) {
+    // 一周内
     return `${diffDays}天前`;
   } else {
+    // 超过一周显示日期
     return date.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
   }
 }
@@ -304,7 +311,7 @@ function renderProjects() {
   }
 
   container.innerHTML = filtered.map(project => `
-    <div class="project-item ${project.status === 'running' || project.status === 'starting' ? 'running' : ''}" id="project-${project.id}">
+    <div class="project-item ${project.status || 'stopped'}" id="project-${project.id}">
       <div class="project-header">
         <div style="display: flex; align-items: center; gap: 10px;">
           <input type="checkbox" class="project-checkbox" value="${project.id}" onchange="updateBatchDeleteBtn()">
