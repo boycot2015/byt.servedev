@@ -166,6 +166,24 @@ function selectGroup(group) {
   }
 }
 
+// 设置主题色
+function setThemeColor(color) {
+  const root = document.documentElement;
+  root.style.setProperty('--color-primary', color);
+  localStorage.setItem('themeColor', color);
+  
+  // 更新颜色选择器的激活状态
+  document.querySelectorAll('.color-option').forEach(option => {
+    if (option.dataset.color === color) {
+      option.classList.add('active');
+    } else {
+      option.classList.remove('active');
+    }
+  });
+  
+  // showToast('主题色已更新', 'success');
+}
+
 // 主题切换功能
 function toggleTheme() {
   const body = document.body;
@@ -184,6 +202,39 @@ function initTheme() {
   if (shouldUseDark) {
     document.body.classList.add('dark');
     document.getElementById('themeToggle').textContent = '☀️';
+  }
+  
+  // 加载保存的主题色
+  const savedColor = localStorage.getItem('themeColor');
+  if (savedColor) {
+    setThemeColor(savedColor);
+  }
+}
+
+// 初始化颜色选择器点击事件
+function initColorPicker() {
+  document.querySelectorAll('.color-option').forEach(option => {
+    option.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const color = option.dataset.color;
+      setThemeColor(color);
+    });
+  });
+  
+  // 设置初始激活状态
+  const savedColor = localStorage.getItem('themeColor');
+  if (savedColor) {
+    document.querySelectorAll('.color-option').forEach(option => {
+      if (option.dataset.color === savedColor) {
+        option.classList.add('active');
+      }
+    });
+  } else {
+    // 默认选中第一个颜色
+    const firstOption = document.querySelector('.color-option');
+    if (firstOption) {
+      firstOption.classList.add('active');
+    }
   }
 }
 
@@ -1095,8 +1146,10 @@ function toggleSelectAll() {
 
 function updateBatchDeleteBtn() {
   const checked = document.querySelectorAll('.project-checkbox:checked');
-  const btn = document.getElementById('batchDeleteBtn');
-  btn.disabled = checked.length === 0;
+  const btnDesktop = document.getElementById('batchDeleteBtnDesktop');
+  const btnMobile = document.getElementById('batchDeleteBtnMobile');
+  if (btnDesktop) btnDesktop.disabled = checked.length === 0;
+  if (btnMobile) btnMobile.disabled = checked.length === 0;
   document.getElementById('selectAll').checked = checked.length > 0 && checked.length === document.querySelectorAll('.project-checkbox').length;
 }
 
@@ -1437,4 +1490,7 @@ function initAllCustomSelects() {
 }
 
 // DOM 加载完成后初始化
-document.addEventListener('DOMContentLoaded', initAllCustomSelects);
+document.addEventListener('DOMContentLoaded', function() {
+  initAllCustomSelects();
+  initColorPicker();
+});

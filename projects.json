@@ -1093,5 +1093,22 @@
     },
     "description": "集采PC统一登录  Project setup yarn install   Compiles and hot-reloads for development yarn serve   Compiles and minifies for production yarn build   Lints and fixes files yarn lint   Customize configuration See Configuration Reference.",
     "createdAt": 1782974225709.2332
+  },
+  {
+    "id": 1782986633431,
+    "name": "project-manager",
+    "version": "1.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.servedev/",
+    "port": 3001,
+    "group": "默认分组",
+    "scripts": {
+      "start": "node server.js",
+      "dev": "electrobun dev",
+      "build": "electrobun build"
+    },
+    "description": "开发项目管理工具 - 简化项目启动流程",
+    "createdAt": 1782986633431,
+    "status": "stopped"
   }
 ]
