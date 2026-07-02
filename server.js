@@ -4,7 +4,7 @@ const path = require('path');
 const net = require('net');
 const { spawn, exec } = require('child_process');
 
-const PORT = 3000;
+const PORT = parseInt(process.env.PORT) || 3000;
 const PROJECTS_FILE = path.join(__dirname, 'projects.json');
 const GROUPS_FILE = path.join(__dirname, 'groups.json');
 const RUNNING_PROCESSES = {};
@@ -501,6 +501,233 @@ async function handleApi(req, res) {
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ success: true, project: newProject }));
         }
+      });
+    });
+  }
+
+  else if (url.match(/\/api\/projects\/([\d.]+)\/git\/info/) && method === 'GET') {
+    const id = parseFloat(url.match(/\/api\/projects\/([\d.]+)\/git\/info/)[1]);
+    const projects = readProjects();
+    const project = projects.find(p => p.id === id);
+    
+    if (!project) {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: '项目不存在' }));
+      return;
+    }
+
+    exec(`cd "${project.projectPath}" && git branch --show-current 2>/dev/null`, (err, branchOutput) => {
+      if (err || !branchOutput.trim()) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ isGitRepo: false }));
+        return;
+      }
+
+      const currentBranch = branchOutput.trim();
+      
+      exec(`cd "${project.projectPath}" && git log -1 --format="%H|%s" 2>/dev/null`, (err, logOutput) => {
+        let commitId = '';
+        let commitMessage = '';
+        
+        if (!err && logOutput.trim()) {
+          const parts = logOutput.trim().split('|', 2);
+          commitId = parts[0] || '';
+          commitMessage = parts[1] || '';
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ 
+          isGitRepo: true,
+          currentBranch,
+          commitId,
+          commitMessage
+        }));
+      });
+    });
+  }
+
+  else if (url.match(/\/api\/projects\/([\d.]+)\/git\/branches/) && method === 'GET') {
+    const id = parseFloat(url.match(/\/api\/projects\/([\d.]+)\/git\/branches/)[1]);
+    const projects = readProjects();
+    const project = projects.find(p => p.id === id);
+    
+    if (!project) {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: '项目不存在' }));
+      return;
+    }
+
+    exec(`cd "${project.projectPath}" && git branch -a 2>/dev/null`, (err, output) => {
+      if (err || !output.trim()) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ branches: [], isGitRepo: false }));
+        return;
+      }
+
+      const branches = output.trim().split('\n').map(line => {
+        line = line.trim();
+        const isCurrent = line.startsWith('*');
+        let name = isCurrent ? line.substring(1).trim() : line;
+        if (name.startsWith('remotes/')) {
+          name = name.replace(/^remotes\/origin\//, '');
+        }
+        return { name, isCurrent, isRemote: line.startsWith('remotes/') };
+      }).filter(b => b.name);
+
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ branches, isGitRepo: true }));
+    });
+  }
+
+  else if (url.match(/\/api\/projects\/([\d.]+)\/git\/checkout/) && method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      const id = parseFloat(url.match(/\/api\/projects\/([\d.]+)\/git\/checkout/)[1]);
+      const { branch } = JSON.parse(body);
+      const projects = readProjects();
+      const project = projects.find(p => p.id === id);
+      
+      if (!project) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: '项目不存在' }));
+        return;
+      }
+
+      exec(`cd "${project.projectPath}" && git checkout "${branch}" 2>&1`, (err, output) => {
+        if (err) {
+          const hasConflict = output.includes('error:') || output.includes('冲突');
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: output.trim(), hasConflict }));
+          return;
+        }
+
+        exec(`cd "${project.projectPath}" && git log -1 --format="%H|%s" 2>/dev/null`, (err, logOutput) => {
+          let commitId = '';
+          let commitMessage = '';
+          
+          if (!err && logOutput.trim()) {
+            const parts = logOutput.trim().split('|', 2);
+            commitId = parts[0] || '';
+            commitMessage = parts[1] || '';
+          }
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ 
+            success: true, 
+            branch, 
+            commitId, 
+            commitMessage 
+          }));
+        });
+      });
+    });
+  }
+
+  else if (url.match(/\/api\/projects\/([\d.]+)\/git\/pull/) && method === 'POST') {
+    const id = parseFloat(url.match(/\/api\/projects\/([\d.]+)\/git\/pull/)[1]);
+    const projects = readProjects();
+    const project = projects.find(p => p.id === id);
+    
+    if (!project) {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: '项目不存在' }));
+      return;
+    }
+
+    exec(`cd "${project.projectPath}" && git pull 2>&1`, (err, output) => {
+      if (err) {
+        const hasConflict = output.includes('error:') || output.includes('冲突');
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: output.trim(), hasConflict }));
+        return;
+      }
+
+      exec(`cd "${project.projectPath}" && git log -1 --format="%H|%s" 2>/dev/null`, (err, logOutput) => {
+        let commitId = '';
+        let commitMessage = '';
+        
+        if (!err && logOutput.trim()) {
+          const parts = logOutput.trim().split('|', 2);
+          commitId = parts[0] || '';
+          commitMessage = parts[1] || '';
+        }
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ 
+          success: true, 
+          output: output.trim(),
+          commitId, 
+          commitMessage 
+        }));
+      });
+    });
+  }
+
+  else if (url.match(/\/api\/projects\/([\d.]+)\/git\/push/) && method === 'POST') {
+    const id = parseFloat(url.match(/\/api\/projects\/([\d.]+)\/git\/push/)[1]);
+    const projects = readProjects();
+    const project = projects.find(p => p.id === id);
+    
+    if (!project) {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: '项目不存在' }));
+      return;
+    }
+
+    exec(`cd "${project.projectPath}" && git push 2>&1`, (err, output) => {
+      if (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: output.trim() }));
+        return;
+      }
+
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: true, output: output.trim() }));
+    });
+  }
+
+  else if (url.match(/\/api\/projects\/([\d.]+)\/git\/merge/) && method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      const id = parseFloat(url.match(/\/api\/projects\/([\d.]+)\/git\/merge/)[1]);
+      const { branch } = JSON.parse(body);
+      const projects = readProjects();
+      const project = projects.find(p => p.id === id);
+      
+      if (!project) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: '项目不存在' }));
+        return;
+      }
+
+      exec(`cd "${project.projectPath}" && git merge "${branch}" 2>&1`, (err, output) => {
+        if (err) {
+          const hasConflict = output.includes('error:') || output.includes('冲突') || output.includes('Automatic merge failed');
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: output.trim(), hasConflict }));
+          return;
+        }
+
+        exec(`cd "${project.projectPath}" && git log -1 --format="%H|%s" 2>/dev/null`, (err, logOutput) => {
+          let commitId = '';
+          let commitMessage = '';
+          
+          if (!err && logOutput.trim()) {
+            const parts = logOutput.trim().split('|', 2);
+            commitId = parts[0] || '';
+            commitMessage = parts[1] || '';
+          }
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ 
+            success: true, 
+            branch, 
+            commitId, 
+            commitMessage 
+          }));
+        });
       });
     });
   }

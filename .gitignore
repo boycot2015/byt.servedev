@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build output
+release/
+dist/
+build/
+out/
+
+# Electron
+electron-builder/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files
+projects.json
+groups.json
+*.json.bak
+
+# Environment
+.env
+.env.local

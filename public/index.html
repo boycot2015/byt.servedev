@@ -264,6 +264,51 @@
     </div>
   </div>
 
+  <div id="branchModal" class="modal-overlay">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2 class="modal-title">切换分支</h2>
+        <button class="modal-close" onclick="closeBranchModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>当前分支</label>
+          <div id="currentBranchDisplay" style="padding: 10px; background: var(--bg-tertiary); border-radius: 6px; font-weight: 600; color: #16a34a;"></div>
+        </div>
+        <div class="form-group">
+          <label>目标分支</label>
+          <select id="branchSelect" class="form-control" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary);"></select>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="closeBranchModal()">取消</button>
+          <button class="btn btn-primary" id="checkoutBtn" onclick="checkoutBranch()">切换分支</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mergeModal" class="modal-overlay">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2 class="modal-title">合并分支</h2>
+        <button class="modal-close" onclick="closeMergeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>选择要合并的分支</label>
+          <select id="mergeBranchSelect" class="form-control" style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary);"></select>
+        </div>
+        <div style="padding: 12px; background: #fef3c7; border-radius: 6px; margin-bottom: 16px; font-size: 13px; color: #92400e;">
+          ⚠️ 合并前请确保已提交当前分支的所有更改，如有冲突将自动打开编辑器进行解决
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="closeMergeModal()">取消</button>
+          <button class="btn btn-primary" id="mergeBtn" onclick="executeMerge()">执行合并</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="logsModal" class="modal-overlay">
     <div class="modal" style="max-width: 800px;">
       <div class="modal-header">

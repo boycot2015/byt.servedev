@@ -7,6 +7,7 @@ let currentGroup = '全部';
 let pendingDeleteId = null;
 let pendingDeleteIds = null;
 let pendingStopId = null;
+let gitInfoCache = {};
 // 侧边栏切换功能
 function toggleSidebar() {
   const sidebar = document.querySelector('.sidebar');
@@ -128,6 +129,273 @@ let gitImportState = {
   conflictChecked: false
 };
 
+async function fetchGitInfo(projectId) {
+  try {
+    const response = await fetch(`/api/projects/${projectId}/git/info`);
+    const result = await response.json();
+    gitInfoCache[projectId] = result;
+    return result;
+  } catch {
+    gitInfoCache[projectId] = { isGitRepo: false };
+    return { isGitRepo: false };
+  }
+}
+
+async function fetchGitBranches(projectId) {
+  try {
+    const response = await fetch(`/api/projects/${projectId}/git/branches`);
+    const result = await response.json();
+    return result;
+  } catch {
+    return { branches: [], isGitRepo: false };
+  }
+}
+
+function getGitInfo(projectId) {
+  return gitInfoCache[projectId] || { isGitRepo: false };
+}
+
+function truncateCommitMessage(message, maxLength = 30) {
+  if (!message) return '';
+  if (message.length <= maxLength) return message;
+  return message.substring(0, maxLength) + '...';
+}
+
+function formatCommitId(commitId) {
+  if (!commitId) return '';
+  return commitId.substring(0, 7);
+}
+
+let branchModalProjectId = null;
+
+function openBranchModal(projectId) {
+  branchModalProjectId = projectId;
+  const modal = document.getElementById('branchModal');
+  const branchSelect = document.getElementById('branchSelect');
+  const currentBranchDisplay = document.getElementById('currentBranchDisplay');
+  
+  branchSelect.innerHTML = '<option value="">加载中...</option>';
+  
+  fetchGitBranches(projectId).then(result => {
+    if (!result.isGitRepo) {
+      branchSelect.innerHTML = '<option value="">非 Git 仓库</option>';
+      return;
+    }
+    
+    const gitInfo = getGitInfo(projectId);
+    currentBranchDisplay.textContent = gitInfo.currentBranch || '';
+    
+    branchSelect.innerHTML = result.branches.map(b => 
+      `<option value="${b.name}" ${b.isCurrent ? 'selected' : ''}>${b.name}${b.isRemote ? ' (远程)' : ''}</option>`
+    ).join('');
+  });
+  
+  modal.classList.add('show');
+}
+
+function closeBranchModal() {
+  document.getElementById('branchModal').classList.remove('show');
+  branchModalProjectId = null;
+}
+
+async function checkoutBranch() {
+  if (!branchModalProjectId) return;
+  
+  const branch = document.getElementById('branchSelect').value;
+  if (!branch) return;
+  
+  const btn = document.getElementById('checkoutBtn');
+  btn.disabled = true;
+  btn.textContent = '切换中...';
+  
+  try {
+    const response = await fetch(`/api/projects/${branchModalProjectId}/git/checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ branch })
+    });
+    
+    const result = await response.json();
+    
+    if (result.error) {
+      if (result.hasConflict) {
+        alert(`切换分支失败，存在冲突。正在打开编辑器...`);
+        const project = projects.find(p => p.id === branchModalProjectId);
+        if (project) {
+          openEditor(project.projectPath);
+        }
+      } else {
+        alert(`切换失败: ${result.error}`);
+      }
+    } else {
+      gitInfoCache[branchModalProjectId] = {
+        ...gitInfoCache[branchModalProjectId],
+        currentBranch: result.branch,
+        commitId: result.commitId,
+        commitMessage: result.commitMessage
+      };
+      renderProjects();
+      closeBranchModal();
+    }
+  } catch (e) {
+    alert('切换失败');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '切换分支';
+  }
+}
+
+async function gitPull(projectId) {
+  const project = projects.find(p => p.id === projectId);
+  if (!project) return;
+  
+  const btn = document.querySelector(`[onclick="gitPull(${projectId})"]`);
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '拉取中...';
+  }
+  
+  try {
+    const response = await fetch(`/api/projects/${projectId}/git/pull`, {
+      method: 'POST'
+    });
+    
+    const result = await response.json();
+    
+    if (result.error) {
+      if (result.hasConflict) {
+        alert(`拉取失败，存在冲突。正在打开编辑器...`);
+        openEditor(project.projectPath);
+      } else {
+        alert(`拉取失败: ${result.error}`);
+      }
+    } else {
+      gitInfoCache[projectId] = {
+        ...gitInfoCache[projectId],
+        commitId: result.commitId,
+        commitMessage: result.commitMessage
+      };
+      renderProjects();
+    }
+  } catch (e) {
+    alert('拉取失败');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '拉取';
+    }
+  }
+}
+
+async function gitPush(projectId) {
+  const project = projects.find(p => p.id === projectId);
+  if (!project) return;
+  
+  const btn = document.querySelector(`[onclick="gitPush(${projectId})"]`);
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '同步中...';
+  }
+  
+  try {
+    const response = await fetch(`/api/projects/${projectId}/git/push`, {
+      method: 'POST'
+    });
+    
+    const result = await response.json();
+    
+    if (result.error) {
+      alert(`同步失败: ${result.error}`);
+    } else {
+      renderProjects();
+    }
+  } catch (e) {
+    alert('同步失败');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '同步';
+    }
+  }
+}
+
+let mergeModalProjectId = null;
+
+function openMergeModal(projectId) {
+  mergeModalProjectId = projectId;
+  const modal = document.getElementById('mergeModal');
+  const mergeBranchSelect = document.getElementById('mergeBranchSelect');
+  
+  mergeBranchSelect.innerHTML = '<option value="">加载中...</option>';
+  
+  fetchGitBranches(projectId).then(result => {
+    if (!result.isGitRepo) {
+      mergeBranchSelect.innerHTML = '<option value="">非 Git 仓库</option>';
+      return;
+    }
+    
+    const gitInfo = getGitInfo(projectId);
+    mergeBranchSelect.innerHTML = result.branches
+      .filter(b => !b.isCurrent && !b.name.startsWith('HEAD'))
+      .map(b => 
+        `<option value="${b.name}">${b.name}${b.isRemote ? ' (远程)' : ''}</option>`
+      ).join('');
+  });
+  
+  modal.classList.add('show');
+}
+
+function closeMergeModal() {
+  document.getElementById('mergeModal').classList.remove('show');
+  mergeModalProjectId = null;
+}
+
+async function executeMerge() {
+  if (!mergeModalProjectId) return;
+  
+  const branch = document.getElementById('mergeBranchSelect').value;
+  if (!branch) return;
+  
+  const btn = document.getElementById('mergeBtn');
+  btn.disabled = true;
+  btn.textContent = '合并中...';
+  
+  try {
+    const response = await fetch(`/api/projects/${mergeModalProjectId}/git/merge`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ branch })
+    });
+    
+    const result = await response.json();
+    
+    if (result.error) {
+      if (result.hasConflict) {
+        alert(`合并失败，存在冲突。正在打开编辑器...`);
+        const project = projects.find(p => p.id === mergeModalProjectId);
+        if (project) {
+          openEditor(project.projectPath);
+        }
+      } else {
+        alert(`合并失败: ${result.error}`);
+      }
+    } else {
+      gitInfoCache[mergeModalProjectId] = {
+        ...gitInfoCache[mergeModalProjectId],
+        commitId: result.commitId,
+        commitMessage: result.commitMessage
+      };
+      renderProjects();
+      closeMergeModal();
+    }
+  } catch (e) {
+    alert('合并失败');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '执行合并';
+  }
+}
+
 function openGitImportModal() {
   document.getElementById('gitRepoUrl').value = '';
   document.getElementById('gitTargetPath').value = '';
@@ -248,6 +516,10 @@ async function importFromGit() {
 async function loadProjects() {
   const response = await fetch('/api/projects');
   projects = await response.json();
+  
+  gitInfoCache = {};
+  await Promise.all(projects.map(p => fetchGitInfo(p.id)));
+  
   renderGroups();
   renderProjects();
   updateBatchDeleteBtn();
@@ -310,13 +582,21 @@ function renderProjects() {
     return;
   }
 
-  container.innerHTML = filtered.map(project => `
+  container.innerHTML = filtered.map(project => {
+    const gitInfo = getGitInfo(project.id);
+    const isGitRepo = gitInfo.isGitRepo;
+    const currentBranch = gitInfo.currentBranch;
+    const commitId = gitInfo.commitId;
+    const commitMessage = gitInfo.commitMessage;
+    
+    return `
     <div class="project-item ${project.status || 'stopped'}" id="project-${project.id}">
       <div class="project-header">
         <div style="display: flex; align-items: center; gap: 10px;">
           <input type="checkbox" class="project-checkbox" value="${project.id}" onchange="updateBatchDeleteBtn()">
           <span class="project-name">${project.name}</span>
           <span class="project-version">${project.version}</span>
+          ${isGitRepo && currentBranch ? `<span class="git-branch-tag" onclick="openBranchModal(${project.id})" title="点击切换分支">🌿 ${currentBranch}</span>` : ''}
           <span class="group-tag">${project.group || '默认分组'}</span>
           <span class="package-json-tag" onclick="viewPackageJson(${project.id})" title="点击查看 package.json">📦 package.json</span>
           <span class="status-badge ${project.status === 'running' ? 'status-running' : project.status === 'starting' ? 'status-starting' : 'status-stopped'}">
@@ -344,6 +624,10 @@ function renderProjects() {
         </div>
       </div>
       ${project.description ? `<div class="project-description"><div class="line-clamp-2" title="${project.description}">${project.description}</div></div>` : ''}
+      ${isGitRepo && commitId ? `<div class="git-commit-info">
+        <span class="git-commit-id">${formatCommitId(commitId)}</span>
+        <span class="git-commit-message" title="${commitMessage}">${truncateCommitMessage(commitMessage)}</span>
+      </div>` : ''}
       <div class="project-actions">
         ${project.status === 'running' 
           ? `<button class="btn btn-danger btn-sm" onclick="stopProject(${project.id})">停止</button>`
@@ -354,9 +638,16 @@ function renderProjects() {
         <button class="btn btn-secondary btn-sm" onclick="editProject(${project.id})">编辑</button>
         <button class="btn btn-secondary btn-sm" onclick="viewLogs(${project.id})">日志</button>
         <button class="btn btn-danger btn-sm" onclick="deleteProject(${project.id})">删除</button>
+        ${isGitRepo ? `<div class="git-actions">
+          <button class="btn btn-git btn-sm" onclick="gitPull(${project.id})">⬇️ 拉取</button>
+          <button class="btn btn-git btn-sm" onclick="gitPush(${project.id})">⬆️ 同步</button>
+          <button class="btn btn-git btn-sm" onclick="openBranchModal(${project.id})">🌿 迁出</button>
+          <button class="btn btn-git btn-sm" onclick="openMergeModal(${project.id})">🔀 合并</button>
+        </div>` : ''}
       </div>
     </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function filterProjects() {
