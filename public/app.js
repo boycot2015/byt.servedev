@@ -7,6 +7,36 @@ let currentGroup = '全部';
 let pendingDeleteId = null;
 let pendingDeleteIds = null;
 let pendingStopId = null;
+// 侧边栏切换功能
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  sidebar.classList.toggle('show');
+  overlay.classList.toggle('show');
+}
+
+// 选择分组后自动关闭侧边栏（移动端）
+function selectGroup(group) {
+  currentGroup = group;
+  renderGroups();
+  // 重置筛选字段
+  const statusFilter = document.getElementById('statusFilter');
+  const searchInput = document.getElementById('searchInput');
+  if (statusFilter) statusFilter.value = 'all';
+  if (searchInput) searchInput.value = '';
+  renderProjects();
+  document.getElementById('currentGroupTitle').textContent = group === '全部' ? '项目列表' : `${group} - 项目列表`;
+  updateBatchDeleteBtn();
+  
+  // 移动端选择后自动关闭侧边栏
+  if (window.innerWidth <= 768) {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.remove('show');
+    overlay.classList.remove('show');
+  }
+}
+
 // 主题切换功能
 function toggleTheme() {
   const body = document.body;
@@ -65,18 +95,7 @@ function renderGroups() {
   groupList.innerHTML = html;
 }
 
-function selectGroup(group) {
-  currentGroup = group;
-  renderGroups();
-  // 重置筛选字段
-  const statusFilter = document.getElementById('statusFilter');
-  const searchInput = document.getElementById('searchInput');
-  if (statusFilter) statusFilter.value = 'all';
-  if (searchInput) searchInput.value = '';
-  renderProjects();
-  document.getElementById('currentGroupTitle').textContent = group === '全部' ? '项目列表' : `${group} - 项目列表`;
-  updateBatchDeleteBtn();
-}
+
 
 function updateGroupSelects() {
   const selects = ['importGroup', 'scanGroup', 'editGroup'];
@@ -157,7 +176,7 @@ function renderProjects() {
       <div class="project-info">
         <div class="info-item">
           <span class="icon">📍</span>
-          <span>${project.projectPath}</span>
+          <span class="path-clickable" onclick="openEditor('${project.projectPath}')" title="点击在 VS Code 中打开">${project.projectPath}</span>
         </div>
         <div class="info-item">
           <span class="icon">🟢</span>
@@ -168,6 +187,7 @@ function renderProjects() {
           <span>端口: ${project.port}</span>
         </div>
       </div>
+      ${project.description ? `<div class="project-description"><div class="line-clamp-2" title="${project.description}">${project.description}</div></div>` : ''}
       <div class="project-actions">
         ${project.status === 'running' 
           ? `<button class="btn btn-danger btn-sm" onclick="stopProject(${project.id})">停止</button>`
@@ -480,6 +500,14 @@ async function startProject(id) {
     viewLogs(id);
     setTimeout(() => pollProjectStatus(id), 1000);
   }
+}
+
+async function openEditor(path) {
+  await fetch('/api/open-editor', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path })
+  });
 }
 
 async function killPortAndRestart(projectId, port) {

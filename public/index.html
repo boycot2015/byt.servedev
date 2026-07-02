@@ -9,13 +9,18 @@
 <body>
   <div class="header">
     <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-      <div>
-        <h1>项目管理工具</h1>
-        <p>简化开发流程，一键启动项目</p>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="menu-toggle" onclick="toggleSidebar()" id="menuToggle">☰</button>
+        <div>
+          <h1>项目管理工具</h1>
+          <p>简化开发流程，一键启动项目</p>
+        </div>
       </div>
       <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">🌙</button>
     </div>
   </div>
+  
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
   
   <div class="main-content">
     <div class="sidebar">

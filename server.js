@@ -86,6 +86,76 @@ function getPackageJson(projectPath) {
   }
 }
 
+function stripMarkdownFormatting(text) {
+  return text
+    .replace(/\[([^\]]*)\]\([^)]+\)/g, '$1')
+    .replace(/```[\w-]*\s*([\s\S]*?)```/g, '$1')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/~~([^~]+)~~/g, '$1')
+    .replace(/#+\s*/g, '')
+    .replace(/\n/g, ' ')
+    .trim();
+}
+
+function getProjectDescription(projectPath) {
+  const limitWidth = 999;
+  const pkg = getPackageJson(projectPath);
+  if (pkg?.description) {
+    const desc = stripMarkdownFormatting(pkg.description);
+    return desc.substring(0, limitWidth) + (desc.length > limitWidth ? '...' : '');
+  }
+  
+  const readmePath = path.join(projectPath, 'README.md');
+  if (fs.existsSync(readmePath)) {
+    try {
+      const content = fs.readFileSync(readmePath, 'utf8');
+      // 先对整个内容做 markdown 清理
+      const cleanContent = stripMarkdownFormatting(content);
+      const lines = cleanContent.split('\n');
+      
+      let title = '';
+      let firstParagraph = '';
+      let foundTitle = false;
+      
+      for (const line of lines) {
+        const trimmedLine = line.trim();
+        
+        if (!trimmedLine) continue;
+        
+        if (!foundTitle) {
+          title = trimmedLine;
+          foundTitle = true;
+          continue;
+        }
+        
+        // 跳过仍然像标题的行（清理后可能还有残留）
+        if (trimmedLine.startsWith('##') || trimmedLine.startsWith('###')) continue;
+        
+        if (!firstParagraph) {
+          firstParagraph = trimmedLine;
+          break;
+        }
+      }
+      
+      let description = title;
+      if (firstParagraph) {
+        description = description ? `${title} ${firstParagraph}` : firstParagraph;
+      }
+      
+      if (description) {
+        return description.substring(0, limitWidth) + (description.length > limitWidth ? '...' : '');
+      }
+    } catch {
+      return '';
+    }
+  }
+  
+  return '';
+}
+
 function detectNodeVersion(projectPath) {
   return new Promise((resolve) => {
     const pkg = getPackageJson(projectPath);
@@ -184,7 +254,8 @@ async function handleApi(req, res) {
         ...p,
         status: runningInfo?.status || 'stopped',
         port: runningInfo?.actualPort || p.port,
-        nodeVersion: runningInfo?.nodeVersion || p.nodeVersion || '未指定'
+        nodeVersion: runningInfo?.nodeVersion || p.nodeVersion || '未指定',
+        description: p.description || getProjectDescription(p.projectPath)
       };
     });
     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -213,7 +284,8 @@ async function handleApi(req, res) {
         projectPath: projectPath,
         port: 1024,
         group: group || '默认分组',
-        scripts: pkg.scripts || {}
+        scripts: pkg.scripts || {},
+        description: pkg.description || getProjectDescription(projectPath)
       };
 
       projects.push(newProject);
@@ -238,15 +310,16 @@ async function handleApi(req, res) {
           const existing = projects.find(p => p.projectPath === projectPath);
           if (!existing) {
             const newProject = {
-              id: Date.now() + Math.random(),
-              name: pkg.name || '未命名项目',
-              version: pkg.version || '1.0.0',
-              nodeVersion: pkg.engines?.node || '未指定',
-              projectPath: projectPath,
-              port: 1024,
-              group: group || '默认分组',
-              scripts: pkg.scripts || {}
-            };
+            id: Date.now() + Math.random(),
+            name: pkg.name || '未命名项目',
+            version: pkg.version || '1.0.0',
+            nodeVersion: pkg.engines?.node || '未指定',
+            projectPath: projectPath,
+            port: 1024,
+            group: group || '默认分组',
+            scripts: pkg.scripts || {},
+            description: pkg.description || getProjectDescription(projectPath)
+          };
             projects.push(newProject);
             addedProjects.push(newProject);
           }
@@ -761,6 +834,19 @@ async function handleApi(req, res) {
     const status = RUNNING_PROCESSES[id]?.status || 'stopped';
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ status }));
+  }
+
+  else if (url === '/api/open-editor' && method === 'POST') {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      const { path } = JSON.parse(body);
+      const { exec } = require('child_process');
+      exec(`open -a "Visual Studio Code" "${path}" 2>/dev/null || code "${path}" 2>/dev/null`, (err) => {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: !err }));
+      });
+    });
   }
 
   else if (url === '/api/kill-port' && method === 'POST') {
