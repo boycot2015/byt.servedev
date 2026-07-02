@@ -2,14 +2,23 @@
 node_modules/
 
 # Build output
-release/
 dist/
 build/
 out/
+release/
 
-# Electron
-electron-builder/
-*.log
+# Electrobun
+electrobun-*.tar.gz
+dist-macos-arm64/
+dist-macos-x64/
+dist-win-x64/
+dist-linux-x64/
+dist-linux-arm64/
+
+# Bun
+*.bun
+bun.lockb
+.bun-cache/
 
 # IDE
 .vscode/
@@ -30,3 +39,14 @@ groups.json
 # Environment
 .env
 .env.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

@@ -525,23 +525,45 @@ async function handleApi(req, res) {
 
       const currentBranch = branchOutput.trim();
       
-      exec(`cd "${project.projectPath}" && git log -1 --format="%H|%s" 2>/dev/null`, (err, logOutput) => {
+      exec(`cd "${project.projectPath}" && git log -1 --format="%H|%s|%an|%ct" 2>/dev/null`, (err, logOutput) => {
         let commitId = '';
         let commitMessage = '';
+        let commitAuthor = '';
+        let commitTime = '';
         
         if (!err && logOutput.trim()) {
-          const parts = logOutput.trim().split('|', 2);
+          const parts = logOutput.trim().split('|');
           commitId = parts[0] || '';
           commitMessage = parts[1] || '';
+          commitAuthor = parts[2] || '';
+          commitTime = parts[3] || '';
         }
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ 
-          isGitRepo: true,
-          currentBranch,
-          commitId,
-          commitMessage
-        }));
+        // 获取待拉取和待推送的数量
+        exec(`cd "${project.projectPath}" && git rev-list --left-right --count HEAD...@{u} 2>/dev/null`, (err, countOutput) => {
+          let aheadCount = 0; // 本地比远程多的提交数（需要推送）
+          let behindCount = 0; // 远程比本地多的提交数（需要拉取）
+          
+          if (!err && countOutput.trim()) {
+            const parts = countOutput.trim().split(/\s+/);
+            if (parts.length >= 2) {
+              aheadCount = parseInt(parts[0]) || 0;
+              behindCount = parseInt(parts[1]) || 0;
+            }
+          }
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ 
+            isGitRepo: true,
+            currentBranch,
+            commitId,
+            commitMessage,
+            commitAuthor,
+            commitTime,
+            aheadCount,
+            behindCount
+          }));
+        });
       });
     });
   }

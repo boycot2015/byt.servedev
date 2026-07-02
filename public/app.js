@@ -8,6 +8,134 @@ let pendingDeleteId = null;
 let pendingDeleteIds = null;
 let pendingStopId = null;
 let gitInfoCache = {};
+
+// Toast 消息提示函数
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  
+  const icons = {
+    success: '✅',
+    error: '❌',
+    warning: '⚠️',
+    info: 'ℹ️'
+  };
+  
+  toast.innerHTML = `
+    <span class="toast-icon">${icons[type] || icons.info}</span>
+    <span class="toast-message">${message}</span>
+  `;
+  
+  container.appendChild(toast);
+  
+  // 3秒后自动消失
+  setTimeout(() => {
+    toast.style.animation = 'toastSlideOut 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// 显示列表 Loading
+function showListLoading() {
+  document.getElementById('listLoading').classList.add('show');
+}
+
+// 隐藏列表 Loading
+function hideListLoading() {
+  document.getElementById('listLoading').classList.remove('show');
+}
+
+// 初始化自定义下拉选择组件
+function initCustomSelect(selectId, onChange) {
+  const originalSelect = document.getElementById(selectId);
+  if (!originalSelect) return null;
+
+  // 隐藏原生 select
+  originalSelect.style.display = 'none';
+
+  // 创建自定义选择器容器
+  const wrapper = document.createElement('div');
+  wrapper.className = 'custom-select';
+  wrapper.id = `custom-${selectId}`;
+
+  // 创建触发器
+  const trigger = document.createElement('div');
+  trigger.className = 'custom-select-trigger';
+  
+  const currentText = document.createElement('span');
+  currentText.className = 'custom-select-text';
+  currentText.textContent = originalSelect.options[originalSelect.selectedIndex]?.text || '';
+
+  const arrow = document.createElement('div');
+  arrow.className = 'custom-select-arrow';
+
+  trigger.appendChild(currentText);
+  trigger.appendChild(arrow);
+
+  // 创建下拉菜单
+  const dropdown = document.createElement('div');
+  dropdown.className = 'custom-select-dropdown';
+
+  // 生成选项
+  function renderOptions() {
+    dropdown.innerHTML = '';
+    Array.from(originalSelect.options).forEach((option, index) => {
+      const optElement = document.createElement('div');
+      optElement.className = `custom-select-option ${index === originalSelect.selectedIndex ? 'selected' : ''}`;
+      optElement.textContent = option.text;
+      optElement.dataset.value = option.value;
+      optElement.onclick = () => {
+        originalSelect.selectedIndex = index;
+        currentText.textContent = option.text;
+        wrapper.classList.remove('open');
+        // 更新选中样式
+        Array.from(dropdown.children).forEach(child => child.classList.remove('selected'));
+        optElement.classList.add('selected');
+        if (onChange) onChange(option.value);
+      };
+      dropdown.appendChild(optElement);
+    });
+  }
+
+  renderOptions();
+
+  // 点击触发器切换菜单
+  trigger.onclick = (e) => {
+    e.stopPropagation();
+    // 关闭其他所有下拉
+    document.querySelectorAll('.custom-select').forEach(s => {
+      if (s !== wrapper) s.classList.remove('open');
+    });
+    wrapper.classList.toggle('open');
+  };
+
+  // 点击外部关闭
+  document.addEventListener('click', () => {
+    wrapper.classList.remove('open');
+  });
+
+  wrapper.appendChild(trigger);
+  wrapper.appendChild(dropdown);
+
+  // 插入到原生 select 后面
+  originalSelect.parentNode.insertBefore(wrapper, originalSelect.nextSibling);
+
+  // 返回更新方法
+  return {
+    update: renderOptions,
+    setValue: (value) => {
+      const index = Array.from(originalSelect.options).findIndex(o => o.value === value);
+      if (index >= 0) {
+        originalSelect.selectedIndex = index;
+        currentText.textContent = originalSelect.options[index].text;
+        renderOptions();
+      }
+    },
+    getValue: () => originalSelect.value
+  };
+}
+
 // 侧边栏切换功能
 function toggleSidebar() {
   const sidebar = document.querySelector('.sidebar');
@@ -98,12 +226,19 @@ function renderGroups() {
 
 
 
+// 存储所有自定义下拉实例
+const customSelectInstances = {};
+
 function updateGroupSelects() {
   const selects = ['importGroup', 'scanGroup', 'editGroup', 'gitImportGroup'];
   selects.forEach(id => {
     const select = document.getElementById(id);
     if (select) {
       select.innerHTML = groups.map(g => `<option value="${g}">${g}</option>`).join('');
+      // 更新自定义下拉组件
+      if (customSelectInstances[id]) {
+        customSelectInstances[id].update();
+      }
     }
   });
 }
@@ -152,10 +287,20 @@ async function fetchGitBranches(projectId) {
 }
 
 function getGitInfo(projectId) {
-  return gitInfoCache[projectId] || { isGitRepo: false };
+  const info = gitInfoCache[projectId] || { isGitRepo: false };
+  return {
+    isGitRepo: info.isGitRepo || false,
+    currentBranch: info.currentBranch || '',
+    commitId: info.commitId || '',
+    commitMessage: info.commitMessage || '',
+    commitAuthor: info.commitAuthor || '',
+    commitTime: info.commitTime || '',
+    aheadCount: info.aheadCount || 0,
+    behindCount: info.behindCount || 0
+  };
 }
 
-function truncateCommitMessage(message, maxLength = 30) {
+function truncateCommitMessage(message, maxLength = 80) {
   if (!message) return '';
   if (message.length <= maxLength) return message;
   return message.substring(0, maxLength) + '...';
@@ -164,6 +309,29 @@ function truncateCommitMessage(message, maxLength = 30) {
 function formatCommitId(commitId) {
   if (!commitId) return '';
   return commitId.substring(0, 7);
+}
+
+function formatGitTimestamp(timestamp) {
+  if (!timestamp) return '';
+  // git %ct 返回的是 unix 时间戳（秒），需要转成毫秒
+  const date = new Date(parseInt(timestamp) * 1000);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 0) {
+    // 今天，显示时间
+    return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  } else if (diffDays === 1) {
+    // 昨天
+    return '昨天 ' + date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+  } else if (diffDays < 7) {
+    // 一周内
+    return `${diffDays}天前`;
+  } else {
+    // 超过一周显示日期
+    return date.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
+  }
 }
 
 let branchModalProjectId = null;
@@ -179,6 +347,9 @@ function openBranchModal(projectId) {
   fetchGitBranches(projectId).then(result => {
     if (!result.isGitRepo) {
       branchSelect.innerHTML = '<option value="">非 Git 仓库</option>';
+      if (customSelectInstances.branchSelect) {
+        customSelectInstances.branchSelect.update();
+      }
       return;
     }
     
@@ -188,6 +359,11 @@ function openBranchModal(projectId) {
     branchSelect.innerHTML = result.branches.map(b => 
       `<option value="${b.name}" ${b.isCurrent ? 'selected' : ''}>${b.name}${b.isRemote ? ' (远程)' : ''}</option>`
     ).join('');
+    
+    // 更新自定义下拉组件
+    if (customSelectInstances.branchSelect) {
+      customSelectInstances.branchSelect.update();
+    }
   });
   
   modal.classList.add('show');
@@ -219,13 +395,13 @@ async function checkoutBranch() {
     
     if (result.error) {
       if (result.hasConflict) {
-        alert(`切换分支失败，存在冲突。正在打开编辑器...`);
+        showToast(`切换分支失败，存在冲突。正在打开编辑器...`, 'error');
         const project = projects.find(p => p.id === branchModalProjectId);
         if (project) {
           openEditor(project.projectPath);
         }
       } else {
-        alert(`切换失败: ${result.error}`);
+        showToast(`切换失败: ${result.error}`, 'error');
       }
     } else {
       gitInfoCache[branchModalProjectId] = {
@@ -236,9 +412,10 @@ async function checkoutBranch() {
       };
       renderProjects();
       closeBranchModal();
+      showToast(`切换成功！已切换到分支 "${result.branch}"`, 'success');
     }
   } catch (e) {
-    alert('切换失败');
+    showToast('切换失败', 'error');
   } finally {
     btn.disabled = false;
     btn.textContent = '切换分支';
@@ -264,25 +441,22 @@ async function gitPull(projectId) {
     
     if (result.error) {
       if (result.hasConflict) {
-        alert(`拉取失败，存在冲突。正在打开编辑器...`);
+        showToast(`拉取失败，存在冲突。正在打开编辑器...`, 'error');
         openEditor(project.projectPath);
       } else {
-        alert(`拉取失败: ${result.error}`);
+        showToast(`拉取失败: ${result.error}`, 'error');
       }
     } else {
-      gitInfoCache[projectId] = {
-        ...gitInfoCache[projectId],
-        commitId: result.commitId,
-        commitMessage: result.commitMessage
-      };
+      // 重新获取 git 信息（包含 aheadCount 和 behindCount）
+      await fetchGitInfo(projectId);
       renderProjects();
+      showToast('拉取成功！代码已更新到最新版本', 'success');
     }
   } catch (e) {
-    alert('拉取失败');
+    showToast('拉取失败', 'error');
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.textContent = '拉取';
     }
   }
 }
@@ -305,16 +479,18 @@ async function gitPush(projectId) {
     const result = await response.json();
     
     if (result.error) {
-      alert(`同步失败: ${result.error}`);
+      showToast(`同步失败: ${result.error}`, 'error');
     } else {
+      // 重新获取 git 信息（包含 aheadCount 和 behindCount）
+      await fetchGitInfo(projectId);
       renderProjects();
+      showToast('同步成功！代码已推送到远程仓库', 'success');
     }
   } catch (e) {
-    alert('同步失败');
+    showToast('同步失败', 'error');
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.textContent = '同步';
     }
   }
 }
@@ -331,6 +507,9 @@ function openMergeModal(projectId) {
   fetchGitBranches(projectId).then(result => {
     if (!result.isGitRepo) {
       mergeBranchSelect.innerHTML = '<option value="">非 Git 仓库</option>';
+      if (customSelectInstances.mergeBranchSelect) {
+        customSelectInstances.mergeBranchSelect.update();
+      }
       return;
     }
     
@@ -340,6 +519,11 @@ function openMergeModal(projectId) {
       .map(b => 
         `<option value="${b.name}">${b.name}${b.isRemote ? ' (远程)' : ''}</option>`
       ).join('');
+    
+    // 更新自定义下拉组件
+    if (customSelectInstances.mergeBranchSelect) {
+      customSelectInstances.mergeBranchSelect.update();
+    }
   });
   
   modal.classList.add('show');
@@ -371,13 +555,13 @@ async function executeMerge() {
     
     if (result.error) {
       if (result.hasConflict) {
-        alert(`合并失败，存在冲突。正在打开编辑器...`);
+        showToast(`合并失败，存在冲突。正在打开编辑器...`, 'error');
         const project = projects.find(p => p.id === mergeModalProjectId);
         if (project) {
           openEditor(project.projectPath);
         }
       } else {
-        alert(`合并失败: ${result.error}`);
+        showToast(`合并失败: ${result.error}`, 'error');
       }
     } else {
       gitInfoCache[mergeModalProjectId] = {
@@ -387,9 +571,10 @@ async function executeMerge() {
       };
       renderProjects();
       closeMergeModal();
+      showToast(`合并成功！已将分支合并到当前分支`, 'success');
     }
   } catch (e) {
-    alert('合并失败');
+    showToast('合并失败', 'error');
   } finally {
     btn.disabled = false;
     btn.textContent = '执行合并';
@@ -431,11 +616,11 @@ async function importFromGit() {
   const group = document.getElementById('gitImportGroup').value;
 
   if (!repoUrl) {
-    alert('请输入仓库地址');
+    showToast('请输入仓库地址', 'warning');
     return;
   }
   if (!targetPath) {
-    alert('请选择保存路径');
+    showToast('请选择保存路径', 'warning');
     return;
   }
 
@@ -493,20 +678,20 @@ async function importFromGit() {
   const result = await response.json();
 
   if (result.error) {
-    alert(result.error);
+    showToast(result.error, 'error');
     btn.disabled = false;
     btn.textContent = '导入';
     return;
   }
 
   if (result.skipped) {
-    alert('已跳过该项目');
+    showToast('已跳过该项目', 'info');
   } else if (result.warning) {
-    alert(result.warning);
+    showToast(result.warning, 'warning');
   } else if (result.overwritten) {
-    alert('项目已覆盖并重新导入');
+    showToast('项目已覆盖并重新导入', 'success');
   } else {
-    alert('导入成功');
+    showToast('导入成功', 'success');
   }
 
   await loadProjects();
@@ -514,15 +699,20 @@ async function importFromGit() {
 }
 
 async function loadProjects() {
-  const response = await fetch('/api/projects');
-  projects = await response.json();
-  
-  gitInfoCache = {};
-  await Promise.all(projects.map(p => fetchGitInfo(p.id)));
-  
-  renderGroups();
-  renderProjects();
-  updateBatchDeleteBtn();
+  showListLoading();
+  try {
+    const response = await fetch('/api/projects');
+    projects = await response.json();
+    
+    gitInfoCache = {};
+    await Promise.all(projects.map(p => fetchGitInfo(p.id)));
+    
+    renderGroups();
+    renderProjects();
+    updateBatchDeleteBtn();
+  } finally {
+    hideListLoading();
+  }
 }
 
 function formatTimestamp(timestamp) {
@@ -593,7 +783,10 @@ function renderProjects() {
     <div class="project-item ${project.status || 'stopped'}" id="project-${project.id}">
       <div class="project-header">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <input type="checkbox" class="project-checkbox" value="${project.id}" onchange="updateBatchDeleteBtn()">
+          <label class="custom-checkbox">
+            <input type="checkbox" class="project-checkbox" value="${project.id}" onchange="updateBatchDeleteBtn()">
+            <span class="checkbox-checkmark"></span>
+          </label>
           <span class="project-name">${project.name}</span>
           <span class="project-version">${project.version}</span>
           ${isGitRepo && currentBranch ? `<span class="git-branch-tag" onclick="openBranchModal(${project.id})" title="点击切换分支">🌿 ${currentBranch}</span>` : ''}
@@ -625,8 +818,10 @@ function renderProjects() {
       </div>
       ${project.description ? `<div class="project-description"><div class="line-clamp-2" title="${project.description}">${project.description}</div></div>` : ''}
       ${isGitRepo && commitId ? `<div class="git-commit-info">
-        <span class="git-commit-id">${formatCommitId(commitId)}</span>
-        <span class="git-commit-message" title="${commitMessage}">${truncateCommitMessage(commitMessage)}</span>
+        <span class="git-commit-id" title="${commitId}">${formatCommitId(commitId)}</span>
+        <span class="git-commit-author" title="提交人">👤 ${gitInfo.commitAuthor}</span>
+        <span class="git-commit-time" title="提交时间">🕐 ${gitInfo.commitTime ? formatGitTimestamp(gitInfo.commitTime) : ''}</span>
+        <span class="git-commit-message line-clamp-1" title="${commitMessage}">${truncateCommitMessage(commitMessage)}</span>
       </div>` : ''}
       <div class="project-actions">
         ${project.status === 'running' 
@@ -639,8 +834,12 @@ function renderProjects() {
         <button class="btn btn-secondary btn-sm" onclick="viewLogs(${project.id})">日志</button>
         <button class="btn btn-danger btn-sm" onclick="deleteProject(${project.id})">删除</button>
         ${isGitRepo ? `<div class="git-actions">
-          <button class="btn btn-git btn-sm" onclick="gitPull(${project.id})">⬇️ 拉取</button>
-          <button class="btn btn-git btn-sm" onclick="gitPush(${project.id})">⬆️ 同步</button>
+          <button class="btn btn-git btn-sm ${gitInfo.behindCount > 0 ? 'btn-git-badge' : ''}" onclick="gitPull(${project.id})">
+            ⬇️ 拉取 ${gitInfo.behindCount > 0 ? `<span class="git-count-badge">${gitInfo.behindCount}</span>` : ''}
+          </button>
+          <button class="btn btn-git btn-sm ${gitInfo.aheadCount > 0 ? 'btn-git-badge' : ''}" onclick="gitPush(${project.id})">
+            ⬆️ 同步 ${gitInfo.aheadCount > 0 ? `<span class="git-count-badge">${gitInfo.aheadCount}</span>` : ''}
+          </button>
           <button class="btn btn-git btn-sm" onclick="openBranchModal(${project.id})">🌿 迁出</button>
           <button class="btn btn-git btn-sm" onclick="openMergeModal(${project.id})">🔀 合并</button>
         </div>` : ''}
@@ -698,7 +897,7 @@ async function addGroup() {
 
   const result = await response.json();
   if (result.error) {
-    alert(result.error);
+    showToast(result.error, 'error');
   } else {
     groups = result.groups;
     updateGroupSelects();
@@ -720,7 +919,7 @@ async function renameGroup() {
 
   const result = await response.json();
   if (result.error) {
-    alert(result.error);
+    showToast(result.error, 'error');
   } else {
     groups = result.groups;
     if (currentGroup === oldName) {
@@ -742,7 +941,7 @@ async function deleteGroup(name) {
 
   const result = await response.json();
   if (result.error) {
-    alert(result.error);
+    showToast(result.error, 'error');
   } else {
     groups = result.groups;
     if (currentGroup === name) {
@@ -765,7 +964,7 @@ async function importProject() {
 
   const result = await response.json();
   if (result.error) {
-    alert(result.error);
+    showToast(result.error, 'error');
   } else {
     await loadProjects();
     closeModal('importModal');
@@ -833,6 +1032,12 @@ function editProject(id) {
   document.getElementById('editGroup').value = project.group || '默认分组';
   document.getElementById('editPort').value = project.port;
   document.getElementById('editNodeVersion').value = project.nodeVersion;
+  
+  // 更新自定义下拉组件显示
+  if (customSelectInstances.editGroup) {
+    customSelectInstances.editGroup.setValue(project.group || '默认分组');
+  }
+  
   document.getElementById('editModal').classList.add('show');
 }
 
@@ -854,7 +1059,7 @@ async function saveEdit(event) {
 
   const result = await response.json();
   if (result.error) {
-    alert(result.error);
+    showToast(result.error, 'error');
   } else {
     await loadProjects();
     closeModal('editModal');
@@ -940,7 +1145,7 @@ async function startProject(id) {
       pendingStopId = id;
       document.getElementById('confirmModal').classList.add('show');
     } else {
-      alert(result.error);
+      showToast(result.error, 'error');
     }
   } else {
     await loadProjects();
@@ -968,7 +1173,7 @@ async function killPortAndRestart(projectId, port) {
   if (result.success) {
     startProject(projectId);
   } else {
-    alert('无法杀掉占用端口的进程，请手动处理');
+    showToast('无法杀掉占用端口的进程，请手动处理', 'error');
   }
 }
 
@@ -1083,7 +1288,7 @@ async function viewPackageJson(id) {
   const result = await response.json();
   
   if (result.error) {
-    alert(result.error);
+    showToast(result.error, 'error');
     return;
   }
   
@@ -1216,3 +1421,20 @@ function scrollToTop() {
 initTheme();
 loadGroups();
 loadProjects();
+
+// 初始化所有自定义下拉选择组件
+function initAllCustomSelects() {
+  // 状态筛选器
+  customSelectInstances.statusFilter = initCustomSelect('statusFilter', filterProjects);
+  // 分组选择器
+  customSelectInstances.importGroup = initCustomSelect('importGroup');
+  customSelectInstances.scanGroup = initCustomSelect('scanGroup');
+  customSelectInstances.editGroup = initCustomSelect('editGroup');
+  customSelectInstances.gitImportGroup = initCustomSelect('gitImportGroup');
+  // 分支选择器
+  customSelectInstances.branchSelect = initCustomSelect('branchSelect');
+  customSelectInstances.mergeBranchSelect = initCustomSelect('mergeBranchSelect');
+}
+
+// DOM 加载完成后初始化
+document.addEventListener('DOMContentLoaded', initAllCustomSelects);

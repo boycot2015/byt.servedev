@@ -448,7 +448,7 @@
     "version": "2.37.0",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/my-project/byt.api_v2",
-    "port": 1024,
+    "port": 4398,
     "group": "Boycot",
     "scripts": {
       "dev:no-watch": "DEV=1 PORT=4398 node node.ts",
@@ -460,7 +460,8 @@
       "docker:build": "docker build -t vikiboss/60s .",
       "docker:run": "docker run --name 60s -p 4399:4399 -d vikiboss/60s",
       "docker:re-run": "docker stop 60s && docker rm 60s && pnpm run docker:run"
-    }
+    },
+    "status": "running"
   },
   {
     "id": 1782902217927.5,
@@ -753,7 +754,7 @@
     "version": "0.1.0",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/yzh-project/yzh.dashboard",
-    "port": 1025,
+    "port": 1027,
     "group": "B2B",
     "scripts": {
       "serve": "vue-cli-service serve",
