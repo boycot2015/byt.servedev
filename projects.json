@@ -205,11 +205,11 @@
   },
   {
     "id": 1782900895521.138,
-    "name": "yzh.enterprise",
+    "name": "yzh.b2b.supplier",
     "version": "0.1.2",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/yzh-project/B2B/yzh.b2b.supplier",
-    "port": 1024,
+    "port": 1002,
     "group": "B2B",
     "scripts": {
       "postinstall": "patch-package",
@@ -225,7 +225,9 @@
       "jindie-hd-build": "vue-cli-service build --mode jindie-hd && node ./scripts/jindie-hd.js",
       "dev-build": "vue-cli-service build --mode dev & node ./scripts/dev.js",
       "lint": "vue-cli-service lint"
-    }
+    },
+    "updatedAt": 1783049478010,
+    "status": "running"
   },
   {
     "id": 1782900895521.2288,
@@ -687,14 +689,15 @@
     "version": "1.0.0",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/my-project/byt.stock",
-    "port": 1024,
+    "port": 5174,
     "group": "Boycot",
     "scripts": {
       "dev": "vite",
       "build": "vue-tsc -b && vite build",
       "preview": "vite preview",
       "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
-    }
+    },
+    "status": "running"
   },
   {
     "id": 1782902217928.2944,
@@ -965,7 +968,7 @@
   },
   {
     "id": 1782974225707.6353,
-    "name": "yzh.mall.pc",
+    "name": "yzh.b2c.pc",
     "version": "0.1.0",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.b2c.pc",
@@ -983,7 +986,9 @@
       "lint-staged": "lint-staged"
     },
     "description": "Yzh.B2c.Pc Web  pc改版vue2版本  Getting started  To make it easy for you to get started with GitLab, here's a list of recommended next steps.  Already a pro? Just edit this README.md and make it your own. Want to make it easy? Use the template at the bottom!  Add your files  - [ ] Create or upload files - [ ] Add files using the command line or push an existing Git repository with the following command:  cd existing_repo git remote add origin http://192.168.1.218:8888/YZH-WEB/yzh.b2c.pc-web.git git branch -M master git push -uf origin master   Integrate with your tools  - [ ] Set up project integrations  Collaborate with your team  - [ ] Invite team members and collaborators - [ ] Create a new merge request - [ ] Automatically close issues from merge requests - [ ] Enable merge request approvals - [ ] Automatically merge when pipeline succeeds  Test and Deploy  Use the built-in continuous integration in GitLab.  - [ ] Get started with GitLab CI/CD - [ ] Analyze your code for known vulnera...",
-    "createdAt": 1782974225707.6353
+    "createdAt": 1782974225707.6353,
+    "updatedAt": 1783044291106,
+    "status": "stopped"
   },
   {
     "id": 1782974225708.6384,
@@ -1100,7 +1105,7 @@
     "version": "1.0.0",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/my-project/byt.servedev/",
-    "port": 3001,
+    "port": 50001,
     "group": "默认分组",
     "scripts": {
       "start": "node server.js",
@@ -1109,6 +1114,6 @@
     },
     "description": "开发项目管理工具 - 简化项目启动流程",
     "createdAt": 1782986633431,
-    "status": "stopped"
+    "status": "running"
   }
 ]

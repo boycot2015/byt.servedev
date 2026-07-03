@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electrobun/bun';
-import { spawn } from 'child_process';
+import { spawn, exec } from 'child_process';
 import { createServer } from 'net';
 import path from 'path';
 import fs from 'fs';
@@ -58,6 +58,18 @@ function findServerPath(): string {
 
 // 启动 Node.js 后端服务器
 async function startServer(): Promise<number> {
+  // 杀掉所有 3xxx 端口的进程
+function killAll3xxxPorts() {
+  return new Promise((resolve) => {
+    exec(`lsof -ti:3000-3999 | xargs kill -9 2>/dev/null`, (err) => {
+      setTimeout(() => {
+        resolve({ success: true });
+      }, 500);
+    });
+  });
+}
+  await killAll3xxxPorts();
+  console.log('正在清理所有 3xxx 端口进程...');
   serverPort = await findAvailablePort(3000);
   console.log(`Starting server on port ${serverPort}`);
 

@@ -164,6 +164,7 @@ function selectGroup(group) {
     sidebar.classList.remove('show');
     overlay.classList.remove('show');
   }
+  scrollToTop();
 }
 
 // 设置主题色
@@ -749,8 +750,38 @@ async function importFromGit() {
   closeGitImportModal();
 }
 
+// Git 信息定时刷新定时器
+let gitInfoRefreshInterval = null;
+
+// 刷新所有项目的 Git 信息
+async function refreshAllGitInfo() {
+  if (projects.length === 0) return;
+  
+  try {
+    await Promise.all(projects.map(p => fetchGitInfo(p.id)));
+    renderProjects();
+  } catch (e) {
+    console.error('刷新 Git 信息失败:', e);
+  }
+}
+
+// 启动 Git 信息定时刷新（每30秒刷新一次）
+function startGitInfoRefresh() {
+  if (gitInfoRefreshInterval) {
+    clearInterval(gitInfoRefreshInterval);
+  }
+  gitInfoRefreshInterval = setInterval(refreshAllGitInfo, 30000);
+}
+
+// 停止 Git 信息定时刷新
+function stopGitInfoRefresh() {
+  if (gitInfoRefreshInterval) {
+    clearInterval(gitInfoRefreshInterval);
+    gitInfoRefreshInterval = null;
+  }
+}
+
 async function loadProjects() {
-  showListLoading();
   try {
     const response = await fetch('/api/projects');
     projects = await response.json();
@@ -761,6 +792,9 @@ async function loadProjects() {
     renderGroups();
     renderProjects();
     updateBatchDeleteBtn();
+    
+    // 启动定时刷新
+    startGitInfoRefresh();
   } finally {
     hideListLoading();
   }
@@ -854,15 +888,15 @@ function renderProjects() {
           <span class="path-clickable" onclick="openEditor('${project.projectPath}')" title="点击在 VS Code 中打开">${project.projectPath}</span>
         </div>
         <div class="info-item">
-          <span class="icon">🟢</span>
+          <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 128 128"><path fill="url(#SVGfJo5KBID)" d="M66.958.825a6.07 6.07 0 0 0-6.035 0L11.103 29.76c-1.895 1.072-2.96 3.095-2.96 5.24v57.988c0 2.143 1.183 4.167 2.958 5.24l49.82 28.934a6.07 6.07 0 0 0 6.036 0l49.82-28.935c1.894-1.072 2.958-3.096 2.958-5.24V35c0-2.144-1.183-4.167-2.958-5.24z"/><path fill="url(#SVGO7R9ibnx)" d="M116.897 29.76L66.841.825A8 8 0 0 0 65.302.23L9.21 96.798a6.3 6.3 0 0 0 1.657 1.43l50.057 28.934c1.42.833 3.076 1.072 4.615.595l52.66-96.925a3.7 3.7 0 0 0-1.302-1.072"/><path fill="url(#SVGXTTu2b3u)" d="M116.898 98.225c1.42-.833 2.485-2.262 2.958-3.81L65.066.108c-1.42-.238-2.959-.119-4.26.715L11.104 29.639l53.606 98.355c.71-.12 1.54-.358 2.25-.715z"/><defs><linearGradient id="SVGfJo5KBID" x1="34.513" x2="27.157" y1="15.535" y2="30.448" gradientTransform="translate(-129.242 -73.715)scale(6.18523)" gradientUnits="userSpaceOnUse"><stop stop-color="#3f873f"/><stop offset=".33" stop-color="#3f8b3d"/><stop offset=".637" stop-color="#3e9638"/><stop offset=".934" stop-color="#3da92e"/><stop offset="1" stop-color="#3dae2b"/></linearGradient><linearGradient id="SVGO7R9ibnx" x1="30.009" x2="50.533" y1="23.359" y2="8.288" gradientTransform="translate(-129.242 -73.715)scale(6.18523)" gradientUnits="userSpaceOnUse"><stop offset=".138" stop-color="#3f873f"/><stop offset=".402" stop-color="#52a044"/><stop offset=".713" stop-color="#64b749"/><stop offset=".908" stop-color="#6abf4b"/></linearGradient><linearGradient id="SVGXTTu2b3u" x1="21.917" x2="40.555" y1="22.261" y2="22.261" gradientTransform="translate(-129.242 -73.715)scale(6.18523)" gradientUnits="userSpaceOnUse"><stop offset=".092" stop-color="#6abf4b"/><stop offset=".287" stop-color="#64b749"/><stop offset=".598" stop-color="#52a044"/><stop offset=".862" stop-color="#3f873f"/></linearGradient></defs></svg></span>
           <span>Node: ${project.nodeVersion}</span>
         </div>
         <div class="info-item">
-          <span class="icon">🔌</span>
+          <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><!-- Icon from Akar Icons by Arturo Wibawa - https://github.com/artcoholic/akar-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm6 14h8"/></svg></span>
           <span>端口: ${project.port}</span>
         </div>
         <div class="info-item" style="margin-left: auto;">
-          <span class="icon">🕐</span>
+          <span class="icon time">🕐</span>
           <span class="time-label">创建: ${formatTimestamp(project.createdAt || project.id || Date.now())}</span>
           ${project.updatedAt ? `<span class="time-label time-label-edited" style="margin-left: 8px;">编辑: ${formatTimestamp(project.updatedAt)}</span>` : ''}
         </div>
@@ -903,6 +937,23 @@ function renderProjects() {
 function filterProjects() {
   renderProjects();
   updateBatchDeleteBtn();
+}
+
+// 重置筛选条件
+function resetFilters() {
+  const searchInput = document.getElementById('searchInput');
+  const statusFilter = document.getElementById('statusFilter');
+  
+  if (searchInput) {
+    searchInput.value = '';
+  }
+  if (statusFilter) {
+    statusFilter.value = 'all';
+    // 更新自定义下拉选择器
+    if (customSelectInstances.statusFilter) {
+      customSelectInstances.statusFilter.setValue('all');
+    }
+  }
 }
 
 function openImportModal() {
@@ -1132,6 +1183,7 @@ async function confirmDelete() {
   if (pendingDeleteId === null) return;
   
   await fetch(`/api/projects/${pendingDeleteId}`, { method: 'DELETE' });
+  resetFilters();
   await loadProjects();
   pendingDeleteId = null;
   closeModal('confirmModal');
@@ -1177,6 +1229,7 @@ async function confirmBatchDelete() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ids: pendingDeleteIds })
   });
+  resetFilters();
   await loadProjects();
   pendingDeleteIds = null;
   document.getElementById('selectAll').checked = false;
@@ -1184,27 +1237,51 @@ async function confirmBatchDelete() {
 }
 
 async function startProject(id) {
-  const response = await fetch(`/api/projects/${id}/start`, { method: 'POST' });
-  const result = await response.json();
+  // 先打开日志弹窗，显示启动中提示
+  const project = projects.find(p => p.id === id);
+  currentLogsProjectId = id;
+  document.getElementById('logsTitle').textContent = `${project.name} - 日志`;
+  updateStopButton(id);
+  document.getElementById('logsModal').classList.add('show');
   
-  if (result.error) {
-    const project = projects.find(p => p.id === id);
-    const port = extractPortFromLog(result.error);
-    if (port && project) {
-      document.getElementById('confirmTitle').textContent = '端口被占用';
-      document.getElementById('confirmMessage').textContent = `端口 ${port} 被占用，是否杀掉占用进程并重新启动 "${project.name}"？`;
-      document.getElementById('confirmActionBtn').textContent = '杀掉端口并重启';
-      document.getElementById('confirmActionBtn').onclick = () => killPortAndRestart(id, port);
-      pendingStopId = id;
-      document.getElementById('confirmModal').classList.add('show');
-    } else {
-      showToast(result.error, 'error');
-    }
-  } else {
-    await loadProjects();
-    viewLogs(id);
-    setTimeout(() => pollProjectStatus(id), 1000);
-  }
+  // 显示启动中提示
+  const container = document.getElementById('logsContent');
+  container.innerHTML = `
+    <div class="logs-placeholder">
+      <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
+      <div style="color: #89b4fa; font-size: 14px;">项目启动中，请稍后...</div>
+      <div style="color: #bbb; font-size: 12px; margin-top: 8px;">正在准备启动服务...</div>
+    </div>
+  `;
+  
+  // 开启日志轮询
+  logsInterval = setInterval(() => loadLogs(id, true), 2000);
+  
+  // 异步请求启动接口，不阻塞交互
+  fetch(`/api/projects/${id}/start`, { method: 'POST' })
+    .then(response => response.json())
+    .then(result => {
+      if (result.error) {
+        const port = extractPortFromLog(result.error);
+        if (port && project) {
+          document.getElementById('confirmTitle').textContent = '端口被占用';
+          document.getElementById('confirmMessage').textContent = `端口 ${port} 被占用，是否杀掉占用进程并重新启动 "${project.name}"？`;
+          document.getElementById('confirmActionBtn').textContent = '杀掉端口并重启';
+          document.getElementById('confirmActionBtn').onclick = () => killPortAndRestart(id, port);
+          pendingStopId = id;
+          document.getElementById('confirmModal').classList.add('show');
+        } else {
+          showToast(result.error, 'error');
+        }
+      } else {
+        resetFilters();
+        loadProjects();
+        setTimeout(() => pollProjectStatus(id), 1000);
+      }
+    })
+    .catch(error => {
+      showToast('启动失败: ' + error.message, 'error');
+    });
 }
 
 async function openEditor(path) {
@@ -1288,6 +1365,7 @@ async function confirmStop() {
   const stoppedId = pendingStopId;
   pendingStopId = null;
   closeModal('confirmModal');
+  resetFilters();
   await loadProjects();
   
   if (currentLogsProjectId === stoppedId) {
@@ -1308,9 +1386,9 @@ function viewLogs(id) {
   document.getElementById('logsTitle').textContent = `${project.name} - 日志`;
   updateStopButton(id);
   document.getElementById('logsModal').classList.add('show');
-  loadLogs(id);
+  loadLogs(id, false);
   
-  logsInterval = setInterval(() => loadLogs(id), 2000);
+  logsInterval = setInterval(() => loadLogs(id, false), 2000);
 }
 
 function syntaxHighlight(json) {
@@ -1360,20 +1438,23 @@ function updateStopButton(id) {
   }
 }
 
-async function loadLogs(id) {
-  let loading = true;
+async function loadLogs(id, isStarting = false) {
   const response = await fetch(`/api/projects/${id}/logs`);
   const logs = await response.json();
-  loading = false;
   const container = document.getElementById('logsContent');
-  if (logs.length === 0 && !loading) {
-    container.innerHTML = `
-      <div class="logs-placeholder">
-        <div style="font-size: 48px; margin-bottom: 16px;">📋</div>
-        <div style="color: #999; font-size: 14px;">暂无日志信息</div>
-        <div style="color: #bbb; font-size: 12px; margin-top: 8px;">启动项目后将显示运行日志</div>
-      </div>
-    `;
+  
+  if (logs.length === 0) {
+    if (!isStarting) {
+      // 非启动中状态才显示暂无日志占位符
+      container.innerHTML = `
+        <div class="logs-placeholder">
+          <div style="font-size: 48px; margin-bottom: 16px;">📋</div>
+          <div style="color: #999; font-size: 14px;">暂无日志信息</div>
+          <div style="color: #bbb; font-size: 12px; margin-top: 8px;">启动项目后将显示运行日志</div>
+        </div>
+      `;
+    }
+    // 启动中状态保持显示启动中提示
   } else {
     container.innerHTML = logs.map(log => `
       <div class="log-line ${log.type}">${log.content.replace(/\n/g, '<br>')}</div>
@@ -1474,7 +1555,7 @@ function scrollToTop() {
 initTheme();
 loadGroups();
 loadProjects();
-
+showListLoading();
 // 初始化所有自定义下拉选择组件
 function initAllCustomSelects() {
   // 状态筛选器
@@ -1488,6 +1569,22 @@ function initAllCustomSelects() {
   customSelectInstances.branchSelect = initCustomSelect('branchSelect');
   customSelectInstances.mergeBranchSelect = initCustomSelect('mergeBranchSelect');
 }
+
+// 页面可见性变化时暂停/恢复 Git 刷新
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    stopGitInfoRefresh();
+  } else {
+    // 页面恢复可见时，立即刷新一次并重新启动定时器
+    refreshAllGitInfo();
+    startGitInfoRefresh();
+  }
+});
+
+// 页面卸载时清理定时器
+window.addEventListener('beforeunload', () => {
+  stopGitInfoRefresh();
+});
 
 // DOM 加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {

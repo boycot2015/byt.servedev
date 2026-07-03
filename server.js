@@ -35,16 +35,6 @@ function killPort(port) {
   });
 }
 
-async function findAvailablePort(startPort) {
-  let port = startPort;
-  for (let i = 0; i < 100; i++) {
-    const available = await checkPort(port);
-    if (available) return port;
-    port++;
-  }
-  return null;
-}
-
 function readGroups() {
   try {
     const data = fs.readFileSync(GROUPS_FILE, 'utf8');
@@ -182,32 +172,37 @@ function detectNodeVersion(projectPath) {
         }
       }
       nodeVersion = nodeVersion || '22.16.0';
-    //   console.log(nodeVersion, deps, 'nodeVersion');
     }
-    exec('which nvm 2>/dev/null || which fnm 2>/dev/null || echo ""', (err, output) => {
-      if (output.trim()) {
-        if (output.includes('nvm')) {
-          exec(`source ~/.nvm/nvm.sh && nvm ls 2>/dev/null`, (err, nvmOutput) => {
-            const cleanVersion = nodeVersion.replace('>=', '').replace('^', '').replace('~', '');
-            if (nvmOutput.includes(cleanVersion)) {
-              resolve({ version: nodeVersion, manager: 'nvm' });
-            } else {
-              resolve({ version: nodeVersion, manager: 'nvm', fallback: true });
-            }
-          });
-        } else if (output.includes('fnm')) {
-          exec(`fnm list 2>/dev/null`, (err, fnmOutput) => {
-            const cleanVersion = nodeVersion.replace('>=', '').replace('^', '').replace('~', '');
-            if (fnmOutput.includes(cleanVersion)) {
-              resolve({ version: nodeVersion, manager: 'fnm' });
-            } else {
-              resolve({ version: nodeVersion, manager: 'fnm', fallback: true });
-            }
-          });
+    
+    // 清理版本号（去掉 >=, ^, ~, v 等前缀）
+    const cleanVersion = nodeVersion.replace(/^[>=^~v]+/, '').replace('>=', '').replace('^', '').replace('~', '');
+    
+    // 检测 nvm（nvm 是 shell 函数，which 找不到，所以直接检查目录）
+    const nvmPath = process.env.HOME + '/.nvm/nvm.sh';
+    if (fs.existsSync(nvmPath)) {
+      exec(`bash -c "source '${nvmPath}' && nvm ls '${cleanVersion}' 2>/dev/null"`, (err, nvmOutput) => {
+        if (!err && nvmOutput.trim() && !nvmOutput.includes('N/A') && !nvmOutput.includes('not installed')) {
+          resolve({ version: cleanVersion, manager: 'nvm' });
+        } else {
+          resolve({ version: cleanVersion, manager: 'nvm', fallback: true });
         }
+      });
+      return;
+    }
+    
+    // 检测 fnm
+    exec('which fnm 2>/dev/null', (err, output) => {
+      if (!err && output.trim()) {
+        exec(`bash -c "fnm list '${cleanVersion}' 2>/dev/null"`, (err, fnmOutput) => {
+          if (!err && fnmOutput.trim() && !fnmOutput.includes('not installed')) {
+            resolve({ version: cleanVersion, manager: 'fnm' });
+          } else {
+            resolve({ version: cleanVersion, manager: 'fnm', fallback: true });
+          }
+        });
       } else {
         resolve({ 
-          version: nodeVersion, 
+          version: cleanVersion || '14.19.0', 
           manager: 'system',
           fallback: true 
         });
@@ -993,9 +988,9 @@ async function handleApi(req, res) {
 
     let startScript = 'dev';
     if (project.scripts) {
-      if (project.scripts.dev) startScript = 'dev';
+      if (project.scripts.serve) startScript = 'serve';
+      else if (project.scripts.dev) startScript = 'dev';
       else if (project.scripts.start) startScript = 'start';
-      else if (project.scripts.serve) startScript = 'serve';
       else {
         const scripts = Object.keys(project.scripts);
         if (scripts.length > 0) startScript = scripts[0];
@@ -1015,24 +1010,54 @@ async function handleApi(req, res) {
     let command;
     let args;
     const portEnv = `PORT=${startPort} VITE_PORT=${startPort} `;
+    const nvmPath = process.env.HOME + '/.nvm/nvm.sh';
     
     if (nodeInfo.manager === 'nvm') {
       command = 'bash';
-      args = ['-c', `cd "${project.projectPath}" && source ~/.nvm/nvm.sh && nvm use ${nodeInfo.version} 2>/dev/null || nvm install ${nodeInfo.version} 2>/dev/null; ${portEnv}npm run ${startScript}`];
+      args = ['-c', `
+        cd "${project.projectPath}"
+        if [ -f "${nvmPath}" ]; then
+          source "${nvmPath}"
+          # 尝试使用指定版本，如果不存在则安装
+          if nvm ls "${nodeInfo.version}" | grep -q "N/A\|not installed"; then
+            echo "Installing Node.js ${nodeInfo.version}..."
+            nvm install "${nodeInfo.version}"
+          fi
+          nvm use "${nodeInfo.version}"
+          echo "Using Node.js version: $(node -v)"
+        fi
+        ${portEnv}npm run ${startScript}
+      `];
+      console.log('Using nvm with version:', nodeInfo.version);
     } else if (nodeInfo.manager === 'fnm') {
       command = 'bash';
-      args = ['-c', `cd "${project.projectPath}" && eval "$(fnm env)" && fnm use ${nodeInfo.version} 2>/dev/null || fnm install ${nodeInfo.version} 2>/dev/null; ${portEnv}npm run ${startScript}`];
+      args = ['-c', `
+        cd "${project.projectPath}"
+        if command -v fnm &> /dev/null; then
+          eval "$(fnm env)"
+          # 尝试使用指定版本，如果不存在则安装
+          if ! fnm list | grep -q "${nodeInfo.version}"; then
+            echo "Installing Node.js ${nodeInfo.version}..."
+            fnm install "${nodeInfo.version}"
+          fi
+          fnm use "${nodeInfo.version}"
+          echo "Using Node.js version: $(node -v)"
+        fi
+        ${portEnv}npm run ${startScript}
+      `];
+      console.log('Using fnm with version:', nodeInfo.version);
     } else {
       command = 'bash';
       args = ['-c', `cd "${project.projectPath}" && ${portEnv}npm run ${startScript}`];
+      console.log('Using system Node.js');
     }
 
-    const process = spawn(command, args, { stdio: ['pipe', 'pipe', 'pipe'], shell: true, cwd: project.projectPath, detached: true });
+    const childProcess = spawn(command, args, { stdio: ['pipe', 'pipe', 'pipe'], shell: true, cwd: project.projectPath, detached: true });
 
     RUNNING_PROCESSES[id] = {
-      process,
+      process: childProcess,
       logs: [],
-      pid: process.pid,
+      pid: childProcess.pid,
       nodeVersion: nodeInfo.version,
       actualPort: startPort,
       status: 'starting'
@@ -1055,7 +1080,7 @@ async function handleApi(req, res) {
       }
     };
 
-    process.stdout.on('data', (data) => {
+    childProcess.stdout.on('data', (data) => {
       const log = data.toString();
       RUNNING_PROCESSES[id]?.logs.push({ type: 'stdout', content: log });
       
@@ -1077,7 +1102,7 @@ async function handleApi(req, res) {
       }
     });
 
-    process.stderr.on('data', (data) => {
+    childProcess.stderr.on('data', (data) => {
       const log = data.toString();
       RUNNING_PROCESSES[id]?.logs.push({ type: 'stderr', content: log });
       
@@ -1099,7 +1124,7 @@ async function handleApi(req, res) {
       }
     });
 
-    process.on('close', (code) => {
+    childProcess.on('close', (code) => {
       if (RUNNING_PROCESSES[id]) {
         const prevStatus = RUNNING_PROCESSES[id].status;
         RUNNING_PROCESSES[id].status = 'stopped';
@@ -1246,6 +1271,30 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(PORT, () => {
-  console.log(`项目管理工具已启动: http://localhost:${PORT}`);
-});
+// 检查端口并启动服务器
+async function startServer() {
+  const isAvailable = await checkPort(PORT);
+  
+  if (!isAvailable) {
+    console.log(`端口 ${PORT} 仍被占用，再次尝试杀掉进程...`);
+    const result = await killPort(PORT);
+    if (result.success) {
+      console.log('进程已终止，正在启动服务器...');
+      // 等待端口完全释放
+      setTimeout(() => {
+        server.listen(PORT, () => {
+          console.log(`项目管理工具已启动: http://localhost:${PORT}`);
+        });
+      }, 500);
+    } else {
+      console.error('无法终止占用端口的进程，请手动处理');
+      process.exit(1);
+    }
+  } else {
+    server.listen(PORT, () => {
+      console.log(`项目管理工具已启动: http://localhost:${PORT}`);
+    });
+  }
+}
+
+startServer();
