@@ -160,8 +160,8 @@ function detectNodeVersion(projectPath) {
       const frameworks = [
         { keys: ['vue', 'vue@next'], map: v => getMajor(v) === 3 ? '22.16.0' : '14.19.0' },
         { keys: ['nuxt', 'nuxt3', 'nuxt-edge'], map: v => getMajor(v) === 3 ? '22.16.0' : '14.19.0' },
-        { keys: ['next', 'next@canary'], map: v => getMajor(v, 2) >= 13 ? '22.16.0' : '18.20.0' },
-        { keys: ['react', 'react-dom'], map: v => getMajor(v, 2) >= 18 ? '22.16.0' : '16.20.0' }
+        { keys: ['next', 'next@canary'], map: v => getMajor(v, 2) >= 13 ? '22.16.0' : '18.18.0' },
+        { keys: ['react', 'react-dom'], map: v => getMajor(v, 2) >= 18 ? '22.16.0' : '16.14.0' }
       ];
       
       for (const { keys, map } of frameworks) {
@@ -203,7 +203,7 @@ function detectNodeVersion(projectPath) {
       } else {
         resolve({ 
           version: cleanVersion || '14.19.0', 
-          manager: 'system',
+          manager: 'nvm',
           fallback: true 
         });
       }
@@ -1000,7 +1000,6 @@ async function handleApi(req, res) {
     const nodeInfo = await detectNodeVersion(project.projectPath);
     
     let startPort = parseInt(project.port) || 1024;
-    
     const portAvailable = await checkPort(startPort);
     if (!portAvailable) {
       console.log(`端口 ${startPort} 被占用，正在尝试清理...`);
@@ -1011,7 +1010,6 @@ async function handleApi(req, res) {
     let args;
     const portEnv = `PORT=${startPort} VITE_PORT=${startPort} `;
     const nvmPath = process.env.HOME + '/.nvm/nvm.sh';
-    
     if (nodeInfo.manager === 'nvm') {
       command = 'bash';
       args = ['-c', `
@@ -1028,7 +1026,7 @@ async function handleApi(req, res) {
         fi
         ${portEnv}npm run ${startScript}
       `];
-      console.log('Using nvm with version:', nodeInfo.version);
+      console.log('Using nvm with version:', nodeInfo.version,'and port:', startPort);
     } else if (nodeInfo.manager === 'fnm') {
       command = 'bash';
       args = ['-c', `
@@ -1045,11 +1043,11 @@ async function handleApi(req, res) {
         fi
         ${portEnv}npm run ${startScript}
       `];
-      console.log('Using fnm with version:', nodeInfo.version);
+      console.log('Using fnm with version:', nodeInfo.version,'and port:', startPort);
     } else {
       command = 'bash';
       args = ['-c', `cd "${project.projectPath}" && ${portEnv}npm run ${startScript}`];
-      console.log('Using system Node.js');
+      console.log('Using system Node.js','and port:', startPort);
     }
 
     const childProcess = spawn(command, args, { stdio: ['pipe', 'pipe', 'pipe'], shell: true, cwd: project.projectPath, detached: true });

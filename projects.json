@@ -1,7 +1,443 @@
 [
   {
-    "id": 1782900895521.6042,
-    "name": "yzh.b2b.cloudAdminVue3",
+    "id": 1783072588936.5,
+    "name": "bank-ersal",
+    "version": "1.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/bankirvine",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+      "lint": "eslint .",
+      "preview": "vite preview"
+    },
+    "description": "Bank Ersal Ersal银行前端项目  这是一个现代化的银行系统前端项目，为用户提供完整的数字银行服务体验。  ✨ 项目特性  - 🎨 现代化UI设计：基于Material-UI (MUI) 组件库，界面简洁专业 - 📱 响应式布局：完美适配桌面端和移动端设备 - 🔒 安全可靠：完善的用户认证和权限管理 - ⚡ 高性能：基于Vite构建，开发体验流畅，生产构建性能优异 - 📊 丰富的功能模块：涵盖账户管理、转账、理财、贷款等完整银行服务  🛠️ 技术栈  | 技术 | 版本 | 说明 | |------|------|------| | React | 19.2.4 | 前端框架 | | Vite | 8.0.1 | 构建工具 | | Material-UI (MUI) | 7.3.9 | UI组件库 | | React Router | 7.13.1 | 路由管理 | | Axios | 1.13.6 | HTTP请求库 | | Mock.js | 1.1.0 | 模拟接口数据 | | Leaflet | 1.9.4 | 地图组件 | | Date-fns | 4.1.0 | 日期处理 | | Tailwind CSS | 4.2.2 | 实用工具优先的CSS框架 | | DnD Kit | 6.3.1 | 拖拽功能库 |  📦 功能模块  🔐 认证模块 - 用户登录/登出 - 记住用户名功能 - 忘记密码 - 忘记用户名 - 新用户注册 - 更多信息页面  🏠 仪表盘 (Dashboard) - 账户概览 - 资产总览 - 快捷功能入口 - 交易动态 - 个性化卡片管理 - 收藏账户管理 - 日期范围筛选  💰 账户管理 (ViewAccounts) - 账户列表展示 - 账户详情查看 - 交易记录查询 - 交易详情查看 - 账户活动排序 - 下载功能  💸 转账服务 (Wires) - 国内转账 - 国际汇款 - 转账模板管理 - 转账记录查询 - 定时转账设置 - 模板创建和编辑  📄 文档中心 (Documents) - 电子对账单 - 交易凭证 - 协议文档 - 多条件筛选查询  📍 网点查询 (Locations) - 银行网点地图查询 - ATM位置查询 - 网点详情信息 - 路线规划  🏢 公司管理 (Compa...",
+    "createdAt": 1783072588936.5
+  },
+  {
+    "id": 1783072588943.6394,
+    "name": "byt.ai",
+    "version": "1.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.ai",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "dev": "node --env-file=.env app.js",
+      "start": "node --env-file=.env.production app.js"
+    },
+    "description": "deepseek ai",
+    "createdAt": 1783072588943.6394
+  },
+  {
+    "id": 1783072588943.2039,
+    "name": "boycot.api",
+    "version": "1.0.10",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.api",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "serve": "vue-cli-service serve",
+      "build:client": "vue-cli-service build",
+      "dev": "cross-env NODE_ENV=development nodemon app.js",
+      "start": "nodemon app.js",
+      "fix": "vue-cli-service lint --fix",
+      "stop": "pm2 delete all"
+    },
+    "description": "boycot平台api",
+    "createdAt": 1783072588943.2039
+  },
+  {
+    "id": 1783072588944.449,
+    "name": "api-docs",
+    "version": "1.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.api-docs",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "dev": "vite --host",
+      "build": "run-p type-check build-only",
+      "test": "set NODE_ENV='test' && npm run build",
+      "show": "set NODE_ENV='show' && npm run build",
+      "preview": "vite preview",
+      "build-only": "vite build",
+      "type-check": "vue-tsc --noEmit",
+      "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+      "format": "prettier --write src/"
+    },
+    "description": "api-docs（open Api）  介绍 api可视化界面  软件架构 vite + vue3 + pinia + ElementPlus   安装教程 npm i / yarn    使用说明  运行代码 npm run dev npm run dev --host 打包 启动服务验证 npm run build 只打包 npm run build-only   参与贡献  1.  Fork 本仓库 2.  新建 feature/xxx 分支 3.  提交代码 4.  新建 Pull Request   特技  1.  使用 Readme\\_XXX.md 来支持不同的语言，例如 Readme\\_en.md, Readme\\_zh.md 2.  Gitee 官方博客 blog.gitee.com 3.  你可以 https://gitee.com/explore 这个地址来了解 Gitee 上的优秀开源项目 4.  GVP 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目 5.  Gitee 官方提供的使用手册 https://gitee.com/help 6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 https://gitee.com/gitee-stars/",
+    "createdAt": 1783072588944.449
+  },
+  {
+    "id": 1783072588945.808,
+    "name": "60s-api",
+    "version": "2.37.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.api_v2",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "dev:no-watch": "DEV=1 PORT=4398 node node.ts",
+      "dev": "DEV=1 PORT=4398 node --watch node.ts",
+      "start": "PORT=4398 node node.ts",
+      "prerelease": "node ./scripts/write-update-time.ts && git add . && git commit -m 'chore: update time in package.json'",
+      "release": "bumpp",
+      "update-lockfile": "pnpm install && bun install && deno install --allow-scripts",
+      "docker:build": "docker build -t vikiboss/60s .",
+      "docker:run": "docker run --name 60s -p 4399:4399 -d vikiboss/60s",
+      "docker:re-run": "docker stop 60s && docker rm 60s && pnpm run docker:run"
+    },
+    "description": "⏰ 60s API  !Update Status !GitHub !Docker !Node.js !Bun !Deno ![群](https://qm.qq.com/q/RpJXzgfAMG)    > 一系列 高质量、开源、可靠、全球 CDN 加速 的开放 API 集合，让你用最简单的方式获取最准确的数据。  构建于现代技术栈 Deno，托管在 Deno Deploy，同时支持 Docker、Cloudflare Workers、Bun 和 Node.js 等多种部署方式。  🌍 看世界 · 每天60秒读懂世界  本项目的 核心功能：获取每日精选新闻，让你快速了解世界大事。  📡 API 调用示例  > 部分地区访问主域名可能超时，可尝试自行部署，或使用他人分享的 公共实例  JSON 格式 (默认) curl \"https://60s.viki.moe/v2/60s\"  纯文本格式 curl \"https://60s.viki.moe/v2/60s?encoding=text\"  原图直链 (重定向到微信公众号原图) curl \"https://60s.viki.moe/v2/60s?encoding=image\" --location --output \"$(date +%Y-%m-%d).png\"  代理直链 (代理请求，绕过防盗链) curl \"https://60s.viki.moe/v2/60s?encoding=image-proxy\" --output \"$(date +%Y-%m-%d).png\"   📊 数据特性  - 数据源: 微信公众号，详情参考 这里 - 更新频率: 每半小时自动尝试更新，正常情况最晚上午 10 点会更新 - 数据处理: vikiboss/60s-static-host 仓库定时抓取 - 响应速度: 毫秒级缓存响应，全球 CDN 加速 - 内容质量: 精选 15 条国内外优质新闻 + 每日微语  💡 使用场景  - 📱 移动应用新闻模块 - 🖥️ 网站首页资讯展示   - 🤖 聊天机器人新闻推送 - 📧 邮件订阅日报生成 - 🔔 桌面通知提醒  🎯 设计理念  - 权威数据源 - 优先选择官方、权威的数据来源，确保信息准确性 - 毫秒级响应 - 部分接口采取智能缓存策略，用户无感的高速响应体验 -...",
+    "createdAt": 1783072588945.808
+  },
+  {
+    "id": 1783072588947.5244,
+    "name": "astro-blog",
+    "version": "1.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.astro-blog",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "dev": "astro dev",
+      "start": "astro dev",
+      "build": "astro build",
+      "postbuild": "pagefind --site dist",
+      "preview": "astro build && astro preview",
+      "lint": "biome lint .",
+      "format": "pnpm run format:code && pnpm run format:imports",
+      "format:code": "biome format . --write && prettier -w \"**/*\" \"!**/*.{md,mdx}\" --ignore-unknown --cache",
+      "format:imports": "biome check --formatter-enabled=false --write",
+      "check": "astro check"
+    },
+    "description": "Astro blog  示例 💻  Check out the Demo, hosted on Vercel  开始使用  npm 7+ npm install  pnpm pnpm install  ![Deploy with Vercel](https://vercel.com/new/clone?repository-url=https://github.com/boycot2015/astro-blog) ![Deploy with Netlify](https://app.netlify.com/start/deploy)  预览  !Astro Theme Cactus in a light theme mode  !Astro Theme Cactus in a dark theme mode  脚本命令  Replace pnpm with your choice of npm / yarn  | Command          | Action                                                         | | :--------------- | :------------------------------------------------------------- | | pnpm install   | Installs dependencies                                          | | pnpm dev       | Starts local dev server at localhost:3000                    | | pnpm build     | Build your production site to ./dist/                        | | pnpm postbuild | Pagefind script to build the static search of your blog posts  | | pnpm preview   | Preview your build locally, before deploying                   |...",
+    "createdAt": 1783072588947.5244
+  },
+  {
+    "id": 1783072588948.5815,
+    "name": "blog-admin",
+    "version": "2.0.0",
+    "nodeVersion": ">=14.0.0",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.blog-admin",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "dev": "vite --host --config ./config/vite.config.dev.ts",
+      "build": "vue-tsc --noEmit && npm run lint && vite build --config ./config/vite.config.prod.ts",
+      "show": "vue-tsc --noEmit && npm run lint && vite build --config ./config/vite.config.prod.ts --mode show",
+      "test": "vue-tsc --noEmit && npm run lint && vite build --config ./config/vite.config.prod.ts --mode test",
+      "report": "cross-env REPORT=true npm run build",
+      "preview": "vite preview --host",
+      "type:check": "vue-tsc --noEmit --skipLibCheck",
+      "lint-staged": "npx lint-staged",
+      "lint": "eslint --fix --ext .js,.vue src",
+      "prepare": "husky install"
+    },
+    "description": "blog-admin",
+    "createdAt": 1783072588948.5815
+  },
+  {
+    "id": 1783072588948.211,
+    "name": "byt.blog-pc",
+    "version": "1.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.blog-pc",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "build": "nuxt build",
+      "dev": "nuxt dev --host",
+      "generate": "nuxt generate",
+      "preview": "npx nuxthub preview",
+      "deploy": "npx nuxthub deploy",
+      "postinstall": "nuxt prepare",
+      "lint": "eslint ."
+    },
+    "description": "nuxt-blog  English | 中文  个人博客      技术栈  - 服务端渲染框架 - Nuxt3 - mysql - Vue3 - Vite  启动  安装依赖  node 16.x pnpm install   创建环境变量 .env:  NUXT_PUBLIC_HELLO_TEXT=\"Hello world!\"   启动项目  Start the development server on http://localhost:3000:  pnpm dev   打包生产环境  pnpm build   环境部署  部署在NuxtHub上  npx nuxthub deploy    部署在Vercel边缘服务器上   安装 Vercel CLI npm install -g vercel   Vercel 打包生产环境 vercel build --prod   打开vercel配置环境变量 preset PRESET=vercel-edge",
+    "createdAt": 1783072588948.211
+  },
+  {
+    "id": 1783072588949.0596,
+    "name": "未命名项目",
+    "version": "1.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.docs",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "docs:dev": "vitepress dev",
+      "docs:build": "vitepress build",
+      "docs:preview": "vitepress preview"
+    },
+    "description": "",
+    "createdAt": 1783072588949.0596
+  },
+  {
+    "id": 1783072588949.7056,
+    "name": "byt-github",
+    "version": "1.0.4",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.github",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "dev": "astro dev",
+      "dev:github": "NODE_ENV=github astro dev",
+      "build": "astro build",
+      "build:github": "NODE_ENV=github astro build",
+      "preview": "astro build && astro preview",
+      "preview:github": "NODE_ENV=github astro build && astro preview",
+      "astro": "astro",
+      "newpost": "node ./script/newpost.js",
+      "offdev": "astro preferences disable devToolbar",
+      "ondev": "astro preferences enable devToolbar",
+      "deploy": "NODE_ENV=github astro build && gh-pages -d dist --repo git@github.com:boycot2015/boycot2015.github.io.git"
+    },
+    "description": "Astro Blog  一个基于 Astro 构建的现代化博客主题，具有优雅的设计、丰富的功能和良好的用户体验。  🌟 特性  - 现代化架构: 基于 Astro 5.x + TailwindCSS 4.x 构建 - 平滑页面过渡: 集成 Swup 实现流畅的页面切换动画 - 响应式设计: 完美适配桌面端和移动端 - 双主题支持: 支持亮色/暗色主题切换 - 博客功能: 支持 Markdown/MDX 文章、分类、标签、归档 - 评论系统: 集成 Waline 评论系统 - 全文搜索: 使用 Pagefind 实现静态搜索 - 音乐播放器: 集成 APlayer 音乐播放器 - 电子书阅读: 支持 EPUB 格式电子书在线阅读 - 文章点赞: 支持文章点赞功能 - 图片懒加载: 优化页面加载性能 - 代码高亮: 支持多种代码主题  📱 预览  亮色主题 !Astro Theme Cactus in a light theme mode  暗色主题 !Astro Theme Cactus in a dark theme mode  🔧 快速开始  环境要求  - Node.js: >= 18.0.0 - pnpm: 推荐使用 pnpm 作为包管理器  安装依赖  使用 pnpm 安装（推荐） pnpm install  或使用 npm npm install   开发模式  启动开发服务器 pnpm dev  GitHub Pages 开发模式 pnpm dev:github   构建生产版本  构建生产版本 pnpm build  GitHub Pages 构建 pnpm build:github   预览构建结果  pnpm preview   📁 项目结构  . ├── public/                    静态资源目录 │   ├── assets/               静态资源（CSS、JS、图片、字体） │   ├── avatar.svg            头像 │   └── favicon.svg           网站图标 ├── script/                   脚本工具 │   └── newpost.js            新建文章脚本 ├── src/              ...",
+    "createdAt": 1783072588949.7056
+  },
+  {
+    "id": 1783072588950.811,
+    "name": "web-group",
+    "version": "1.0.1",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.group",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "dev": "astro dev --host",
+      "start": "astro dev",
+      "build": "astro check && astro build",
+      "preview": "astro build & astro preview --host",
+      "astro": "astro",
+      "lint": "eslint --ext .vue,.svelte,.ts,.js,.astro src"
+    },
+    "description": "基于Astro开发的个人兴趣爱好合集网站  技术栈  Astro、Svelte、Vue3、React、twindcss  🚀 目录结构  / ├── public/ │   └── favicon.svg ├── src/ │   ├── components/ │   │   └── Card.astro │   ├── layouts/ │   │   └── Layout.astro │   └── pages/ │       └── index.astro └── package.json  启动部署  pnpm install // 安装,node>=18.x npm run dev // 启动 npm run build // 打包生产 npm run preview // 预览  说明 接口由[https://github.com/boycot2015/boycot-api]()这个项目提供，全部都是爬取的第三方资源，不保证准确性",
+    "createdAt": 1783072588950.811
+  },
+  {
+    "id": 1783072588950.3145,
+    "name": "hexo-site",
+    "version": "0.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.hexo-blog",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "build": "hexo generate",
+      "clean": "hexo clean",
+      "deploy": "hexo deploy",
+      "server": "hexo server"
+    },
+    "description": "",
+    "createdAt": 1783072588950.3145
+  },
+  {
+    "id": 1783072588951.5542,
+    "name": "homepage",
+    "version": "1.0.3",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.homepage",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "preinstall": "npx only-allow pnpm",
+      "dev": "next dev",
+      "build": "next build",
+      "start": "next start",
+      "lint": "next lint",
+      "telemetry": "next telemetry disable"
+    },
+    "description": "A modern, fully static, fast, secure fully proxied, highly customizable application dashboard with integrations for over 100 services and translations into multiple languages. Easily configured via YAML files or through docker label discovery.               &nbsp;      &nbsp;      &nbsp;      &nbsp;            Homepage builds are kindly powered by DigitalOcean.   Features  With features like quick search, bookmarks, weather support, a wide range of integrations and widgets, an elegant and modern design, and a focus on performance, Homepage is your ideal start to the day and a handy companion throughout it.  - Fast - The site is statically generated at build time for instant load times. - Secure - All API requests to backend services are proxied, keeping your API keys hidden. Constantly reviewed for security by the community. - For Everyone - Images built for AMD64, ARM64. - Full i18n - Support for over 40 languages. - Service & Web Bookmarks - Add custom links to the homepage. - Docke...",
+    "createdAt": 1783072588951.5542
+  },
+  {
+    "id": 1783072588952.656,
+    "name": "midway-shop",
+    "version": "1.0.0",
+    "nodeVersion": ">=18.18.0",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.midway-shop",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "start": "cross-env NODE_ENV=production node ./bootstrap.js",
+      "dev": "cross-env TS_NODE_TYPE_CHECK=false TS_NODE_TRANSPILE_ONLY=true NODE_ENV=local midway-bin dev --ts",
+      "build": "pnpm run clean && pnpm run build:midway && pnpm run build:web",
+      "build:midway": "midway-bin build -c ",
+      "bundle": "bundle && npm run build && ncc build bootstrap.js -o build",
+      "bundle_start": "cross-env NODE_ENV=production node ./build/index.js",
+      "build:web": "pnpm run build:web:client && pnpm run build:web:server",
+      "build:web:client": "vite --config web/vite.config.ts build --ssrManifest --outDir ../build/client",
+      "build:web:server": "vite --config web/vite.config.ts build --ssr entry-server --outDir ../build/server",
+      "clean": "midway-bin clean",
+      "test": "midway-bin test --ts",
+      "cov": "midway-bin cov --ts",
+      "lint": "mwts check",
+      "lint:fix": "mwts fix",
+      "ci": "npm run cov",
+      "preinstall": "only-allow pnpm"
+    },
+    "description": "基于 Midway、Vue 3 组装的 SSR 框架，简单、易学易用、方便扩展、集成Midway框架，您一直想要的Vue SSR 框架。",
+    "createdAt": 1783072588952.656
+  },
+  {
+    "id": 1783072588952.7747,
+    "name": "byt-music",
+    "version": "0.1.2",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.music",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+      "preview": "vite preview",
+      "lint": "eslint . --fix",
+      "format": "prettier --write src/"
+    },
+    "description": "byt.music  聚合各大音乐平台于一体的音乐播放器。  技术栈： Vue 3 + Vite + Element Plus + Pinia.   推荐 IDE 配置  VSCode + Volar (and disable Vetur).  自定义配置  查看 Vite.  项目安装  pnpm install   启动开发服务器  pnpm dev   构建生产环境  pnpm build   ESLint  pnpm lint",
+    "createdAt": 1783072588952.7747
+  },
+  {
+    "id": 1783072588952.407,
+    "name": "music_mobile",
+    "version": "0.1.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.music_mobile",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "start": "craco start",
+      "build": "craco build",
+      "test": "craco test",
+      "eject": "react-scripts eject"
+    },
+    "description": "music_mobile  * This project was bootstrapped with Create React App.  安装  npm run install / yarn   运行脚本 In the project directory, you can run:  npm run start  npm run test  npm run build",
+    "createdAt": 1783072588952.407
+  },
+  {
+    "id": 1783072588953.6504,
+    "name": "project-manager",
+    "version": "1.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.servedev",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "start": "node server.js",
+      "dev": "electrobun dev",
+      "build": "electrobun build"
+    },
+    "description": "开发项目管理工具 - 简化项目启动流程",
+    "createdAt": 1783072588953.6504
+  },
+  {
+    "id": 1783072588953.6218,
+    "name": "byt-stock",
+    "version": "1.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.stock",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "dev": "vite",
+      "build": "vue-tsc -b && vite build",
+      "preview": "vite preview",
+      "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
+    },
+    "description": "BYT Stock - 股票行情数据看板  一个基于 Vue 3 + TypeScript + Vite 构建的现代化股票行情数据看板应用。  功能特性  - 用户认证 - 登录/注册功能，支持 token 持久化存储 - 数据看板 - 实时展示大盘指数、自选股列表、行情排行 - 股票详情 - 个股实时行情、K线图、分时图、盘口数据 - 股票搜索 - 支持股票名称/拼音/代码搜索 - 自选股管理 - 添加/删除自选股 - 资讯页面 - 股票相关资讯展示  技术栈  - 框架: Vue 3.4+ (Composition API) - 语言: TypeScript 5.2+ - 构建工具: Vite 5.2+ - UI 框架: Ant Design Vue 4.2+ - 状态管理: Pinia 3.0+ - 路由: Vue Router 4.3+ - 图表: ECharts 6.0 + vue-echarts 8.0 - 样式: Tailwind CSS 4.2+ - HTTP 客户端: Axios 1.15+ - Mock 数据: MockJS 1.1+  项目结构  src/ ├── api/                 API 接口定义 │   └── stock.ts         股票相关接口 ├── assets/              静态资源 ├── components/          组件 │   ├── Header.vue       顶部导航栏 │   ├── Footer.vue       底部信息 │   ├── NavBar.vue       侧边导航 │   ├── MarketIndex.vue  大盘指数组件 │   ├── MarketRank.vue   行情排行组件 │   ├── SelfStockList.vue自选股列表 │   ├── StockDetail.vue  股票详情组件 │   └── Search.vue       搜索组件 ├── mock/                Mock 数据 │   └── index.ts         Mock 接口配置 ├── router/              路由配置 │   └── index.ts         路由定义与守卫...",
+    "createdAt": 1783072588953.6218
+  },
+  {
+    "id": 1783072588954.8394,
+    "name": "byt.tab",
+    "version": "1.0.1",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.tab",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "dev": "plasmo dev",
+      "build": "plasmo build",
+      "stage": "plasmo build --env=stage --tag=stage",
+      "prod": "plasmo build --env=prod --tag=prod",
+      "package": "plasmo package"
+    },
+    "description": "one tab for all",
+    "createdAt": 1783072588954.8394
+  },
+  {
+    "id": 1783072588954.223,
+    "name": "web-os",
+    "version": "1.0.1",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/byt.web-os",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "dev": "vite dev --host 0.0.0.0",
+      "build": "vite build --mode vercel",
+      "build:surge": "vite build --mode surge & surge ./dist",
+      "build:static": "vite build",
+      "preview": "vite preview --host 0.0.0.0",
+      "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+      "check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch"
+    },
+    "description": "web-os-桌面os  启动  npm run dev or npm run dev -- --open   构建  npm run build  发布 > To deploy your app, you may need to install an adapter for your target environment.",
+    "createdAt": 1783072588954.223
+  },
+  {
+    "id": 1783072588954.1357,
+    "name": "ersal",
+    "version": "1.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/my-project/ersal",
+    "port": 1024,
+    "group": "Boycot",
+    "scripts": {
+      "build": "nuxt generate",
+      "dev": "nuxt dev",
+      "generate": "nuxt generate",
+      "preview": "nuxt preview",
+      "postinstall": "nuxt prepare"
+    },
+    "description": "Nuxt Minimal Starter  Look at the Nuxt documentation to learn more.  Setup  Make sure to install dependencies:  npm npm install  pnpm pnpm install  yarn yarn install  bun bun install   Development Server  Start the development server on http://localhost:3000:  npm npm run dev  pnpm pnpm dev  yarn yarn dev  bun bun run dev   Production  Build the application for production:  npm npm run build  pnpm pnpm build  yarn yarn build  bun bun run build   Locally preview production build:  npm npm run preview  pnpm pnpm preview  yarn yarn preview  bun bun run preview   Check out the deployment documentation for more information.",
+    "createdAt": 1783072588954.1357
+  },
+  {
+    "id": 1783072646672.6804,
+    "name": "yzh.B2B",
+    "version": "0.1.2",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/yzh-project/B2B/yzh.b2b.cloudAdmin",
+    "port": 1024,
+    "group": "B2B",
+    "scripts": {
+      "postinstall": "patch-package",
+      "serve": "vue-cli-service serve --mode dev",
+      "build": "vue-cli-service build",
+      "ipo-build": "vue-cli-service build --mode ipo",
+      "uat": "vue-cli-service build",
+      "dev": "vue-cli-service build --mode dev",
+      "test": "vue-cli-service build --mode test",
+      "show": "vue-cli-service build --mode show",
+      "dev-build": "vue-cli-service build --mode dev && node ./scripts/dev.js",
+      "test-build": "vue-cli-service build --mode test && node ./scripts/test.js",
+      "jindie-build": "vue-cli-service build --mode jindie && node ./scripts/jindie.js",
+      "jindie-hd-build": "vue-cli-service build --mode jindie-hd && node ./scripts/jindie-hd.js",
+      "lint": "vue-cli-service lint",
+      "lint:prettier": "prettier --write \"**/*.{js,ts,json,css,less,scss,vue,html,md}\""
+    },
+    "description": "webcore0.1  Project setup npm install    Compiles and hot-reloads for development npm run serve   Compiles and minifies for production npm run build   router.js 不被提交 git update-index --assume-unchanged src/router/router.js router.js 提交 git update-index --no-assume-unchanged src/router/router.js",
+    "createdAt": 1783072646672.6804
+  },
+  {
+    "id": 1783072646673.339,
+    "name": "yudao-ui-admin-vue3",
     "version": "2025.11-snapshot",
     "nodeVersion": ">= 16.0.0",
     "projectPath": "/Users/boycott/Desktop/yzh-project/B2B/yzh.b2b.cloudAdminVue3",
@@ -30,11 +466,12 @@
       "lint:style": "stylelint --fix \"./src/**/*.{vue,less,postcss,css,scss}\" --cache --cache-location node_modules/.cache/stylelint/",
       "lint:lint-staged": "lint-staged -c "
     },
-    "status": "running"
+    "description": "基于vue3、vite4、element-plus、typesScript",
+    "createdAt": 1783072646673.339
   },
   {
-    "id": 1782900895521.5793,
-    "name": "yzh.b2b.cloud_mobile",
+    "id": 1783072646674.7993,
+    "name": "my-project",
     "version": "0.1.0",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/yzh-project/B2B/yzh.b2b.cloud_mobile",
@@ -86,10 +523,11 @@
       "test:mp-baidu": "cross-env UNI_PLATFORM=mp-baidu jest -i",
       "test:mp-weixin": "cross-env UNI_PLATFORM=mp-weixin jest -i"
     },
-    "status": "running"
+    "description": "Yzh.B2b.Wx Deliver  B2B小程序发货  Getting started  To make it easy for you to get started with GitLab, here's a list of recommended next steps.  Already a pro? Just edit this README.md and make it your own. Want to make it easy? Use the template at the bottom!  Add your files  - [ ] Create or upload files - [ ] Add files using the command line or push an existing Git repository with the following command:  cd existing_repo git remote add origin http://192.168.1.218:8888/YZH-WEB/yzh.b2b.wx_deliver.git git branch -M main git push -uf origin main   Integrate with your tools  - [ ] Set up project integrations  Collaborate with your team  - [ ] Invite team members and collaborators - [ ] Create a new merge request - [ ] Automatically close issues from merge requests - [ ] Enable merge request approvals - [ ] Automatically merge when pipeline succeeds  Test and Deploy  Use the built-in continuous integration in GitLab.  - [ ] Get started with GitLab CI/CD - [ ] Analyze your code for known vulne...",
+    "createdAt": 1783072646674.7993
   },
   {
-    "id": 1782900895521.4526,
+    "id": 1783072646675.8164,
     "name": "yzh.b2b.data-center",
     "version": "1.0.0",
     "nodeVersion": ">=16.14.0",
@@ -107,37 +545,11 @@
       "preview": "vite preview",
       "format": "npx prettier --write ."
     },
-    "status": "running"
+    "description": "yzh.data.Center  * 本项目使用到的技术栈：vue3.x + pinia + element-plus + typescript  安装  node >= 16，建议使用镜像 https://registry.npmmirror.com 安装 npm config set registry=https://registry.npmmirror.com  npm install  运行  npm run serve  打包  开发环境 npm run dev-build  测试环境 npm run test-build  预演环境 npm run show  生产环境 npm run build   目录结构 |——public···············// 存放网站静态资源 |——scripts···············// 存放打包环境脚本 |——src     |———api···············// 数据接口及方法     |———assets···············// 静态资源     |———components···············// 公共组件     |———lang···············// 语言包     |———layouts···············// 布局     |———router···············// 路由信息     |———stores···············// pinia存储     |———styles···············// 全局样式表     |———utils···············// 全局方法     |———views···············// 单页面     |———main.ts···············// 入口文件     |———App.vue···············// 入口页面 |——types···············// 全局类型 |——.env···············// 环境变量配置 |——vite.config.ts···············// vite配置   路由鉴权  // 路由配置 export default {     ...     path: ...",
+    "createdAt": 1783072646675.8164
   },
   {
-    "id": 1782900895521.5312,
-    "name": "yzh.enterprise",
-    "version": "0.1.2",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2B/yzh.b2b.financialCenter",
-    "port": 1024,
-    "group": "B2B",
-    "scripts": {
-      "postinstall": "patch-package",
-      "serve": "vue-cli-service serve --mode development",
-      "build": "vue-cli-service build",
-      "ipo-build": "vue-cli-service build --mode ipo",
-      "uat": "vue-cli-service build",
-      "dev": "vue-cli-service build --mode test",
-      "test": "vue-cli-service build --mode test",
-      "show": "vue-cli-service build --mode show",
-      "dev-build": "vue-cli-service build --mode development & node ./scripts/dev.js",
-      "test-build": "vue-cli-service build --mode test & node ./scripts/test.js",
-      "test-build-node": "node ./scripts/test.js",
-      "jindie-build": "vue-cli-service build --mode jindie && node ./scripts/jindie.js",
-      "jindie-hd-build": "vue-cli-service build --mode jindie-hd && node ./scripts/jindie-hd.js",
-      "lint": "vue-cli-service lint",
-      "lint:prettier": "prettier --write \"**/*.{js,ts,json,css,less,scss,vue,html,md}\""
-    },
-    "status": "running"
-  },
-  {
-    "id": 1782900895521.5015,
+    "id": 1783072646676.0789,
     "name": "yzh.b2b.goods_tools",
     "version": "0.0.1",
     "nodeVersion": "未指定",
@@ -157,10 +569,12 @@
       "jindie-build": "vue-cli-service build --mode jindie && node ./scripts/jindie.js",
       "jindie-hd-build": "vue-cli-service build --mode jindie-hd && node ./scripts/jindie-hd.js",
       "lint": "vue-cli-service lint"
-    }
+    },
+    "description": "yzh.b2b.goodsTools  Project setup npm install    Compiles and hot-reloads for development npm run serve   Compiles and minifies for production npm run build   Run your tests npm run test   Lints and fixes files npm run lint  适配ie, 火狐 需要改两个底层文件，1：ansi-regex文件夹下的index.js文件'use strict';  // module.exports = options => { // \toptions = Object.assign({ // \t\tonlyFirst: false // \t}, options);  // \tconst pattern = [ // \t\t'[\\\\u001B\\\\u009B][[\\\\]();?](?:(?:(?:[a-zA-Z\\\\d](?:;[-a-zA-Z\\\\d\\\\/&.:=?%@~_]))?\\\\u0007)', // \t\t'(?:(?:\\\\d{1,4}(?:;\\\\d{0,4})*)?[\\\\dA-PR-TZcf-ntqry=> typeof input === 'string' ? input.replace(ansiRegex(), '') : input; module.exports = function(input){return typeof input === 'string' ? input.replace(ansiRegex(), '') : input};   Customize configuration See Configuration Reference.",
+    "createdAt": 1783072646676.0789
   },
   {
-    "id": 1782900895521.9302,
+    "id": 1783072646677.5667,
     "name": "yzh.goodstoolsdamin",
     "version": "0.1.2",
     "nodeVersion": "未指定",
@@ -179,10 +593,12 @@
       "test-build-node": "node ./scripts/test.js",
       "dev-build": "vue-cli-service build --mode dev & node ./scripts/dev.js",
       "lint": "vue-cli-service lint"
-    }
+    },
+    "description": "webcore0.1  Project setup npm install   Compiles and hot-reloads for development npm run serve   Compiles and minifies for production npm run build   Run your tests npm run test   Lints and fixes files npm run lint   Customize configuration See Configuration Reference. 国内镜像 npm config set registry https://registry.npm.taobao.org 清理缓存 npm cache clean --force",
+    "createdAt": 1783072646677.5667
   },
   {
-    "id": 1782900895521.2104,
+    "id": 1783072646678.2239,
     "name": "yzh.inventory",
     "version": "0.1.2",
     "nodeVersion": "未指定",
@@ -201,15 +617,17 @@
       "test-build-node": "node ./scripts/test.js",
       "dev-build": "vue-cli-service build --mode dev & node ./scripts/dev.js",
       "lint": "vue-cli-service lint"
-    }
+    },
+    "description": "webcore0.1  Project setup npm install   Compiles and hot-reloads for development npm run serve   Compiles and minifies for production npm run build   Run your tests npm run test   Lints and fixes files npm run lint   Customize configuration See Configuration Reference.",
+    "createdAt": 1783072646678.2239
   },
   {
-    "id": 1782900895521.138,
-    "name": "yzh.b2b.supplier",
+    "id": 1783072646679.0435,
+    "name": "yzh.enterprise",
     "version": "0.1.2",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/yzh-project/B2B/yzh.b2b.supplier",
-    "port": 1002,
+    "port": 1024,
     "group": "B2B",
     "scripts": {
       "postinstall": "patch-package",
@@ -226,11 +644,11 @@
       "dev-build": "vue-cli-service build --mode dev & node ./scripts/dev.js",
       "lint": "vue-cli-service lint"
     },
-    "updatedAt": 1783049478010,
-    "status": "running"
+    "description": "webcore0.1  Project setup npm install    Compiles and hot-reloads for development npm run serve   Compiles and minifies for production npm run build   Run your tests npm run test   Lints and fixes files npm run lint  适配ie, 火狐 需要改两个底层文件，1：ansi-regex文件夹下的index.js文件'use strict';  // module.exports = options => { // \toptions = Object.assign({ // \t\tonlyFirst: false // \t}, options);  // \tconst pattern = [ // \t\t'[\\\\u001B\\\\u009B][[\\\\]();?](?:(?:(?:[a-zA-Z\\\\d](?:;[-a-zA-Z\\\\d\\\\/&.:=?%@~_]))?\\\\u0007)', // \t\t'(?:(?:\\\\d{1,4}(?:;\\\\d{0,4})*)?[\\\\dA-PR-TZcf-ntqry=> typeof input === 'string' ? input.replace(ansiRegex(), '') : input; module.exports = function(input){return typeof input === 'string' ? input.replace(ansiRegex(), '') : input};   Customize configuration See Configuration Reference.",
+    "createdAt": 1783072646679.0435
   },
   {
-    "id": 1782900895521.2288,
+    "id": 1783072646684.0247,
     "name": "yzh-b2b-warehouseorder",
     "version": "1.0.0",
     "nodeVersion": "未指定",
@@ -245,11 +663,13 @@
       "preview": "vite preview --host",
       "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
     },
-    "status": "stopped"
+    "description": "yzh-b2b-warehouseOrder  基于 Vue3 + Vite + TypeScript 的中后台管理系统模板  技术栈  - 框架: Vue 3.4.21 - 构建工具: Vite 5.2.0 - 语言: TypeScript 5.2.2 - UI 组件库: Element Plus 2.6.1 - 状态管理: Pinia 2.1.7 (含数据持久化插件) - 路由: Vue Router 4.3.0 - HTTP 客户端: Axios 1.6.8 - CSS 框架: TwindCSS (Utility-first CSS) - Mock 数据: Mock.js 1.1.0 - 代码规范: ESLint + Prettier - 自动导入: unplugin-auto-import + unplugin-vue-components  项目特性  ✅ 登录功能（本地 Mock，登录信息存 Pinia，过期时间 30 分钟） ✅ 左侧菜单（顶部显示 logo+ 网站名称） ✅ Header（左侧切换菜单图标，右侧展示登录信息，下拉退出登录） ✅ 标签栏（根据左侧菜单动态添加，支持删除和切换路由） ✅ 响应式数据看板首页 ✅ 组件化和模块化设计 ✅ TypeScript 类型统一管理 ✅ 组件、插件自动引入 ✅ TwindCSS 全局样式  项目结构  src/ ├── api/              API 接口 ├── assets/           静态资源 ├── components/       公共组件 ├── layout/           布局组件 ├── router/           路由配置 ├── stores/           Pinia 状态管理 ├── types/            TypeScript 类型定义 ├── utils/            工具函数 └── views/            页面组件     ├── login/        登录页     ├── home/         首页     └── system/       系统管理   快速开始  安装依赖  npm install   启动开发服务器  npm run dev   构建生产版本  npm...",
+    "createdAt": 1783072646684.0247,
+    "status": "running"
   },
   {
-    "id": 1782900895521.612,
-    "name": "yzh.b2b.wx_deliver",
+    "id": 1783072646685.7927,
+    "name": "my-project",
     "version": "0.1.0",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/yzh-project/B2B/yzh.b2b.wx_deliver",
@@ -300,10 +720,12 @@
       "test:ios": "cross-env UNI_PLATFORM=app-plus UNI_OS_NAME=ios jest -i",
       "test:mp-baidu": "cross-env UNI_PLATFORM=mp-baidu jest -i",
       "test:mp-weixin": "cross-env UNI_PLATFORM=mp-weixin jest -i"
-    }
+    },
+    "description": "Yzh.B2b.Wx Deliver  B2B小程序发货  Getting started  To make it easy for you to get started with GitLab, here's a list of recommended next steps.  Already a pro? Just edit this README.md and make it your own. Want to make it easy? Use the template at the bottom!  Add your files  - [ ] Create or upload files - [ ] Add files using the command line or push an existing Git repository with the following command:  cd existing_repo git remote add origin http://192.168.1.218:8888/YZH-WEB/yzh.b2b.wx_deliver.git git branch -M main git push -uf origin main   Integrate with your tools  - [ ] Set up project integrations  Collaborate with your team  - [ ] Invite team members and collaborators - [ ] Create a new merge request - [ ] Automatically close issues from merge requests - [ ] Enable merge request approvals - [ ] Automatically merge when pipeline succeeds  Test and Deploy  Use the built-in continuous integration in GitLab.  - [ ] Get started with GitLab CI/CD - [ ] Analyze your code for known vulne...",
+    "createdAt": 1783072646685.7927
   },
   {
-    "id": 1782900895521.179,
+    "id": 1783072646686.1997,
     "name": "yzh.user",
     "version": "0.1.0",
     "nodeVersion": "未指定",
@@ -325,795 +747,7 @@
       "lint": "eslint --ext .js --ext .jsx src",
       "eject": "react-scripts eject"
     },
-    "status": "stopped"
-  },
-  {
-    "id": 1782901330253,
-    "name": "skycrane.web",
-    "version": "1.0.2",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/yzh.skycrane.web/",
-    "port": 1024,
-    "group": "云中鹤官网项目组",
-    "scripts": {
-      "dev": "cross-env NODE_ENV=development nuxt",
-      "build": "cross-env NODE_ENV=production nuxt build",
-      "test": "cross-env NODE_ENV=test nuxt build",
-      "start": "nuxt start",
-      "export": "nuxt export",
-      "build:static": "cross-env NODE_ENV=production nuxt build --target static && nuxt export",
-      "serve": "nuxt serve"
-    },
-    "status": "stopped"
-  },
-  {
-    "id": 1782902089452,
-    "name": "skycrane-admin",
-    "version": "1.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/yzh.skycrane.admin/",
-    "port": 1024,
-    "group": "云中鹤官网项目组",
-    "scripts": {
-      "serve": "vue-cli-service serve",
-      "build": "vue-cli-service build",
-      "test": "vue-cli-service build --mode test",
-      "lint": "vue-cli-service lint",
-      "deploy": "start ./deploy.sh"
-    },
-    "status": "stopped"
-  },
-  {
-    "id": 1782902096856,
-    "name": "yzh.mobile.website",
-    "version": "0.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/yzh.mobile.website/",
-    "port": 1024,
-    "group": "云中鹤官网项目组",
-    "scripts": {
-      "dev": "vite",
-      "show": "vite build --mode show & node ./scripts/show.js",
-      "build": "vite build",
-      "preview": "vite preview"
-    },
-    "status": "stopped"
-  },
-  {
-    "id": 1782902217927.1443,
-    "name": "bank-ersal",
-    "version": "1.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/bankirvine",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "dev": "vite",
-      "build": "vite build",
-      "lint": "eslint .",
-      "preview": "vite preview"
-    }
-  },
-  {
-    "id": 1782902217927.8755,
-    "name": "byt.ai",
-    "version": "1.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.ai",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "dev": "node --env-file=.env app.js",
-      "start": "node --env-file=.env.production app.js"
-    }
-  },
-  {
-    "id": 1782902217927.3516,
-    "name": "boycot.api",
-    "version": "1.0.10",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.api",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "serve": "vue-cli-service serve",
-      "build:client": "vue-cli-service build",
-      "dev": "cross-env NODE_ENV=development nodemon app.js",
-      "start": "nodemon app.js",
-      "fix": "vue-cli-service lint --fix",
-      "stop": "pm2 delete all"
-    }
-  },
-  {
-    "id": 1782902217927.7266,
-    "name": "api-docs",
-    "version": "1.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.api-docs",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "dev": "vite --host",
-      "build": "run-p type-check build-only",
-      "test": "set NODE_ENV='test' && npm run build",
-      "show": "set NODE_ENV='show' && npm run build",
-      "preview": "vite preview",
-      "build-only": "vite build",
-      "type-check": "vue-tsc --noEmit",
-      "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-      "format": "prettier --write src/"
-    }
-  },
-  {
-    "id": 1782902217927.007,
-    "name": "60s-api",
-    "version": "2.37.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.api_v2",
-    "port": 4398,
-    "group": "Boycot",
-    "scripts": {
-      "dev:no-watch": "DEV=1 PORT=4398 node node.ts",
-      "dev": "DEV=1 PORT=4398 node --watch node.ts",
-      "start": "PORT=4398 node node.ts",
-      "prerelease": "node ./scripts/write-update-time.ts && git add . && git commit -m 'chore: update time in package.json'",
-      "release": "bumpp",
-      "update-lockfile": "pnpm install && bun install && deno install --allow-scripts",
-      "docker:build": "docker build -t vikiboss/60s .",
-      "docker:run": "docker run --name 60s -p 4399:4399 -d vikiboss/60s",
-      "docker:re-run": "docker stop 60s && docker rm 60s && pnpm run docker:run"
-    },
-    "status": "running"
-  },
-  {
-    "id": 1782902217927.5,
-    "name": "astro-blog",
-    "version": "1.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.astro-blog",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "dev": "astro dev",
-      "start": "astro dev",
-      "build": "astro build",
-      "postbuild": "pagefind --site dist",
-      "preview": "astro build && astro preview",
-      "lint": "biome lint .",
-      "format": "pnpm run format:code && pnpm run format:imports",
-      "format:code": "biome format . --write && prettier -w \"**/*\" \"!**/*.{md,mdx}\" --ignore-unknown --cache",
-      "format:imports": "biome check --formatter-enabled=false --write",
-      "check": "astro check"
-    }
-  },
-  {
-    "id": 1782902217927.361,
-    "name": "blog-admin",
-    "version": "2.0.0",
-    "nodeVersion": ">=14.0.0",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.blog-admin",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "dev": "vite --host --config ./config/vite.config.dev.ts",
-      "build": "vue-tsc --noEmit && npm run lint && vite build --config ./config/vite.config.prod.ts",
-      "show": "vue-tsc --noEmit && npm run lint && vite build --config ./config/vite.config.prod.ts --mode show",
-      "test": "vue-tsc --noEmit && npm run lint && vite build --config ./config/vite.config.prod.ts --mode test",
-      "report": "cross-env REPORT=true npm run build",
-      "preview": "vite preview --host",
-      "type:check": "vue-tsc --noEmit --skipLibCheck",
-      "lint-staged": "npx lint-staged",
-      "lint": "eslint --fix --ext .js,.vue src",
-      "prepare": "husky install"
-    }
-  },
-  {
-    "id": 1782902217927.1377,
-    "name": "byt.blog-pc",
-    "version": "1.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.blog-pc",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "build": "nuxt build",
-      "dev": "nuxt dev --host",
-      "generate": "nuxt generate",
-      "preview": "npx nuxthub preview",
-      "deploy": "npx nuxthub deploy",
-      "postinstall": "nuxt prepare",
-      "lint": "eslint ."
-    }
-  },
-  {
-    "id": 1782902217927.439,
-    "name": "未命名项目",
-    "version": "1.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.docs",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "docs:dev": "vitepress dev",
-      "docs:build": "vitepress build",
-      "docs:preview": "vitepress preview"
-    }
-  },
-  {
-    "id": 1782902217927.156,
-    "name": "byt-github",
-    "version": "1.0.4",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.github",
-    "port": 4321,
-    "group": "Boycot",
-    "scripts": {
-      "dev": "astro dev",
-      "dev:github": "NODE_ENV=github astro dev",
-      "build": "astro build",
-      "build:github": "NODE_ENV=github astro build",
-      "preview": "astro build && astro preview",
-      "preview:github": "NODE_ENV=github astro build && astro preview",
-      "astro": "astro",
-      "newpost": "node ./script/newpost.js",
-      "offdev": "astro preferences disable devToolbar",
-      "ondev": "astro preferences enable devToolbar",
-      "deploy": "NODE_ENV=github astro build && gh-pages -d dist --repo git@github.com:boycot2015/boycot2015.github.io.git"
-    },
-    "status": "running"
-  },
-  {
-    "id": 1782902217927.0398,
-    "name": "web-group",
-    "version": "1.0.1",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.group",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "dev": "astro dev --host",
-      "start": "astro dev",
-      "build": "astro check && astro build",
-      "preview": "astro build & astro preview --host",
-      "astro": "astro",
-      "lint": "eslint --ext .vue,.svelte,.ts,.js,.astro src"
-    }
-  },
-  {
-    "id": 1782902217927.593,
-    "name": "hexo-site",
-    "version": "0.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.hexo-blog",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "build": "hexo generate",
-      "clean": "hexo clean",
-      "deploy": "hexo deploy",
-      "server": "hexo server"
-    }
-  },
-  {
-    "id": 1782902217927.0205,
-    "name": "homepage",
-    "version": "1.0.3",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.homepage",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "preinstall": "npx only-allow pnpm",
-      "dev": "next dev",
-      "build": "next build",
-      "start": "next start",
-      "lint": "next lint",
-      "telemetry": "next telemetry disable"
-    }
-  },
-  {
-    "id": 1782902217927.6917,
-    "name": "midway-shop",
-    "version": "1.0.0",
-    "nodeVersion": ">=18.18.0",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.midway-shop",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "start": "cross-env NODE_ENV=production node ./bootstrap.js",
-      "dev": "cross-env TS_NODE_TYPE_CHECK=false TS_NODE_TRANSPILE_ONLY=true NODE_ENV=local midway-bin dev --ts",
-      "build": "pnpm run clean && pnpm run build:midway && pnpm run build:web",
-      "build:midway": "midway-bin build -c ",
-      "bundle": "bundle && npm run build && ncc build bootstrap.js -o build",
-      "bundle_start": "cross-env NODE_ENV=production node ./build/index.js",
-      "build:web": "pnpm run build:web:client && pnpm run build:web:server",
-      "build:web:client": "vite --config web/vite.config.ts build --ssrManifest --outDir ../build/client",
-      "build:web:server": "vite --config web/vite.config.ts build --ssr entry-server --outDir ../build/server",
-      "clean": "midway-bin clean",
-      "test": "midway-bin test --ts",
-      "cov": "midway-bin cov --ts",
-      "lint": "mwts check",
-      "lint:fix": "mwts fix",
-      "ci": "npm run cov",
-      "preinstall": "only-allow pnpm"
-    }
-  },
-  {
-    "id": 1782902217928.0635,
-    "name": "byt-music",
-    "version": "0.1.2",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.music",
-    "port": 5173,
-    "group": "Boycot",
-    "scripts": {
-      "dev": "vite",
-      "build": "vite build",
-      "preview": "vite preview",
-      "lint": "eslint . --fix",
-      "format": "prettier --write src/"
-    },
-    "status": "running"
-  },
-  {
-    "id": 1782902217928.8376,
-    "name": "music_mobile",
-    "version": "0.1.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.music_mobile",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "start": "craco start",
-      "build": "craco build",
-      "test": "craco test",
-      "eject": "react-scripts eject"
-    }
-  },
-  {
-    "id": 1782902217928.1255,
-    "name": "project-manager",
-    "version": "1.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.servedev",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "start": "node server.js",
-      "dev": "node server.js"
-    }
-  },
-  {
-    "id": 1782902217928.4314,
-    "name": "byt-stock",
-    "version": "1.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.stock",
-    "port": 5174,
-    "group": "Boycot",
-    "scripts": {
-      "dev": "vite",
-      "build": "vue-tsc -b && vite build",
-      "preview": "vite preview",
-      "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
-    },
-    "status": "running"
-  },
-  {
-    "id": 1782902217928.2944,
-    "name": "byt.tab",
-    "version": "1.0.1",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.tab",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "dev": "plasmo dev",
-      "build": "plasmo build",
-      "stage": "plasmo build --env=stage --tag=stage",
-      "prod": "plasmo build --env=prod --tag=prod",
-      "package": "plasmo package"
-    },
-    "status": "running"
-  },
-  {
-    "id": 1782902217928.6694,
-    "name": "web-os",
-    "version": "1.0.1",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.web-os",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "dev": "vite dev --host 0.0.0.0",
-      "build": "vite build --mode vercel",
-      "build:surge": "vite build --mode surge & surge ./dist",
-      "build:static": "vite build",
-      "preview": "vite preview --host 0.0.0.0",
-      "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
-      "check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch"
-    }
-  },
-  {
-    "id": 1782902217928.605,
-    "name": "ersal",
-    "version": "1.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/ersal",
-    "port": 1024,
-    "group": "Boycot",
-    "scripts": {
-      "build": "nuxt generate",
-      "dev": "nuxt dev",
-      "generate": "nuxt generate",
-      "preview": "nuxt preview",
-      "postinstall": "nuxt prepare"
-    },
-    "status": "running"
-  },
-  {
-    "id": 1782963809153,
-    "name": "yzh.dashboard",
-    "version": "0.1.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/yzh.dashboard",
-    "port": 1027,
-    "group": "B2B",
-    "scripts": {
-      "serve": "vue-cli-service serve",
-      "build": "vue-cli-service build",
-      "lint": "vue-cli-service lint",
-      "show": "vue-cli-service build --mode show"
-    },
-    "description": "hello-world  Project setup yarn install   Compiles and hot-reloads for development yarn serve   Compiles and minifies for production yarn build   Lints and fixes files yarn lint   Customize configuration See Configuration Reference.",
-    "updatedAt": 1782964825545,
-    "status": "running"
-  },
-  {
-    "id": 1782974225704.7937,
-    "name": "yzh.nuxt.website",
-    "version": "1.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.b2c.activity_ssr",
-    "port": 1024,
-    "group": "B2C",
-    "scripts": {
-      "serve": "nuxt",
-      "start": "cross-env NODE_ENV=production node server/index.js",
-      "build": "cross-env BASE_URL=https://gateway.haoxiny.com NODE_ENV=production nuxt build",
-      "build:bcm": "cross-env BASE_URL=https://jh-gateway.haoxiny.com NODE_ENV=production nuxt build",
-      "build:fjxt": "cross-env BASE_URL=http://fl-gateway.968777.cn:9999 NODE_ENV=production nuxt build",
-      "uat": "cross-env BASE_URL=https://gateway.haoxiny.com NODE_ENV=production nuxt build",
-      "dev": "cross-env BASE_URL=https://gatewaytest.haoxiny.com NODE_ENV=test nuxt build",
-      "show": "cross-env BASE_URL=https://gatewayshow.haoxiny.com NODE_ENV=show nuxt build",
-      "show:bcm": "cross-env BASE_URL=https://jh-gateway-show.haoxiny.com NODE_ENV=show nuxt build",
-      "test-build": "cross-env BASE_URL=https://gatewaytest.haoxiny.com NODE_ENV=test nuxt build && node ./scripts/test.js",
-      "show-build": "cross-env BASE_URL=https://gatewayshow.haoxiny.com NODE_ENV=show nuxt build && node ./scripts/show.js",
-      "generate": "nuxt generate"
-    },
-    "description": "yzh.nuxt.website  Build Setup  install dependencies $ npm install  serve with hot reload at localhost:3000 $ npm run dev  build for production and launch server $ npm run build $ npm run start  generate static project $ npm run generate   For detailed explanation on how things work, check out the documentation.  Special Directories  You can create the following extra directories, some of which have special behaviors. Only pages is required; you can delete them if you don't want to use their functionality.  assets  The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.  More information about the usage of this directory in the documentation.  components  The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.  More information about the usage of this directory in the documentation.  layouts  Layouts are a ...",
-    "createdAt": 1782974225704.7937
-  },
-  {
-    "id": 1782974225705.7405,
-    "name": "uni-preset-vue",
-    "version": "0.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.b2c.equity_exchange",
-    "port": 1024,
-    "group": "B2C",
-    "scripts": {
-      "dev:custom": "uni -p",
-      "dev": "uni",
-      "show": "VITE_APP_ENV=show uni build",
-      "dev:h5:ssr": "uni --ssr",
-      "dev:mp-alipay": "uni -p mp-alipay",
-      "dev:mp-baidu": "uni -p mp-baidu",
-      "dev:mp-jd": "uni -p mp-jd",
-      "dev:mp-kuaishou": "uni -p mp-kuaishou",
-      "dev:mp-lark": "uni -p mp-lark",
-      "dev:mp-qq": "uni -p mp-qq",
-      "dev:mp-toutiao": "uni -p mp-toutiao",
-      "dev:mp-harmony": "uni -p mp-harmony",
-      "dev:mp-weixin": "uni -p mp-weixin",
-      "dev:mp-xhs": "uni -p mp-xhs",
-      "dev:quickapp-webview": "uni -p quickapp-webview",
-      "dev:quickapp-webview-huawei": "uni -p quickapp-webview-huawei",
-      "dev:quickapp-webview-union": "uni -p quickapp-webview-union",
-      "build:custom": "uni build -p",
-      "build": "uni build",
-      "build:h5:ssr": "uni build --ssr",
-      "build:mp-alipay": "uni build -p mp-alipay",
-      "build:mp-baidu": "uni build -p mp-baidu",
-      "build:mp-jd": "uni build -p mp-jd",
-      "build:mp-kuaishou": "uni build -p mp-kuaishou",
-      "build:mp-lark": "uni build -p mp-lark",
-      "build:mp-qq": "uni build -p mp-qq",
-      "build:mp-toutiao": "uni build -p mp-toutiao",
-      "build:mp-harmony": "uni build -p mp-harmony",
-      "build:mp-weixin": "uni build -p mp-weixin",
-      "build:mp-xhs": "uni build -p mp-xhs",
-      "build:quickapp-webview": "uni build -p quickapp-webview",
-      "build:quickapp-webview-huawei": "uni build -p quickapp-webview-huawei",
-      "build:quickapp-webview-union": "uni build -p quickapp-webview-union"
-    },
-    "description": "Yzh.B2c.EquityExchange  移动端权益兑换  Getting started  To make it easy for you to get started with GitLab, here's a list of recommended next steps.  Already a pro? Just edit this README.md and make it your own. Want to make it easy? Use the template at the bottom!  Add your files  - [ ] Create or upload files - [ ] Add files using the command line or push an existing Git repository with the following command:  cd existing_repo git remote add origin http://192.168.1.218:8888/YZH-WEB/yzh.b2c.equity_exchange.git git branch -M master git push -uf origin master   Integrate with your tools  - [ ] Set up project integrations  Collaborate with your team  - [ ] Invite team members and collaborators - [ ] Create a new merge request - [ ] Automatically close issues from merge requests - [ ] Enable merge request approvals - [ ] Automatically merge when pipeline succeeds  Test and Deploy  Use the built-in continuous integration in GitLab.  - [ ] Get started with GitLab CI/CD - [ ] Analyze your code for...",
-    "createdAt": 1782974225705.7405
-  },
-  {
-    "id": 1782974225706.9246,
-    "name": "yzh.b2c.integral-system",
-    "version": "0.1.2",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.b2c.integral-system",
-    "port": 1024,
-    "group": "B2C",
-    "scripts": {
-      "serve": "vue-cli-service serve",
-      "build": "vue-cli-service build",
-      "dev": "vue-cli-service build --mode dev",
-      "test": "vue-cli-service build --mode test",
-      "show": "vue-cli-service build --mode show",
-      "test-build": "vue-cli-service build --mode test & node ./scripts/test.js",
-      "app.test": "vue-cli-service build --mode app.test",
-      "builds": "vue-cli-service build --mode test",
-      "lint": "vue-cli-service lint"
-    },
-    "description": "webcore0.1  Project setup npm install    Compiles and hot-reloads for development npm run serve   Compiles and minifies for production npm run build   Run your tests npm run test   Lints and fixes files npm run lint  适配ie, 火狐 需要改两个底层文件，1：ansi-regex文件夹下的index.js文件'use strict';  // module.exports = options => { // \toptions = Object.assign({ // \t\tonlyFirst: false // \t}, options);  // \tconst pattern = [ // \t\t'[\\\\u001B\\\\u009B][[\\\\]();?](?:(?:(?:[a-zA-Z\\\\d](?:;[-a-zA-Z\\\\d\\\\/&.:=?%@~_]))?\\\\u0007)', // \t\t'(?:(?:\\\\d{1,4}(?:;\\\\d{0,4})*)?[\\\\dA-PR-TZcf-ntqry=> typeof input === 'string' ? input.replace(ansiRegex(), '') : input; module.exports = function(input){return typeof input === 'string' ? input.replace(ansiRegex(), '') : input};   Customize configuration See Configuration Reference. npm config set registry=http://192.168.1.182:9091/nexus/repository/npm-group/",
-    "createdAt": 1782974225706.9246
-  },
-  {
-    "id": 1782974225706.8542,
-    "name": "my-project",
-    "version": "0.1.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.b2c.new_mobile",
-    "port": 1024,
-    "group": "B2C",
-    "scripts": {
-      "serve": "npm run dev:h5",
-      "build": "npm run build:h5",
-      "test": "npm run build:test",
-      "show": "cross-env NODE_ENV=production UNI_PLATFORM=h5 VUE_APP_TITLE=show VUE_APP_BASE_URL=https://gatewayshow.haoxiny.com vue-cli-service uni-build",
-      "show:bcm": "cross-env NODE_ENV=production UNI_PLATFORM=h5 VUE_APP_TITLE=show VUE_APP_BASE_URL=https://jh-gateway-show.haoxiny.com vue-cli-service uni-build",
-      "show:whns": "cross-env NODE_ENV=production UNI_PLATFORM=h5 VUE_APP_TITLE=show VUE_APP_BASE_URL=https://whns-mall-gateway-show.yunzhmall.com vue-cli-service uni-build",
-      "build:app-plus": "cross-env NODE_ENV=production UNI_PLATFORM=app-plus vue-cli-service uni-build",
-      "build:custom": "cross-env NODE_ENV=production uniapp-cli custom",
-      "build:h5": "cross-env NODE_ENV=production UNI_PLATFORM=h5 VUE_APP_TITLE=production VUE_APP_BASE_URL=https://gateway.haoxiny.com vue-cli-service uni-build",
-      "build:test": "cross-env NODE_ENV=production UNI_PLATFORM=h5 VUE_APP_TITLE=test VUE_APP_BASE_URL=https://gatewaytest.haoxiny.com vue-cli-service uni-build & node ./scripts/test.js",
-      "build:mp-360": "cross-env NODE_ENV=production UNI_PLATFORM=mp-360 vue-cli-service uni-build",
-      "build:mp-alipay": "cross-env NODE_ENV=production UNI_PLATFORM=mp-alipay vue-cli-service uni-build",
-      "build:mp-baidu": "cross-env NODE_ENV=production UNI_PLATFORM=mp-baidu vue-cli-service uni-build",
-      "build:mp-jd": "cross-env NODE_ENV=production UNI_PLATFORM=mp-jd vue-cli-service uni-build",
-      "build:mp-kuaishou": "cross-env NODE_ENV=production UNI_PLATFORM=mp-kuaishou vue-cli-service uni-build",
-      "build:mp-lark": "cross-env NODE_ENV=production UNI_PLATFORM=mp-lark vue-cli-service uni-build",
-      "build:mp-qq": "cross-env NODE_ENV=production UNI_PLATFORM=mp-qq vue-cli-service uni-build",
-      "build:mp-toutiao": "cross-env NODE_ENV=production UNI_PLATFORM=mp-toutiao vue-cli-service uni-build",
-      "build:mp-weixin": "cross-env NODE_ENV=production UNI_PLATFORM=mp-weixin VUE_APP_BASE_URL=https://gateway.haoxiny.com vue-cli-service uni-build",
-      "build-show:mp-weixin": "cross-env NODE_ENV=production UNI_PLATFORM=mp-weixin VUE_APP_BASE_URL=https://gatewayshow.haoxiny.com vue-cli-service uni-build",
-      "build:quickapp-native": "cross-env NODE_ENV=production UNI_PLATFORM=quickapp-native vue-cli-service uni-build",
-      "build:quickapp-webview": "cross-env NODE_ENV=production UNI_PLATFORM=quickapp-webview vue-cli-service uni-build",
-      "build:quickapp-webview-huawei": "cross-env NODE_ENV=production UNI_PLATFORM=quickapp-webview-huawei vue-cli-service uni-build",
-      "build:quickapp-webview-union": "cross-env NODE_ENV=production UNI_PLATFORM=quickapp-webview-union vue-cli-service uni-build",
-      "dev:app-plus": "cross-env NODE_ENV=development UNI_PLATFORM=app-plus VUE_APP_BASE_URL=https://gatewayshow.haoxiny.com vue-cli-service uni-build --watch",
-      "dev:custom": "cross-env NODE_ENV=development uniapp-cli custom",
-      "dev:h5": "cross-env NODE_ENV=development UNI_PLATFORM=h5 VUE_APP_TITLE=development vue-cli-service uni-serve",
-      "dev:mp-360": "cross-env NODE_ENV=development UNI_PLATFORM=mp-360 vue-cli-service uni-build --watch",
-      "dev:mp-alipay": "cross-env NODE_ENV=development UNI_PLATFORM=mp-alipay VUE_APP_BASE_URL=https://gatewayshow.haoxiny.com vue-cli-service uni-build --watch",
-      "dev:mp-baidu": "cross-env NODE_ENV=development UNI_PLATFORM=mp-baidu vue-cli-service uni-build --watch",
-      "dev:mp-jd": "cross-env NODE_ENV=development UNI_PLATFORM=mp-jd vue-cli-service uni-build --watch",
-      "dev:mp-kuaishou": "cross-env NODE_ENV=development UNI_PLATFORM=mp-kuaishou vue-cli-service uni-build --watch",
-      "dev:mp-lark": "cross-env NODE_ENV=development UNI_PLATFORM=mp-lark vue-cli-service uni-build --watch",
-      "dev:mp-qq": "cross-env NODE_ENV=development UNI_PLATFORM=mp-qq vue-cli-service uni-build --watch",
-      "dev:mp-toutiao": "cross-env NODE_ENV=development UNI_PLATFORM=mp-toutiao vue-cli-service uni-build --watch",
-      "dev:mp-weixin": "cross-env NODE_ENV=development UNI_PLATFORM=mp-weixin VUE_APP_BASE_URL=https://gatewayshow.haoxiny.com vue-cli-service uni-build --watch --minimize",
-      "dev:quickapp-native": "cross-env NODE_ENV=development UNI_PLATFORM=quickapp-native vue-cli-service uni-build --watch",
-      "dev:quickapp-webview": "cross-env NODE_ENV=development UNI_PLATFORM=quickapp-webview vue-cli-service uni-build --watch",
-      "dev:quickapp-webview-huawei": "cross-env NODE_ENV=development UNI_PLATFORM=quickapp-webview-huawei vue-cli-service uni-build --watch",
-      "dev:quickapp-webview-union": "cross-env NODE_ENV=development UNI_PLATFORM=quickapp-webview-union vue-cli-service uni-build --watch",
-      "info": "node node_modules/@dcloudio/vue-cli-plugin-uni/commands/info.js",
-      "serve:quickapp-native": "node node_modules/@dcloudio/uni-quickapp-native/bin/serve.js",
-      "test:android": "cross-env UNI_PLATFORM=app-plus UNI_OS_NAME=android jest -i",
-      "test:h5": "cross-env UNI_PLATFORM=h5 jest -i",
-      "test:ios": "cross-env UNI_PLATFORM=app-plus UNI_OS_NAME=ios jest -i",
-      "test:mp-baidu": "cross-env UNI_PLATFORM=mp-baidu jest -i",
-      "test:mp-weixin": "cross-env UNI_PLATFORM=mp-weixin jest -i"
-    },
-    "description": "my-project  Project setup  npm install   Compiles and hot-reloads for development  npm run serve   Compiles and minifies for production  npm run build   Customize configuration  See Configuration Reference.  Operation Type 按钮类型定义  btn1001: 加入购物车   btn1002: 立即购买   btn1003: 确定按钮   btn1004: 取消订单 btn1005: 删除订单 btn1006: 加入收藏 btn1007: 确认收货 btn1008: 取消申请 btn1009: 查看物流 btn1010: 确认收货 btn1011: 立即充值  特殊商城标识  JC-2071 重庆国寿生日礼---- 项目标识 isCqgs，单独的登录组件 cqgsLogin.vue，权益卡列表页不展示商品价格，订单详情价格 CQB 重庆银行---- 项目标识 isCQB，活动文案显示“特惠补贴”，支付倒计时按 1 小时，部分活动需白名单，规格与下单按钮文案调整 CQXFD 幸福豆商城---- 项目标识 isCQXfd，隐藏分类与购物车入口，部分页面隐藏收藏/推荐，提交订单涉及短信/认证流程 MS 民生银行---- 项目标识 isMs，下单使用 submitOrderMs 多地址/专属流程，地址获取带 isMs 标记 BCM 交通银行---- 项目标识 isBCM，结算走 BcmSubmit 与行方支付流程，支付页提示“买单吧红包”在下一步抵扣 RCB 武汉农商行---- 项目标识 isRCB，虚拟商品支付走银行支付，支付页需先选择银行卡 XHCF 新湖财富---- 项目标识 isXhcf，下单前需手机号认证与订单确认弹窗，实名认证通过原生桥接打开 H5 实名页 CFSC ---- 项目标识 isCfsc，用户页展示固定日期的积分到期提醒 GSNH ---- 项目标识 isGsnh，订单虚拟卡“点击前往”跳转按钮隐藏 CQB 借记/信用卡专区---- 标识 isCQDebit/isCQCredit，用户余额标签附加“(借记卡)/(信用卡)”展示  - ...",
-    "createdAt": 1782974225706.8542
-  },
-  {
-    "id": 1782974225707.3857,
-    "name": "yzh-b2c-pc",
-    "version": "2.0.0",
-    "nodeVersion": ">=18.0.0",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.b2c.new_web",
-    "port": 1024,
-    "group": "B2C",
-    "scripts": {
-      "dev": "vite serve --mode development",
-      "build:prod": "vite build --mode production && vue-tsc --noEmit",
-      "prepare": "husky install",
-      "lint:eslint": "eslint  --fix --ext .ts,.js,.vue ./src ",
-      "lint:prettier": "prettier --write \"**/*.{js,cjs,ts,json,tsx,css,less,scss,vue,html,md}\"",
-      "lint:stylelint": "stylelint  \"**/*.{css,scss,vue}\" --fix",
-      "lint:lint-staged": "lint-staged",
-      "commit": "git-cz"
-    },
-    "description": "项目启动  安装 pnpm npm install pnpm -g  安装依赖 pnpm install  启动运行 pnpm run dev   开启Mock  项目同时支持在线和 Mock 接口，默认使用线上接口，如需替换为 Mock 接口，只需在 vite.config.ts 文件的 plugins 配置中取消对 mockDevServerPlugin() 的注释即可。  项目部署  项目打包 pnpm run build:prod  上传文件至远程服务器 将打包生成在 dist 目录下的文件拷贝至 /usr/share/nginx/html 目录  nginx.cofig 配置 server { \tlisten     80; \tserver_name  localhost; \tlocation / { \t\t\troot /usr/share/nginx/html; \t\t\tindex index.html index.htm; \t} \t反向代理配置 \tlocation /prod-api/ { \t\t\tproxy_pass xxxxxxxxxx; 替换成你的后端API地址 \t} }   注意事项  - 自动导入插件自动生成默认关闭    模板项目的组件类型声明已自动生成。如果添加和使用新的组件，请按照图示方法开启自动生成。在自动生成完成后，记得将其设置为 false，避免重复执行引发冲突。    !  - 项目启动浏览器访问空白    请升级浏览器尝试，低版本浏览器内核可能不支持某些新的 JavaScript 语法，比如可选链操作符 ?.。  - 项目同步仓库更新升级    项目同步仓库更新升级之后，建议 pnpm install 安装更新依赖之后启动 。  - 项目组件、函数和引用爆红  \t重启 VSCode 尝试",
-    "createdAt": 1782974225707.3857
-  },
-  {
-    "id": 1782974225707.7964,
-    "name": "integral",
-    "version": "0.1.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.b2c.operation_center",
-    "port": 1024,
-    "group": "B2C",
-    "scripts": {
-      "serve": "vue-cli-service serve",
-      "build": "vue-cli-service build",
-      "dev": "vue-cli-service build --mode dev",
-      "test": "vue-cli-service build --mode test",
-      "show": "vue-cli-service build --mode show",
-      "dev-build": "vue-cli-service build --mode dev & node ./scripts/dev.js",
-      "app.test": "vue-cli-service build --mode app.test",
-      "show.builds": "vue-cli-service build --mode show",
-      "lint": "vue-cli-service lint",
-      "new": "plop"
-    },
-    "description": "webcore0.1  Project setup  npm install   Compiles and hot-reloads for development  npm run serve   http://localhost:8080/malltest/login  Compiles and minifies for production  npm run build   Run your tests  npm run test   Lints and fixes files  npm run lint   Customize configuration  See Configuration Reference.  // https://www.lodashjs.com/docs/lodash.debounce lodash 插件 Lodash 通过降低 array、number、objects、string 等等的使用",
-    "createdAt": 1782974225707.7964
-  },
-  {
-    "id": 1782974225707.6353,
-    "name": "yzh.b2c.pc",
-    "version": "0.1.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.b2c.pc",
-    "port": 1024,
-    "group": "B2C",
-    "scripts": {
-      "serve": "vue-cli-service serve",
-      "build": "vue-cli-service build",
-      "uat": "vue-cli-service build",
-      "dev": "vue-cli-service build --mode dev",
-      "show": "vue-cli-service build --mode show",
-      "test-build": "vue-cli-service build --mode test & node ./scripts/test.js",
-      "app.test": "vue-cli-service build --mode app.test",
-      "lint": "vue-cli-service lint",
-      "lint-staged": "lint-staged"
-    },
-    "description": "Yzh.B2c.Pc Web  pc改版vue2版本  Getting started  To make it easy for you to get started with GitLab, here's a list of recommended next steps.  Already a pro? Just edit this README.md and make it your own. Want to make it easy? Use the template at the bottom!  Add your files  - [ ] Create or upload files - [ ] Add files using the command line or push an existing Git repository with the following command:  cd existing_repo git remote add origin http://192.168.1.218:8888/YZH-WEB/yzh.b2c.pc-web.git git branch -M master git push -uf origin master   Integrate with your tools  - [ ] Set up project integrations  Collaborate with your team  - [ ] Invite team members and collaborators - [ ] Create a new merge request - [ ] Automatically close issues from merge requests - [ ] Enable merge request approvals - [ ] Automatically merge when pipeline succeeds  Test and Deploy  Use the built-in continuous integration in GitLab.  - [ ] Get started with GitLab CI/CD - [ ] Analyze your code for known vulnera...",
-    "createdAt": 1782974225707.6353,
-    "updatedAt": 1783044291106,
-    "status": "stopped"
-  },
-  {
-    "id": 1782974225708.6384,
-    "name": "yzh.enterprise",
-    "version": "0.1.2",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.enterprise",
-    "port": 1024,
-    "group": "B2C",
-    "scripts": {
-      "serve": "vue-cli-service serve",
-      "build": "vue-cli-service build",
-      "uat": "vue-cli-service build",
-      "dev": "vue-cli-service build --mode dev",
-      "test": "vue-cli-service build --mode test",
-      "show": "vue-cli-service build --mode show",
-      "test-build": "vue-cli-service build --mode test & node ./scripts/test.js",
-      "lint": "vue-cli-service lint",
-      "lint-staged": "lint-staged"
-    },
-    "description": "webcore0.1  Project setup npm install    Compiles and hot-reloads for development npm run serve   Compiles and minifies for production npm run build   Run your tests npm run test   Lints and fixes files npm run lint  适配ie, 火狐 需要改两个底层文件，1：ansi-regex文件夹下的index.js文件'use strict';  // module.exports = options => { // \toptions = Object.assign({ // \t\tonlyFirst: false // \t}, options);  // \tconst pattern = [ // \t\t'[\\\\u001B\\\\u009B][[\\\\]();?](?:(?:(?:[a-zA-Z\\\\d](?:;[-a-zA-Z\\\\d\\\\/&.:=?%@~_]))?\\\\u0007)', // \t\t'(?:(?:\\\\d{1,4}(?:;\\\\d{0,4})*)?[\\\\dA-PR-TZcf-ntqry=> typeof input === 'string' ? input.replace(ansiRegex(), '') : input; module.exports = function(input){return typeof input === 'string' ? input.replace(ansiRegex(), '') : input};   Customize configuration See Configuration Reference.",
-    "createdAt": 1782974225708.6384
-  },
-  {
-    "id": 1782974225708.5637,
-    "name": "yzh.mall.admin",
-    "version": "0.1.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.mall.admin",
-    "port": 1024,
-    "group": "B2C",
-    "scripts": {
-      "serve": "node --max_old_space_size=3072 node_modules/@vue/cli-service/bin/vue-cli-service.js serve",
-      "build": "vue-cli-service build",
-      "uat": "vue-cli-service build",
-      "dev": "vue-cli-service build --mode dev",
-      "show": "vue-cli-service build --mode show",
-      "test-build": "vue-cli-service build --mode test & node ./scripts/test.js",
-      "app.test": "vue-cli-service build --mode app.test",
-      "lint": "vue-cli-service lint",
-      "lint-staged": "lint-staged"
-    },
-    "description": "webcore0.1  Project setup  npm install   Compiles and hot-reloads for development  npm run serve   http://localhost:8080/malltest/login  Compiles and minifies for production  npm run build   Run your tests  npm run test   Lints and fixes files  npm run lint   Customize configuration  See Configuration Reference.  // https://www.lodashjs.com/docs/lodash.debounce lodash 插件 Lodash 通过降低 array、number、objects、string 等等的使用",
-    "createdAt": 1782974225708.5637
-  },
-  {
-    "id": 1782974225709.9949,
-    "name": "yzh.mall.web",
-    "version": "1.0.1",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.mall.web",
-    "port": 1024,
-    "group": "B2C",
-    "scripts": {
-      "serve": "cross-env BASE_URL=https://gatewaytest.haoxiny.com NODE_ENV=development SITE_ENV=development nodemon server/index.js --watch server",
-      "build": "cross-env BASE_URL=https://gateway.haoxiny.com NODE_ENV=production SITE_ENV=production nuxt build",
-      "uat": "cross-env BASE_URL=https://gateway.haoxiny.com NODE_ENV=production SITE_ENV=production nuxt build",
-      "dev": "cross-env BASE_URL=https://gatewaytest.haoxiny.com NODE_ENV=production SITE_ENV=test nuxt build",
-      "test": "cross-env BASE_URL=https://gatewaytest.haoxiny.com NODE_ENV=production SITE_ENV=test nuxt build",
-      "show": "cross-env BASE_URL=https://gatewayshow.haoxiny.com NODE_ENV=production SITE_ENV=show nuxt build",
-      "dev-build": "cross-env BASE_URL=https://gatewaytest.haoxiny.com NODE_ENV=production SITE_ENV=test nuxt build && node ./scripts/dev.js",
-      "start": "cross-env NODE_ENV=production node server/index.js",
-      "pm2-start": "cross-env NODE_ENV=production pm2 start npm --watch --name 'web-pc' -- run start",
-      "generate": "cross-env BASE_URL=https://gatewaytest.haoxiny.com NODE_ENV=production SITE_ENV=production nuxt generate",
-      "lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
-    },
-    "description": "商城pc端",
-    "createdAt": 1782974225709.9949
-  },
-  {
-    "id": 1782974225709.5422,
-    "name": "yzh.mall.kf",
-    "version": "0.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.mobile_display_page",
-    "port": 1024,
-    "group": "B2C",
-    "scripts": {
-      "serve": "vite",
-      "dev-build": "vite build --mode test & node ./scripts/show.js",
-      "dev": "vite build --mode test",
-      "test": "vite build --mode test",
-      "show": "vite build --mode show",
-      "build": "vite build",
-      "preview": "vite preview"
-    },
-    "description": "Vue 3 + Vite  This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `` SFCs, check out the script setup docs to learn more.  Recommended IDE Setup  - VSCode + Volar",
-    "createdAt": 1782974225709.5422
-  },
-  {
-    "id": 1782974225709.2332,
-    "name": "yzh.pc_display_page",
-    "version": "0.1.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.pc_display_page",
-    "port": 1024,
-    "group": "B2C",
-    "scripts": {
-      "serve": "vue-cli-service serve",
-      "build": "vue-cli-service build",
-      "dev-build": "vue-cli-service build --mode dev & node ./scripts/dev.js",
-      "test-build": "vue-cli-service build --mode test & node ./scripts/test.js",
-      "test-build-node": " node ./scripts/test.js",
-      "test": "vue-cli-service build --mode test",
-      "show": "vue-cli-service build --mode show ",
-      "lint": "vue-cli-service lint"
-    },
-    "description": "集采PC统一登录  Project setup yarn install   Compiles and hot-reloads for development yarn serve   Compiles and minifies for production yarn build   Lints and fixes files yarn lint   Customize configuration See Configuration Reference.",
-    "createdAt": 1782974225709.2332
-  },
-  {
-    "id": 1782986633431,
-    "name": "project-manager",
-    "version": "1.0.0",
-    "nodeVersion": "未指定",
-    "projectPath": "/Users/boycott/Desktop/my-project/byt.servedev/",
-    "port": 50001,
-    "group": "默认分组",
-    "scripts": {
-      "start": "node server.js",
-      "dev": "electrobun dev",
-      "build": "electrobun build"
-    },
-    "description": "开发项目管理工具 - 简化项目启动流程",
-    "createdAt": 1782986633431,
-    "status": "running"
+    "description": "用户中心-yzh.user  react + react-redux + react-router + antd/antd-pro  目录结构 |——src     |——api                          // 接口api     |——scripts                      // 应用发布脚本     |——assets                       // 静态资源     |——components                   // 公共组件     |——config                       // 项目配置: 包括主题，存储页面元素，公共数据，全局配置     |——hooks                        // 高阶组件     |——layout                       // 页面布局     |——pages                        // 所有页面     |——routes                       // react-router，包括路由守卫，权限控制     |——store                        // react-redux     |——utils                        // 公共方法集合     |——App.js                       // 一级路由入口文件     |——index.js                     // 项目入口文件     |——setupProxy.js                // 代理跨域配置 |——config-overrides.js              // webpack配置文件    安装依赖  npm / cnpm / yarn install  运行   开发环境 npm run dev / yarn dev  打包部署   测试、预演环境 npm run test / yarn test npm run show / yarn show   * 生产环境 npm run build / yarn build   相关资源  1. Ant Desi...",
+    "createdAt": 1783072646686.1997
   }
 ]

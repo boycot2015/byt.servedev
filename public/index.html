@@ -104,11 +104,6 @@
           </div>
         </div>
         <div class="card-body card-body-relative">
-          <!-- Loading 遮罩 -->
-          <div id="listLoading" class="list-loading">
-            <div class="loading-spinner"></div>
-            <div class="loading-text">加载中...</div>
-          </div>
           <div id="projectList" class="project-list">
             <div class="empty-state">
               <div class="icon">📋</div>
@@ -211,7 +206,7 @@
             <option value="默认分组">默认分组</option>
           </select>
         </div>
-        <button class="btn btn-primary" onclick="scanProjects()" style="width: 100%; margin-bottom: 16px;">开始扫描</button>
+        <button class="btn btn-primary" onclick="scanProjects()" style="width: 100%; margin-bottom: 16px;justify-content: center;">开始扫描</button>
         <div id="scanResults" class="scan-results" style="display: none;"></div>
         <div class="form-actions" id="scanActions" style="display: none;">
           <button class="btn btn-secondary" onclick="closeModal('scanModal')">取消</button>

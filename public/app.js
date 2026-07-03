@@ -36,14 +36,80 @@ function showToast(message, type = 'info') {
   }, 3000);
 }
 
-// 显示列表 Loading
-function showListLoading() {
-  document.getElementById('listLoading').classList.add('show');
+// 创建 Loading 元素并插入到目标元素中
+function createLoading(targetElementOrId, loadingId = null) {
+  const target = typeof targetElementOrId === 'string' 
+    ? document.getElementById(targetElementOrId) 
+    : targetElementOrId;
+  
+  if (!target) return null;
+  
+  // 使用传入的 ID 或自动生成
+  const id = loadingId || `loading-${Date.now()}`;
+  
+  // 如果目标元素下已存在此 loading，直接返回
+  const existing = target.querySelector(`#${id}`);
+  if (existing) return existing;
+  
+  // 创建 Loading HTML
+  const loadingHtml = `
+    <div id="${id}" class="page-loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">加载中...</div>
+    </div>
+  `;
+  
+  // 插入到目标元素开头
+  target.insertAdjacentHTML('afterbegin', loadingHtml);
+  
+  return document.getElementById(id);
 }
 
-// 隐藏列表 Loading
-function hideListLoading() {
-  document.getElementById('listLoading').classList.remove('show');
+// 显示 Loading（默认全局 pageLoading，支持传入元素ID或元素对象）
+function showLoading(elementOrId = 'pageLoading') {
+  let element = typeof elementOrId === 'string' 
+    ? document.getElementById(elementOrId) 
+    : elementOrId;
+  
+  // 如果元素不存在，尝试创建（默认全局 loading 插入到 body）
+  if (!element && elementOrId === 'pageLoading') {
+    element = createLoading(document.body, 'pageLoading');
+  }
+  
+  if (element) {
+    element.classList.add('show');
+  }
+  return element;
+}
+
+// 隐藏 Loading（默认全局 pageLoading，支持传入元素ID或元素对象）
+function hideLoading(elementOrId = 'pageLoading') {
+  const element = typeof elementOrId === 'string' 
+    ? document.getElementById(elementOrId) 
+    : elementOrId;
+  
+  if (element) {
+    element.classList.remove('show');
+  }
+}
+
+// 设置按钮 Loading 状态
+function setButtonLoading(btnOrId, isLoading) {
+  const btn = typeof btnOrId === 'string' 
+    ? document.querySelector(btnOrId) 
+    : btnOrId;
+  
+  if (!btn) return;
+  
+  if (isLoading) {
+    btn.dataset.originalText = btn.textContent;
+    btn.disabled = true;
+    btn.classList.add('btn-loading');
+  } else {
+    btn.disabled = false;
+    btn.classList.remove('btn-loading');
+    if (btn.dataset.originalText) btn.textContent = btn.dataset.originalText;
+  }
 }
 
 // 初始化自定义下拉选择组件
@@ -149,10 +215,7 @@ function selectGroup(group) {
   currentGroup = group;
   renderGroups();
   // 重置筛选字段
-  const statusFilter = document.getElementById('statusFilter');
-  const searchInput = document.getElementById('searchInput');
-  if (statusFilter) statusFilter.value = 'all';
-  if (searchInput) searchInput.value = '';
+  resetFilters();
   renderProjects();
   document.getElementById('currentGroupTitle').textContent = group === '全部' ? '项目列表' : `${group} - 项目列表`;
   updateBatchDeleteBtn();
@@ -418,11 +481,11 @@ function openBranchModal(projectId) {
     }
   });
   
-  modal.classList.add('show');
+  openModal('branchModal');
 }
 
 function closeBranchModal() {
-  document.getElementById('branchModal').classList.remove('show');
+  closeModal('branchModal');
   branchModalProjectId = null;
 }
 
@@ -578,11 +641,11 @@ function openMergeModal(projectId) {
     }
   });
   
-  modal.classList.add('show');
+  openModal('mergeModal');
 }
 
 function closeMergeModal() {
-  document.getElementById('mergeModal').classList.remove('show');
+  closeModal('mergeModal');
   mergeModalProjectId = null;
 }
 
@@ -640,11 +703,11 @@ function openGitImportModal() {
   document.getElementById('gitImportBtn').textContent = '导入';
   document.getElementById('gitImportBtn').disabled = false;
   gitImportState = { action: null, conflictChecked: false };
-  document.getElementById('gitImportModal').classList.add('show');
+  openModal('gitImportModal');
 }
 
 function closeGitImportModal() {
-  document.getElementById('gitImportModal').classList.remove('show');
+  closeModal('gitImportModal');
 }
 
 async function browseFolderForGitImport() {
@@ -680,7 +743,9 @@ async function importFromGit() {
 
   // 如果还没有检查冲突，先检查冲突
   if (!gitImportState.conflictChecked) {
-    btn.disabled = true;
+    setButtonLoading(btn, true);
+    btn.classList.remove('btn-loading');
+    btn.style.color = '';
     btn.textContent = '检查中...';
 
     const checkResponse = await fetch('/api/git/clone', {
@@ -713,7 +778,9 @@ async function importFromGit() {
     gitImportState.action = 'new';
   }
 
-  btn.disabled = true;
+  setButtonLoading(btn, true);
+  btn.classList.remove('btn-loading');
+  btn.style.color = '';
   btn.textContent = '克隆中...';
 
   const response = await fetch('/api/git/clone', {
@@ -731,7 +798,7 @@ async function importFromGit() {
 
   if (result.error) {
     showToast(result.error, 'error');
-    btn.disabled = false;
+    setButtonLoading(btn, false);
     btn.textContent = '导入';
     return;
   }
@@ -746,8 +813,8 @@ async function importFromGit() {
     showToast('导入成功', 'success');
   }
 
-  await loadProjects();
   closeGitImportModal();
+  loadProjects();
 }
 
 // Git 信息定时刷新定时器
@@ -780,15 +847,21 @@ function stopGitInfoRefresh() {
     gitInfoRefreshInterval = null;
   }
 }
-
-async function loadProjects() {
+/**
+ * 加载项目列表
+ * @param {boolean} shouldFetchGitInfo - 是否在加载时刷新 Git 信息
+ */
+async function loadProjects(shouldFetchGitInfo = false) {
   try {
     const response = await fetch('/api/projects');
     projects = await response.json();
-    
-    gitInfoCache = {};
-    await Promise.all(projects.map(p => fetchGitInfo(p.id)));
-    
+    if (shouldFetchGitInfo) {
+      showLoading()
+      // 页面加载时，刷新所有项目的 Git 信息
+      gitInfoCache = {};
+      await Promise.all(projects.map(p => fetchGitInfo(p.id)));
+      hideLoading();
+    }
     renderGroups();
     renderProjects();
     updateBatchDeleteBtn();
@@ -796,7 +869,7 @@ async function loadProjects() {
     // 启动定时刷新
     startGitInfoRefresh();
   } finally {
-    hideListLoading();
+    hideLoading();
   }
 }
 
@@ -958,33 +1031,62 @@ function resetFilters() {
 
 function openImportModal() {
   document.getElementById('importPath').value = '';
-  document.getElementById('importModal').classList.add('show');
+  openModal('importModal');
 }
 
 function openScanModal() {
   document.getElementById('scanPath').value = '';
   document.getElementById('scanResults').style.display = 'none';
   document.getElementById('scanActions').style.display = 'none';
-  document.getElementById('scanModal').classList.add('show');
+  openModal('scanModal');
 }
 
 function openAddGroupModal() {
   document.getElementById('newGroupName').value = '';
-  document.getElementById('addGroupModal').classList.add('show');
+  openModal('addGroupModal');
 }
 
 function openRenameGroupModal(oldName) {
   document.getElementById('renameOldName').value = oldName;
   document.getElementById('renameNewName').value = oldName;
-  document.getElementById('renameGroupModal').classList.add('show');
+  openModal('renameGroupModal');
 }
 
+// 所有弹框ID列表
+const modalIds = [
+  'importModal', 'gitImportModal', 'scanModal', 'editModal',
+  'addGroupModal', 'renameGroupModal', 'branchModal', 'mergeModal',
+  'logsModal', 'confirmModal', 'packageJsonModal'
+];
+
+// 检查是否有弹框打开
+function hasOpenModal() {
+  return modalIds.some(id => document.getElementById(id)?.classList.contains('show'));
+}
+
+// 更新body滚动状态
+function updateBodyScroll() {
+  if (hasOpenModal()) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+}
+
+// 打开弹框
+function openModal(modalId) {
+  document.getElementById(modalId).classList.add('show');
+  updateBodyScroll();
+}
+
+// 关闭弹框
 function closeModal(modalId) {
   document.getElementById(modalId).classList.remove('show');
   if (modalId === 'logsModal') {
     clearInterval(logsInterval);
     currentLogsProjectId = null;
   }
+  updateBodyScroll();
 }
 
 async function addGroup() {
@@ -1003,7 +1105,6 @@ async function addGroup() {
   } else {
     groups = result.groups;
     updateGroupSelects();
-    await loadProjects();
     closeModal('addGroupModal');
   }
 }
@@ -1058,18 +1159,26 @@ async function importProject() {
   const group = document.getElementById('importGroup').value;
   if (!path) return;
 
-  const response = await fetch('/api/projects', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ projectPath: path, group })
-  });
+  // 找到导入按钮并设置 loading 状态
+  const importBtn = event.target;
+  setButtonLoading(importBtn, true);
 
-  const result = await response.json();
-  if (result.error) {
-    showToast(result.error, 'error');
-  } else {
-    await loadProjects();
-    closeModal('importModal');
+  try {
+    const response = await fetch('/api/projects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ projectPath: path, group })
+    });
+
+    const result = await response.json();
+    if (result.error) {
+      showToast(result.error, 'error');
+    } else {
+      closeModal('importModal');
+      loadProjects(true);
+    }
+  } finally {
+    setButtonLoading(importBtn, false);
   }
 }
 
@@ -1077,30 +1186,37 @@ async function scanProjects() {
   const path = document.getElementById('scanPath').value.trim();
   if (!path) return;
 
-  const response = await fetch('/api/scan', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ scanPath: path })
-  });
+  const scanBtn = event.target;
+  setButtonLoading(scanBtn, true);
 
-  scanResults = await response.json();
-  
-  if (scanResults.length === 0) {
-    document.getElementById('scanResults').innerHTML = '<p style="text-align:center; color:#9ca3af;">未找到项目</p>';
-  } else {
-    document.getElementById('scanResults').innerHTML = scanResults.map((p, index) => `
-      <div class="scan-item">
-        <input type="checkbox" id="scan-${index}" checked>
-        <div class="scan-item-info">
-          <div class="scan-item-name">${p.name} <span style="font-size:12px; color:#9ca3af;">${p.version}</span></div>
-          <div class="scan-item-path">${p.path}</div>
+  try {
+    const response = await fetch('/api/scan', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ scanPath: path })
+    });
+
+    scanResults = await response.json();
+    
+    if (scanResults.length === 0) {
+      document.getElementById('scanResults').innerHTML = '<p style="text-align:center; color:#9ca3af;">未找到项目</p>';
+    } else {
+      document.getElementById('scanResults').innerHTML = scanResults.map((p, index) => `
+        <div class="scan-item">
+          <input type="checkbox" id="scan-${index}" checked>
+          <div class="scan-item-info">
+            <div class="scan-item-name">${p.name} <span style="font-size:12px; color:#9ca3af;">${p.version}</span></div>
+            <div class="scan-item-path">${p.path}</div>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `).join('');
+    }
+    
+    document.getElementById('scanResults').style.display = 'block';
+    document.getElementById('scanActions').style.display = 'flex';
+  } finally {
+    setButtonLoading(scanBtn, false);
   }
-  
-  document.getElementById('scanResults').style.display = 'block';
-  document.getElementById('scanActions').style.display = 'flex';
 }
 
 async function importScannedProjects() {
@@ -1114,15 +1230,22 @@ async function importScannedProjects() {
 
   if (selectedPaths.length === 0) return;
 
-  const response = await fetch('/api/projects/batch', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ paths: selectedPaths, group })
-  });
+  const importBtn = event.target;
+  setButtonLoading(importBtn, true);
 
-  await response.json();
-  await loadProjects();
-  closeModal('scanModal');
+  try {
+    const response = await fetch('/api/projects/batch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paths: selectedPaths, group })
+    });
+
+    await response.json();
+    closeModal('scanModal');
+    loadProjects(true);
+  } finally {
+    setButtonLoading(importBtn, false);
+  }
 }
 
 function editProject(id) {
@@ -1140,7 +1263,7 @@ function editProject(id) {
     customSelectInstances.editGroup.setValue(project.group || '默认分组');
   }
   
-  document.getElementById('editModal').classList.add('show');
+  openModal('editModal');
 }
 
 async function saveEdit(event) {
@@ -1176,7 +1299,7 @@ function deleteProject(id) {
   document.getElementById('confirmActionBtn').textContent = '确认删除';
   document.getElementById('confirmActionBtn').onclick = confirmDelete;
   pendingDeleteId = id;
-  document.getElementById('confirmModal').classList.add('show');
+  openModal('confirmModal');
 }
 
 async function confirmDelete() {
@@ -1218,7 +1341,7 @@ async function batchDelete() {
   document.getElementById('confirmActionBtn').textContent = '确认删除';
   document.getElementById('confirmActionBtn').onclick = confirmBatchDelete;
   pendingDeleteIds = ids;
-  document.getElementById('confirmModal').classList.add('show');
+  openModal('confirmModal');
 }
 
 async function confirmBatchDelete() {
@@ -1242,7 +1365,7 @@ async function startProject(id) {
   currentLogsProjectId = id;
   document.getElementById('logsTitle').textContent = `${project.name} - 日志`;
   updateStopButton(id);
-  document.getElementById('logsModal').classList.add('show');
+  openModal('logsModal');
   
   // 显示启动中提示
   const container = document.getElementById('logsContent');
@@ -1269,7 +1392,7 @@ async function startProject(id) {
           document.getElementById('confirmActionBtn').textContent = '杀掉端口并重启';
           document.getElementById('confirmActionBtn').onclick = () => killPortAndRestart(id, port);
           pendingStopId = id;
-          document.getElementById('confirmModal').classList.add('show');
+          openModal('confirmModal');
         } else {
           showToast(result.error, 'error');
         }
@@ -1355,7 +1478,7 @@ function stopProject(id) {
   document.getElementById('confirmActionBtn').textContent = '确认停止';
   document.getElementById('confirmActionBtn').onclick = confirmStop;
   pendingStopId = id;
-  document.getElementById('confirmModal').classList.add('show');
+  openModal('confirmModal');
 }
 
 async function confirmStop() {
@@ -1385,7 +1508,7 @@ function viewLogs(id) {
   const project = projects.find(p => p.id === id);
   document.getElementById('logsTitle').textContent = `${project.name} - 日志`;
   updateStopButton(id);
-  document.getElementById('logsModal').classList.add('show');
+  openModal('logsModal');
   loadLogs(id, false);
   
   logsInterval = setInterval(() => loadLogs(id, false), 2000);
@@ -1425,7 +1548,7 @@ async function viewPackageJson(id) {
   
   document.getElementById('packageJsonTitle').textContent = `${project.name} - package.json`;
   document.getElementById('packageJsonContent').innerHTML = '<pre><code>' + syntaxHighlight(result.content) + '</code></pre>';
-  document.getElementById('packageJsonModal').classList.add('show');
+  openModal('packageJsonModal');
 }
 
 function updateStopButton(id) {
@@ -1554,8 +1677,15 @@ function scrollToTop() {
 
 initTheme();
 loadGroups();
-loadProjects();
-showListLoading();
+
+// 初始化全局 Loading，插入到项目列表的父容器中
+const projectListContainer = document.getElementById('projectList')?.parentElement;
+if (projectListContainer) {
+  createLoading(projectListContainer, 'pageLoading');
+}
+
+loadProjects(true);
+showLoading('pageLoading');
 // 初始化所有自定义下拉选择组件
 function initAllCustomSelects() {
   // 状态筛选器
