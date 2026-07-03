@@ -9,6 +9,29 @@ let pendingDeleteIds = null;
 let pendingStopId = null;
 let gitInfoCache = {};
 
+// 分页状态
+let paginationState = {
+  page: 1,
+  pageSize: 20,
+  hasMore: true,
+  total: 0,
+  loading: false,
+  groupStats: {}
+};
+
+// 防抖函数
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
 // Toast 消息提示函数
 function showToast(message, type = 'info') {
   const container = document.getElementById('toastContainer');
@@ -216,9 +239,8 @@ function selectGroup(group) {
   renderGroups();
   // 重置筛选字段
   resetFilters();
-  renderProjects();
+  loadProjects(true, true); // 重置分页，重新加载（获取 git info）
   document.getElementById('currentGroupTitle').textContent = group === '全部' ? '项目列表' : `${group} - 项目列表`;
-  updateBatchDeleteBtn();
   
   // 移动端选择后自动关闭侧边栏
   if (window.innerWidth <= 768) {
@@ -311,19 +333,17 @@ async function loadGroups() {
 
 function renderGroups() {
   const groupList = document.getElementById('groupList');
-  const allCount = projects.length;
-  
-  document.getElementById('allCount').textContent = allCount;
+  const allCount = Object.values(paginationState.groupStats || {}).reduce((sum, count) => sum + count, 0) || 0;
   
   let html = `
     <li class="group-item ${currentGroup === '全部' ? 'active' : ''}" onclick="selectGroup('全部')">
       <span class="group-name">全部项目</span>
-      <span class="group-count" id="allCount">${allCount}</span>
+      <span class="group-count">${allCount}</span>
     </li>
   `;
 
   groups.forEach(group => {
-    const count = projects.filter(p => p.group === group).length;
+    const count = paginationState.groupStats?.[group] || 0;
     html += `
       <li class="group-item ${currentGroup === group ? 'active' : ''} ${group == '默认分组'?'default':''}" onclick="selectGroup('${group}')">
         <span class="group-name">${group}</span>
@@ -851,26 +871,104 @@ function stopGitInfoRefresh() {
  * 加载项目列表
  * @param {boolean} shouldFetchGitInfo - 是否在加载时刷新 Git 信息
  */
-async function loadProjects(shouldFetchGitInfo = false) {
+async function loadProjects(shouldFetchGitInfo = false, resetPagination = true) {
+  if (paginationState.loading) return;
+  
+  if (resetPagination) {
+    paginationState.page = 1;
+    paginationState.hasMore = true;
+    projects = [];
+  }
+  
+  if (!paginationState.hasMore && !resetPagination) return;
+  
+  paginationState.loading = true;
+  
+  // 有数据时才显示加载中（加载更多场景）
+  if (projects.length > 0) {
+    const loaderId = 'loadMoreLoader';
+    let loader = document.getElementById(loaderId);
+    if (!loader) {
+      // loader 不存在时先创建
+      const container = document.getElementById('projectList');
+      if (container && container.parentNode) {
+        loader = document.createElement('div');
+        loader.id = loaderId;
+        loader.style.cssText = 'text-align: center; padding: 20px; color: var(--text-muted);';
+        container.parentNode.appendChild(loader);
+      }
+    }
+    if (loader) {
+      loader.innerHTML = '<span class="loading-spinner" style="display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border-color); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle;"></span><span style="vertical-align: middle;">加载中...</span>';
+    }
+  }
+  
   try {
-    const response = await fetch('/api/projects');
-    projects = await response.json();
+    const searchTerm = document.getElementById('searchInput')?.value || '';
+    const statusFilter = document.getElementById('statusFilter')?.value || 'all';
+    const groupFilter = currentGroup === '全部' ? '' : currentGroup;
+    
+    const params = new URLSearchParams({
+      page: paginationState.page,
+      pageSize: paginationState.pageSize,
+      search: searchTerm,
+      status: statusFilter,
+      group: groupFilter
+    });
+    
+    const response = await fetch(`/api/projects?${params}`);
+    const result = await response.json();
+    
+    if (resetPagination) {
+      projects = result.projects;
+    } else {
+      // 追加模式，避免重复
+      const existingIds = new Set(projects.map(p => p.id));
+      const newProjects = result.projects.filter(p => !existingIds.has(p.id));
+      projects = [...projects, ...newProjects];
+    }
+    
+    paginationState.total = result.total;
+    paginationState.hasMore = result.hasMore;
+    paginationState.page = result.page;
+    if (result.groupStats) {
+      paginationState.groupStats = result.groupStats;
+    }
+    
+    resetPagination && showLoading();
     if (shouldFetchGitInfo) {
-      showLoading()
       // 页面加载时，刷新所有项目的 Git 信息
       gitInfoCache = {};
       await Promise.all(projects.map(p => fetchGitInfo(p.id)));
-      hideLoading();
     }
+    resetPagination && hideLoading();
+    
+    // 加载完成，设置 loading 为 false
+    paginationState.loading = false;
+    
     renderGroups();
-    renderProjects();
+    renderProjects(!resetPagination); // resetPagination=false 时是追加模式
     updateBatchDeleteBtn();
     
-    // 启动定时刷新
-    startGitInfoRefresh();
+    // 只有首次加载时启动定时刷新
+    if (resetPagination) {
+      startGitInfoRefresh();
+    }
+  } catch (error) {
+    paginationState.loading = false;
+    console.error('加载项目失败:', error);
   } finally {
-    hideLoading();
+    // 确保 loading 状态最终是 false
+    paginationState.loading = false;
   }
+}
+
+// 加载更多项目
+async function loadMoreProjects() {
+  if (paginationState.loading || !paginationState.hasMore) return;
+  
+  paginationState.page += 1;
+  await loadProjects(true, false);
 }
 
 function formatTimestamp(timestamp) {
@@ -898,28 +996,12 @@ function formatTimestamp(timestamp) {
   }
 }
 
-function renderProjects() {
+function renderProjects(appendMode = false) {
   const container = document.getElementById('projectList');
-  const searchTerm = document.getElementById('searchInput')?.value?.toLowerCase() || '';
-  const statusFilter = document.getElementById('statusFilter')?.value || 'all';
   
-  let filtered = projects.filter(p => (!searchTerm || (p.name && p.name?.toLowerCase().includes(searchTerm))));
+  document.getElementById('projectCount').textContent = `共 ${paginationState.total} 个项目`;
   
-  if (currentGroup !== '全部') {
-    filtered = filtered.filter(p => p.group === currentGroup);
-  }
-  
-  if (statusFilter !== 'all') {
-    filtered = filtered.filter(p => p.status === statusFilter);
-  }
-  
-  // 按修改时间倒序排序，新的在前面
-  // 兼容旧数据：优先用 updatedAt，其次 createdAt，最后用 id
-  filtered.sort((a, b) => (b.updatedAt || b.createdAt || b.id) - (a.updatedAt || a.createdAt || a.id));
-  
-  document.getElementById('projectCount').textContent = `共 ${filtered.length} 个项目`;
-  
-  if (filtered.length === 0) {
+  if (projects.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="icon">📋</div>
@@ -930,7 +1012,8 @@ function renderProjects() {
     return;
   }
 
-  container.innerHTML = filtered.map(project => {
+  // 生成单个项目的 HTML
+  const renderProject = (project) => {
     const gitInfo = getGitInfo(project.id);
     const isGitRepo = gitInfo.isGitRepo;
     const currentBranch = gitInfo.currentBranch;
@@ -1004,12 +1087,44 @@ function renderProjects() {
       </div>
     </div>
     `;
-  }).join('');
+  };
+
+  if (appendMode) {
+    // 追加模式：只渲染新增的项目（最后一页的项目）
+    const lastPageProjects = projects.slice(-paginationState.pageSize);
+    const newHtml = lastPageProjects.map(renderProject).join('');
+    container.insertAdjacentHTML('beforeend', newHtml);
+  } else {
+    // 全量渲染模式
+    container.innerHTML = projects.map(renderProject).join('');
+  }
+  
+  // 添加加载更多提示
+  const loaderId = 'loadMoreLoader';
+  let loader = document.getElementById(loaderId);
+  if (!loader) {
+    loader = document.createElement('div');
+    loader.id = loaderId;
+    loader.style.cssText = 'text-align: center; padding: 20px; color: var(--text-muted);';
+    container.parentNode.appendChild(loader);
+  }
+  
+  // 显示加载状态（有数据时才显示加载中/已加载全部，数据大于20且已加载全部才显示"已加载全部项目"）
+  if (projects.length > 0 && paginationState.loading) {
+    loader.innerHTML = '<span class="loading-spinner" style="display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border-color); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle;"></span><span style="vertical-align: middle;">加载中...</span>';
+  } else if (!paginationState.hasMore && projects.length > 20) {
+    loader.textContent = '已加载全部项目';
+  } else {
+    loader.textContent = '';
+  }
 }
 
 function filterProjects() {
-  renderProjects();
-  updateBatchDeleteBtn();
+  // 使用防抖避免频繁请求
+  if (window.searchTimeout) clearTimeout(window.searchTimeout);
+  window.searchTimeout = setTimeout(() => {
+    loadProjects(true, true); // 重置分页，重新加载（获取 git info）
+  }, 300);
 }
 
 // 重置筛选条件
@@ -1503,12 +1618,18 @@ function stopProjectFromLogs() {
     }
 }
 
+// 记录每个项目的最后日志索引
+const lastLogIndexMap = {};
+
 function viewLogs(id) {
   currentLogsProjectId = id;
   const project = projects.find(p => p.id === id);
   document.getElementById('logsTitle').textContent = `${project.name} - 日志`;
   updateStopButton(id);
   openModal('logsModal');
+  // 清空日志容器并重置索引
+  document.getElementById('logsContent').innerHTML = '';
+  lastLogIndexMap[id] = 0;
   loadLogs(id, false);
   
   logsInterval = setInterval(() => loadLogs(id, false), 2000);
@@ -1562,12 +1683,14 @@ function updateStopButton(id) {
 }
 
 async function loadLogs(id, isStarting = false) {
-  const response = await fetch(`/api/projects/${id}/logs`);
-  const logs = await response.json();
+  const lastIndex = lastLogIndexMap[id] || 0;
+  const response = await fetch(`/api/projects/${id}/logs?since=${lastIndex}`);
+  const result = await response.json();
+  const { logs, nextIndex } = result;
   const container = document.getElementById('logsContent');
   
-  if (logs.length === 0) {
-    if (!isStarting) {
+  if (nextIndex === 0) {
+    if (!isStarting && !container.querySelector('.log-line')) {
       // 非启动中状态才显示暂无日志占位符
       container.innerHTML = `
         <div class="logs-placeholder">
@@ -1578,11 +1701,15 @@ async function loadLogs(id, isStarting = false) {
       `;
     }
     // 启动中状态保持显示启动中提示
-  } else {
-    container.innerHTML = logs.map(log => `
+  } else if (logs.length > 0) {
+    // 增量追加日志，不重新渲染全部
+    const newLogsHtml = logs.map(log => `
       <div class="log-line ${log.type}">${log.content.replace(/\n/g, '<br>')}</div>
     `).join('');
+    container.insertAdjacentHTML('beforeend', newLogsHtml);
     container.scrollTop = container.scrollHeight;
+    // 更新最后索引
+    lastLogIndexMap[id] = nextIndex;
   }
   
   checkPortConflictInLogs(id, logs);
@@ -1720,4 +1847,18 @@ window.addEventListener('beforeunload', () => {
 document.addEventListener('DOMContentLoaded', function() {
   initAllCustomSelects();
   initColorPicker();
+  
+  // 无限滚动监听
+  window.addEventListener('scroll', debounce(() => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+    
+    // 滚动到底部附近（提前200px触发加载）
+    if (scrollTop + clientHeight >= scrollHeight - 200) {
+      if (!paginationState.loading && paginationState.hasMore) {
+        loadMoreProjects();
+      }
+    }
+  }, 100));
 });

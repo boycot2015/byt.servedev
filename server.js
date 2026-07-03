@@ -241,9 +241,48 @@ async function handleApi(req, res) {
   const url = req.url;
   const method = req.method;
 
-  if (url === '/api/projects' && method === 'GET') {
-    const projects = readProjects();
-    const projectsWithStatus = projects.map(p => {
+  if ((url === '/api/projects' || url.startsWith('/api/projects?')) && method === 'GET') {
+    const parsedUrl = new URL(url, `http://${req.headers.host}`);
+    const page = parseInt(parsedUrl.searchParams.get('page') || '1');
+    const pageSize = parseInt(parsedUrl.searchParams.get('pageSize') || '20');
+    const search = parsedUrl.searchParams.get('search') || '';
+    const status = parsedUrl.searchParams.get('status') || 'all';
+    const group = parsedUrl.searchParams.get('group') || '';
+    
+    const allProjects = readProjects();
+    
+    // 计算分组统计（所有项目）
+    const groupStats = {};
+    allProjects.forEach(p => {
+      const g = p.group || '默认分组';
+      groupStats[g] = (groupStats[g] || 0) + 1;
+    });
+    
+    // 过滤条件
+    let projects = allProjects;
+    if (search) {
+      projects = projects.filter(p => 
+        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        p.projectPath.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    if (status !== 'all') {
+      projects = projects.filter(p => {
+        const runningInfo = RUNNING_PROCESSES[p.id];
+        return (runningInfo?.status || 'stopped') === status;
+      });
+    }
+    if (group) {
+      projects = projects.filter(p => (p.group || '默认分组') === group);
+    }
+    
+    // 分页
+    const total = projects.length;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const pageProjects = projects.slice(startIndex, endIndex);
+    
+    const projectsWithStatus = pageProjects.map(p => {
       const runningInfo = RUNNING_PROCESSES[p.id];
       return {
         ...p,
@@ -253,8 +292,16 @@ async function handleApi(req, res) {
         description: p.description || getProjectDescription(p.projectPath)
       };
     });
+    
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(projectsWithStatus));
+    res.end(JSON.stringify({
+      projects: projectsWithStatus,
+      total,
+      page,
+      pageSize,
+      hasMore: endIndex < total,
+      groupStats
+    }));
   }
 
   else if (url === '/api/projects' && method === 'POST') {
@@ -1177,9 +1224,17 @@ async function handleApi(req, res) {
 
   else if (url.match(/\/api\/projects\/([\d.]+)\/logs/) && method === 'GET') {
     const id = parseFloat(url.match(/\/api\/projects\/([\d.]+)\/logs/)[1]);
-    const logs = RUNNING_PROCESSES[id]?.logs || [];
+    const parsedUrl = new URL(url, `http://${req.headers.host}`);
+    const sinceIndex = parseInt(parsedUrl.searchParams.get('since') || '0');
+    const allLogs = RUNNING_PROCESSES[id]?.logs || [];
+    // 只返回从 sinceIndex 开始的新日志
+    const newLogs = allLogs.slice(sinceIndex);
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(logs));
+    res.end(JSON.stringify({
+      logs: newLogs,
+      total: allLogs.length,
+      nextIndex: allLogs.length
+    }));
   }
 
   else if (url.match(/\/api\/projects\/([\d.]+)\/package-json/) && method === 'GET') {
