@@ -6,6 +6,7 @@ let logsInterval = null;
 let currentGroup = '全部';
 let pendingDeleteId = null;
 let pendingDeleteIds = null;
+let pendingDeleteGroup = null;
 let pendingStopId = null;
 let gitInfoCache = {};
 
@@ -878,6 +879,10 @@ async function loadProjects(shouldFetchGitInfo = false, resetPagination = true) 
     paginationState.page = 1;
     paginationState.hasMore = true;
     projects = [];
+    const container = document.getElementById('projectList');
+    if (container) {
+      container.innerHTML = '';
+    }
   }
   
   if (!paginationState.hasMore && !resetPagination) return;
@@ -1219,7 +1224,9 @@ async function addGroup() {
     showToast(result.error, 'error');
   } else {
     groups = result.groups;
-    updateGroupSelects();
+    selectGroup(name);
+    resetFilters();
+    await loadProjects();
     closeModal('addGroupModal');
   }
 }
@@ -1243,18 +1250,28 @@ async function renameGroup() {
     if (currentGroup === oldName) {
       currentGroup = newName;
     }
+    resetFilters();
     await loadProjects();
     closeModal('renameGroupModal');
   }
 }
 
-async function deleteGroup(name) {
-  if (!confirm(`确定要删除分组 "${name}" 吗？该分组下的项目将移动到默认分组。`)) return;
+function deleteGroup(name) {
+  document.getElementById('confirmTitle').textContent = '确认删除分组';
+  document.getElementById('confirmMessage').textContent = `确定要删除分组 "${name}" 吗？该分组下的项目将移动到默认分组。`;
+  document.getElementById('confirmActionBtn').textContent = '确认删除';
+  document.getElementById('confirmActionBtn').onclick = confirmDeleteGroup;
+  pendingDeleteGroup = name;
+  openModal('confirmModal');
+}
+
+async function confirmDeleteGroup() {
+  if (!pendingDeleteGroup) return;
 
   const response = await fetch('/api/groups', {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name })
+    body: JSON.stringify({ name: pendingDeleteGroup })
   });
 
   const result = await response.json();
@@ -1262,11 +1279,14 @@ async function deleteGroup(name) {
     showToast(result.error, 'error');
   } else {
     groups = result.groups;
-    if (currentGroup === name) {
+    if (currentGroup === pendingDeleteGroup) {
       currentGroup = '全部';
     }
-    await loadProjects();
+    selectGroup(currentGroup);
+    await loadProjects(true); // 重新加载并获取 git info
   }
+  pendingDeleteGroup = null;
+  closeModal('confirmModal');
 }
 
 async function importProject() {
@@ -1702,6 +1722,11 @@ async function loadLogs(id, isStarting = false) {
     }
     // 启动中状态保持显示启动中提示
   } else if (logs.length > 0) {
+    // 有日志输出时，移除启动中提示
+    const placeholder = container.querySelector('.logs-placeholder');
+    if (placeholder) {
+      placeholder.remove();
+    }
     // 增量追加日志，不重新渲染全部
     const newLogsHtml = logs.map(log => `
       <div class="log-line ${log.type}">${log.content.replace(/\n/g, '<br>')}</div>

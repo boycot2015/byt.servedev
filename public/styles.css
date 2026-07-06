@@ -705,6 +705,7 @@ body.dark .time-label-edited { background: #78350f; color: #fcd34d; }
   position: absolute;
   top: 100%;
   right: 0%;
+  padding: var(--spacing-md);
   transform: translateY(100px) translateX(0px);
   background: var(--bg-secondary);
   border-radius: var(--border-radius-md);

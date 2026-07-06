@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/my-project/bankirvine",
-    "port": 1024,
+    "port": 5177,
     "group": "Boycot",
     "scripts": {
       "dev": "vite",
@@ -14,7 +14,8 @@
       "preview": "vite preview"
     },
     "description": "Bank Ersal Ersal银行前端项目  这是一个现代化的银行系统前端项目，为用户提供完整的数字银行服务体验。  ✨ 项目特性  - 🎨 现代化UI设计：基于Material-UI (MUI) 组件库，界面简洁专业 - 📱 响应式布局：完美适配桌面端和移动端设备 - 🔒 安全可靠：完善的用户认证和权限管理 - ⚡ 高性能：基于Vite构建，开发体验流畅，生产构建性能优异 - 📊 丰富的功能模块：涵盖账户管理、转账、理财、贷款等完整银行服务  🛠️ 技术栈  | 技术 | 版本 | 说明 | |------|------|------| | React | 19.2.4 | 前端框架 | | Vite | 8.0.1 | 构建工具 | | Material-UI (MUI) | 7.3.9 | UI组件库 | | React Router | 7.13.1 | 路由管理 | | Axios | 1.13.6 | HTTP请求库 | | Mock.js | 1.1.0 | 模拟接口数据 | | Leaflet | 1.9.4 | 地图组件 | | Date-fns | 4.1.0 | 日期处理 | | Tailwind CSS | 4.2.2 | 实用工具优先的CSS框架 | | DnD Kit | 6.3.1 | 拖拽功能库 |  📦 功能模块  🔐 认证模块 - 用户登录/登出 - 记住用户名功能 - 忘记密码 - 忘记用户名 - 新用户注册 - 更多信息页面  🏠 仪表盘 (Dashboard) - 账户概览 - 资产总览 - 快捷功能入口 - 交易动态 - 个性化卡片管理 - 收藏账户管理 - 日期范围筛选  💰 账户管理 (ViewAccounts) - 账户列表展示 - 账户详情查看 - 交易记录查询 - 交易详情查看 - 账户活动排序 - 下载功能  💸 转账服务 (Wires) - 国内转账 - 国际汇款 - 转账模板管理 - 转账记录查询 - 定时转账设置 - 模板创建和编辑  📄 文档中心 (Documents) - 电子对账单 - 交易凭证 - 协议文档 - 多条件筛选查询  📍 网点查询 (Locations) - 银行网点地图查询 - ATM位置查询 - 网点详情信息 - 路线规划  🏢 公司管理 (Compa...",
-    "createdAt": 1783072588936.5
+    "createdAt": 1783072588936.5,
+    "status": "running"
   },
   {
     "id": 1783072588943.6394,
@@ -48,7 +49,8 @@
       "stop": "pm2 delete all"
     },
     "description": "boycot平台api",
-    "createdAt": 1783072588943.2039
+    "createdAt": 1783072588943.2039,
+    "status": "running"
   },
   {
     "id": 1783072588944.449,
@@ -100,7 +102,7 @@
     "version": "1.0.0",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/my-project/byt.astro-blog",
-    "port": 1024,
+    "port": 4322,
     "group": "Boycot",
     "scripts": {
       "dev": "astro dev",
@@ -115,7 +117,8 @@
       "check": "astro check"
     },
     "description": "Astro blog  示例 💻  Check out the Demo, hosted on Vercel  开始使用  npm 7+ npm install  pnpm pnpm install  ![Deploy with Vercel](https://vercel.com/new/clone?repository-url=https://github.com/boycot2015/astro-blog) ![Deploy with Netlify](https://app.netlify.com/start/deploy)  预览  !Astro Theme Cactus in a light theme mode  !Astro Theme Cactus in a dark theme mode  脚本命令  Replace pnpm with your choice of npm / yarn  | Command          | Action                                                         | | :--------------- | :------------------------------------------------------------- | | pnpm install   | Installs dependencies                                          | | pnpm dev       | Starts local dev server at localhost:3000                    | | pnpm build     | Build your production site to ./dist/                        | | pnpm postbuild | Pagefind script to build the static search of your blog posts  | | pnpm preview   | Preview your build locally, before deploying                   |...",
-    "createdAt": 1783072588947.5244
+    "createdAt": 1783072588947.5244,
+    "status": "running"
   },
   {
     "id": 1783072588948.5815,
@@ -341,7 +344,7 @@
     "version": "1.0.0",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/my-project/byt.stock",
-    "port": 1024,
+    "port": 5177,
     "group": "Boycot",
     "scripts": {
       "dev": "vite",
@@ -350,7 +353,8 @@
       "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix"
     },
     "description": "BYT Stock - 股票行情数据看板  一个基于 Vue 3 + TypeScript + Vite 构建的现代化股票行情数据看板应用。  功能特性  - 用户认证 - 登录/注册功能，支持 token 持久化存储 - 数据看板 - 实时展示大盘指数、自选股列表、行情排行 - 股票详情 - 个股实时行情、K线图、分时图、盘口数据 - 股票搜索 - 支持股票名称/拼音/代码搜索 - 自选股管理 - 添加/删除自选股 - 资讯页面 - 股票相关资讯展示  技术栈  - 框架: Vue 3.4+ (Composition API) - 语言: TypeScript 5.2+ - 构建工具: Vite 5.2+ - UI 框架: Ant Design Vue 4.2+ - 状态管理: Pinia 3.0+ - 路由: Vue Router 4.3+ - 图表: ECharts 6.0 + vue-echarts 8.0 - 样式: Tailwind CSS 4.2+ - HTTP 客户端: Axios 1.15+ - Mock 数据: MockJS 1.1+  项目结构  src/ ├── api/                 API 接口定义 │   └── stock.ts         股票相关接口 ├── assets/              静态资源 ├── components/          组件 │   ├── Header.vue       顶部导航栏 │   ├── Footer.vue       底部信息 │   ├── NavBar.vue       侧边导航 │   ├── MarketIndex.vue  大盘指数组件 │   ├── MarketRank.vue   行情排行组件 │   ├── SelfStockList.vue自选股列表 │   ├── StockDetail.vue  股票详情组件 │   └── Search.vue       搜索组件 ├── mock/                Mock 数据 │   └── index.ts         Mock 接口配置 ├── router/              路由配置 │   └── index.ts         路由定义与守卫...",
-    "createdAt": 1783072588953.6218
+    "createdAt": 1783072588953.6218,
+    "status": "running"
   },
   {
     "id": 1783072588954.8394,
@@ -414,7 +418,7 @@
     "version": "0.1.2",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/yzh-project/B2B/yzh.b2b.cloudAdmin",
-    "port": 1024,
+    "port": 1001,
     "group": "B2B",
     "scripts": {
       "postinstall": "patch-package",
@@ -433,7 +437,8 @@
       "lint:prettier": "prettier --write \"**/*.{js,ts,json,css,less,scss,vue,html,md}\""
     },
     "description": "webcore0.1  Project setup npm install    Compiles and hot-reloads for development npm run serve   Compiles and minifies for production npm run build   router.js 不被提交 git update-index --assume-unchanged src/router/router.js router.js 提交 git update-index --no-assume-unchanged src/router/router.js",
-    "createdAt": 1783072646672.6804
+    "createdAt": 1783072646672.6804,
+    "status": "running"
   },
   {
     "id": 1783072646673.339,
@@ -441,7 +446,7 @@
     "version": "2025.11-snapshot",
     "nodeVersion": ">= 16.0.0",
     "projectPath": "/Users/boycott/Desktop/yzh-project/B2B/yzh.b2b.cloudAdminVue3",
-    "port": 1024,
+    "port": 1025,
     "group": "B2B",
     "scripts": {
       "i": "pnpm install",
@@ -467,7 +472,9 @@
       "lint:lint-staged": "lint-staged -c "
     },
     "description": "基于vue3、vite4、element-plus、typesScript",
-    "createdAt": 1783072646673.339
+    "createdAt": 1783072646673.339,
+    "status": "running",
+    "updatedAt": 1783307931021
   },
   {
     "id": 1783072646674.7993,
@@ -1077,5 +1084,61 @@
     },
     "description": "集采PC统一登录  Project setup yarn install   Compiles and hot-reloads for development yarn serve   Compiles and minifies for production yarn build   Lints and fixes files yarn lint   Customize configuration See Configuration Reference.",
     "createdAt": 1783073218686.7424
+  },
+  {
+    "id": 1783305555328,
+    "name": "yzh.mobile.website",
+    "version": "0.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/yzh-project/yzh.mobile.website/",
+    "port": 1024,
+    "group": "云中鹤官网项目组",
+    "scripts": {
+      "dev": "vite",
+      "show": "vite build --mode show & node ./scripts/show.js",
+      "build": "vite build",
+      "preview": "vite preview"
+    },
+    "description": "Vue 3 + Vite\r \r This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `` SFCs, check out the script setup docs to learn more.\r \r Recommended IDE Setup\r \r - VSCode + Volar",
+    "createdAt": 1783305555328,
+    "updatedAt": 1783305615379
+  },
+  {
+    "id": 1783305564340,
+    "name": "skycrane.web",
+    "version": "1.0.2",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/yzh-project/yzh.skycrane.web/",
+    "port": 1024,
+    "group": "云中鹤官网项目组",
+    "scripts": {
+      "dev": "cross-env NODE_ENV=development nuxt",
+      "build": "cross-env NODE_ENV=production nuxt build",
+      "test": "cross-env NODE_ENV=test nuxt build",
+      "start": "nuxt start",
+      "export": "nuxt export",
+      "serve": "nuxt serve"
+    },
+    "description": "云中鹤官网（vue + ssr)  1. 目录结构 |——api                                  // api接口 |——apps                                 // savedPosition |——components                           // 功能组件 |——config                               // 项目配置     |——data                             // 静态数据     |——routes.js                        // 静态路由     |——sitemap.js                       // 网站sitemap配置文件 |——filters                              // 全局过滤器 |——layouts                              // 页面布局 |——middleware                           // 中间件，页面加载前处理的一下业务代码 |——pages                                // 所有页面及业务组件     |——components                       // 业务组件 |——plugins                              // 第三方插件，element-ui, axios, vue-swiper等 |——static                               // 静态文件，可直接访问，存放 favicon.ico robots.txt 等文件 |——utils                                // 工具方法 |——nuxt.config.js                       // 框架配置文件     2. 项目运行与打包配置  install dependencies $ yarn install  serve with hot reload at localhost:3001 $...",
+    "createdAt": 1783305564340
+  },
+  {
+    "id": 1783305571033,
+    "name": "skycrane-admin",
+    "version": "1.0.0",
+    "nodeVersion": "未指定",
+    "projectPath": "/Users/boycott/Desktop/yzh-project/yzh.skycrane.admin/",
+    "port": 1024,
+    "group": "云中鹤官网项目组",
+    "scripts": {
+      "serve": "vue-cli-service serve",
+      "build": "vue-cli-service build",
+      "test": "vue-cli-service build --mode test",
+      "lint": "vue-cli-service lint",
+      "deploy": "start ./deploy.sh"
+    },
+    "description": "vue-admin-beautiful（ant-design-vue）    地址  - 🎉 vue2.x + element-ui（免费商用，支持 PC、平板、手机）  - ⚡️ vue3.x + ant-design-vue（beta 版本，免费商用，支持 PC、平板、手机）  - 🚀 pro 版演示地址（付费版本，支持 PC、平板、手机，客服 QQ 1204505056）  - 🌐 github 仓库地址  - 🌐 码云仓库地址  备份地址（以上地址无法使用时请访问备份站）  - 🎉 vue2.x + element-ui（免费商用，支持 PC、平板、手机）  - ⚡️ vue3.x + ant-design-vue（beta 版本，免费商用，支持 PC、平板、手机）  - 🚀 pro 版演示地址（付费版本，支持 PC、平板、客服 QQ 1204505056）  🌱 vue3.x vue3.0-antdv 分支（ant-design-vue）点击切换分支  克隆项目 git clone -b vue3.0-antdv https://github.com/chuzhixin/vue-admin-beautiful.git 进入项目目录 cd vue-admin-beautiful 安装依赖 npm i 本地开发 启动项目 npm run serve   🌱vue2.x master 分支（element-ui）点击切换分支  克隆项目 git clone -b master https://github.com/chuzhixin/vue-admin-beautiful.git 进入项目目录 cd vue-admin-beautiful 安装依赖 npm i 本地开发 启动项目 npm run serve   vue-admin-beautiful 前端讨论群 972435319，1139183756  不管您加或者不加，您都可以享受到开源的代码，感谢您的支持和信任，群内提供 vue-admin-beautiful-template 基础版本、开发工具配置及使用手册、提供问题解答。  !img !img  我们定期赞助的开源项目（感谢巨人）      鸣谢  | Project                                 ...",
+    "createdAt": 1783305571033,
+    "status": "stopped"
   }
 ]
