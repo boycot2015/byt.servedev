@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "开发项目管理工具 - 简化项目启动流程",
   "scripts": {
-    "start": "node server.js",
+    "start": "electrobun run",
     "dev": "electrobun dev",
-    "build": "electrobun build"
+    "dev:watch": "electrobun dev --watch",
+    "build": "electrobun build --env=stable",
+    "build:dev": "bun install && electrobun build",
+    "build:canary": "electrobun build --env=canary",
+    "build:stable": "electrobun build --env=stable"
   },
   "keywords": ["project", "manager", "development", "npm", "node", "electrobun"],
   "author": "",

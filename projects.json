@@ -141,7 +141,8 @@
       "prepare": "husky install"
     },
     "description": "blog-admin",
-    "createdAt": 1783072588948.5815
+    "createdAt": 1783072588948.5815,
+    "status": "stopped"
   },
   {
     "id": 1783072588948.211,
@@ -161,7 +162,8 @@
       "lint": "eslint ."
     },
     "description": "nuxt-blog  English | 中文  个人博客      技术栈  - 服务端渲染框架 - Nuxt3 - mysql - Vue3 - Vite  启动  安装依赖  node 16.x pnpm install   创建环境变量 .env:  NUXT_PUBLIC_HELLO_TEXT=\"Hello world!\"   启动项目  Start the development server on http://localhost:3000:  pnpm dev   打包生产环境  pnpm build   环境部署  部署在NuxtHub上  npx nuxthub deploy    部署在Vercel边缘服务器上   安装 Vercel CLI npm install -g vercel   Vercel 打包生产环境 vercel build --prod   打开vercel配置环境变量 preset PRESET=vercel-edge",
-    "createdAt": 1783072588948.211
+    "createdAt": 1783072588948.211,
+    "status": "running"
   },
   {
     "id": 1783072588949.0596,
@@ -185,7 +187,7 @@
     "version": "1.0.4",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/my-project/byt.github",
-    "port": 1024,
+    "port": 4322,
     "group": "Boycot",
     "scripts": {
       "dev": "astro dev",
@@ -201,7 +203,8 @@
       "deploy": "NODE_ENV=github astro build && gh-pages -d dist --repo git@github.com:boycot2015/boycot2015.github.io.git"
     },
     "description": "Astro Blog  一个基于 Astro 构建的现代化博客主题，具有优雅的设计、丰富的功能和良好的用户体验。  🌟 特性  - 现代化架构: 基于 Astro 5.x + TailwindCSS 4.x 构建 - 平滑页面过渡: 集成 Swup 实现流畅的页面切换动画 - 响应式设计: 完美适配桌面端和移动端 - 双主题支持: 支持亮色/暗色主题切换 - 博客功能: 支持 Markdown/MDX 文章、分类、标签、归档 - 评论系统: 集成 Waline 评论系统 - 全文搜索: 使用 Pagefind 实现静态搜索 - 音乐播放器: 集成 APlayer 音乐播放器 - 电子书阅读: 支持 EPUB 格式电子书在线阅读 - 文章点赞: 支持文章点赞功能 - 图片懒加载: 优化页面加载性能 - 代码高亮: 支持多种代码主题  📱 预览  亮色主题 !Astro Theme Cactus in a light theme mode  暗色主题 !Astro Theme Cactus in a dark theme mode  🔧 快速开始  环境要求  - Node.js: >= 18.0.0 - pnpm: 推荐使用 pnpm 作为包管理器  安装依赖  使用 pnpm 安装（推荐） pnpm install  或使用 npm npm install   开发模式  启动开发服务器 pnpm dev  GitHub Pages 开发模式 pnpm dev:github   构建生产版本  构建生产版本 pnpm build  GitHub Pages 构建 pnpm build:github   预览构建结果  pnpm preview   📁 项目结构  . ├── public/                    静态资源目录 │   ├── assets/               静态资源（CSS、JS、图片、字体） │   ├── avatar.svg            头像 │   └── favicon.svg           网站图标 ├── script/                   脚本工具 │   └── newpost.js            新建文章脚本 ├── src/              ...",
-    "createdAt": 1783072588949.7056
+    "createdAt": 1783072588949.7056,
+    "status": "running"
   },
   {
     "id": 1783072588950.811,
@@ -293,7 +296,7 @@
     "version": "0.1.2",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/my-project/byt.music",
-    "port": 1024,
+    "port": 5174,
     "group": "Boycot",
     "scripts": {
       "dev": "vite",
@@ -303,7 +306,8 @@
       "format": "prettier --write src/"
     },
     "description": "byt.music  聚合各大音乐平台于一体的音乐播放器。  技术栈： Vue 3 + Vite + Element Plus + Pinia.   推荐 IDE 配置  VSCode + Volar (and disable Vetur).  自定义配置  查看 Vite.  项目安装  pnpm install   启动开发服务器  pnpm dev   构建生产环境  pnpm build   ESLint  pnpm lint",
-    "createdAt": 1783072588952.7747
+    "createdAt": 1783072588952.7747,
+    "status": "running"
   },
   {
     "id": 1783072588952.407,
@@ -955,11 +959,11 @@
   },
   {
     "id": 1783073218684.5208,
-    "name": "yzh.mall.pc",
+    "name": "yzh.b2c.pc",
     "version": "0.1.0",
-    "nodeVersion": "未指定",
+    "nodeVersion": "14.19.0",
     "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.b2c.pc",
-    "port": 1024,
+    "port": 1030,
     "group": "B2C",
     "scripts": {
       "serve": "vue-cli-service serve",
@@ -973,7 +977,9 @@
       "lint-staged": "lint-staged"
     },
     "description": "Yzh.B2c.Pc Web  pc改版vue2版本  Getting started  To make it easy for you to get started with GitLab, here's a list of recommended next steps.  Already a pro? Just edit this README.md and make it your own. Want to make it easy? Use the template at the bottom!  Add your files  - [ ] Create or upload files - [ ] Add files using the command line or push an existing Git repository with the following command:  cd existing_repo git remote add origin http://192.168.1.218:8888/YZH-WEB/yzh.b2c.pc-web.git git branch -M master git push -uf origin master   Integrate with your tools  - [ ] Set up project integrations  Collaborate with your team  - [ ] Invite team members and collaborators - [ ] Create a new merge request - [ ] Automatically close issues from merge requests - [ ] Enable merge request approvals - [ ] Automatically merge when pipeline succeeds  Test and Deploy  Use the built-in continuous integration in GitLab.  - [ ] Get started with GitLab CI/CD - [ ] Analyze your code for known vulnera...",
-    "createdAt": 1783073218684.5208
+    "createdAt": 1783073218684.5208,
+    "status": "running",
+    "updatedAt": 1783323782660
   },
   {
     "id": 1783073218685.514,
@@ -1070,7 +1076,7 @@
     "version": "0.1.0",
     "nodeVersion": "未指定",
     "projectPath": "/Users/boycott/Desktop/yzh-project/B2C/yzh.pc_display_page",
-    "port": 1024,
+    "port": 1031,
     "group": "B2C",
     "scripts": {
       "serve": "vue-cli-service serve",
@@ -1083,7 +1089,8 @@
       "lint": "vue-cli-service lint"
     },
     "description": "集采PC统一登录  Project setup yarn install   Compiles and hot-reloads for development yarn serve   Compiles and minifies for production yarn build   Lints and fixes files yarn lint   Customize configuration See Configuration Reference.",
-    "createdAt": 1783073218686.7424
+    "createdAt": 1783073218686.7424,
+    "status": "running"
   },
   {
     "id": 1783305555328,

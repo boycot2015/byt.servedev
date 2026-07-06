@@ -5,19 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>项目管理工具</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
   <div class="header">
-    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;max-width: 1360px; margin: 0 auto;">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <button class="menu-toggle" onclick="toggleSidebar()" id="menuToggle">☰</button>
-        <div>
-          <h1>项目管理工具</h1>
-          <p>简化开发流程，一键启动项目</p>
-        </div>
+    <div class="flex items-center justify-between w-full gap-2 max-w-[1360px] mx-auto">
+      <div class="flex items-center gap-4 md:hidden">
+        <button class="menu-toggle" onclick="toggleSidebar()" id="menuToggle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 18q-.425 0-.712-.288T3 17t.288-.712T4 16h16q.425 0 .713.288T21 17t-.288.713T20 18zm0-5q-.425 0-.712-.288T3 12t.288-.712T4 11h16q.425 0 .713.288T21 12t-.288.713T20 13zm0-5q-.425 0-.712-.288T3 7t.288-.712T4 6h16q.425 0 .713.288T21 7t-.288.713T20 8z"/></svg>
+        </button>
+      </div>
+      <div class="text-center md:text-left w-full flex-1">
+        <h1>项目管理工具</h1>
+        <p>简化开发流程，一键启动项目</p>
       </div>
       <div class="theme-toggle-container">
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">🌙</button>
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M12 21q-3.75 0-6.375-2.625T3 12t2.625-6.375T12 3q.35 0 .688.025t.662.075q-1.025.725-1.638 1.888T11.1 7.5q0 2.25 1.575 3.825T16.5 12.9q1.375 0 2.525-.613T20.9 10.65q.05.325.075.662T21 12q0 3.75-2.625 6.375T12 21"/></svg>
+        </button>
         <div class="color-picker-panel" id="colorPickerPanel">
           <!-- <div class="color-picker-title">主题色</div> -->
           <div class="color-options">
@@ -58,8 +64,8 @@
     </div>
     
     <div class="content-area">
-      <div class="operation">
-        <div class="actions">
+      <div class="operation flex-col md:flex-row" style="background: var(--bg-primary);position: sticky;top:0px;z-index: 100;">
+        <div class="actions flex items-center">
             <button class="btn btn-primary" onclick="openImportModal()">
               <span>+</span> 导入项目
             </button>
@@ -69,11 +75,11 @@
             <button class="btn btn-success" onclick="openScanModal()">
               <span>📁</span> 批量扫描
             </button>
-            <button class="btn btn-danger batch-delete-desktop" onclick="batchDelete()" id="batchDeleteBtnDesktop" disabled>
+            <button class="btn btn-danger hidden md:block batch-delete-desktop" onclick="batchDelete()" id="batchDeleteBtnDesktop" disabled>
                 <span>🗑️</span> 批量删除
             </button>
         </div>
-        <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="flex filter-box items-center justify-between gap-3 w-full">
           <select id="statusFilter">
             <option value="all">全部状态</option>
             <option value="running">运行中</option>
@@ -86,16 +92,16 @@
       
       <div class="card">
         <div class="card-header" style="display: flex;">
-          <div style="display: flex; align-items: center; gap: 12px;flex:1;width: 100%;justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="flex items-center justify-between w-full flex-1">
+            <div class="flex items-center gap-2">
               <label class="custom-checkbox">
                 <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
                 <span class="checkbox-checkmark"></span>
                 <span class="checkbox-label">全选</span>
               </label>
-              <h2 id="currentGroupTitle">项目列表</h2>
+              <h2 id="currentGroupTitle">全部项目</h2>
             </div>
-            <button class="btn btn-danger btn-sm batch-delete-mobile" onclick="batchDelete()" id="batchDeleteBtnMobile" disabled>
+            <button class="btn btn-danger btn-sm batch-delete-mobile md:hidden" onclick="batchDelete()" id="batchDeleteBtnMobile" disabled>
               <span>🗑️</span> 删除
             </button>
           </div>
