@@ -933,9 +933,9 @@ async function loadProjects(shouldFetchGitInfo = false, resetPagination = true) 
       projects = [...projects, ...newProjects];
     }
     
-    paginationState.total = result.pagination.total;
-    paginationState.hasMore = result.pagination.hasMore;
-    paginationState.page = result.pagination.page;
+    paginationState.total = result.total;
+    paginationState.hasMore = result.hasMore;
+    paginationState.page = result.page;
     if (result.groupStats) {
       paginationState.groupStats = result.groupStats;
     }
@@ -1057,7 +1057,7 @@ function renderProjects(appendMode = false) {
           </div>
           <div class="info-item flex-col md:flex-row">
             <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><!-- Icon from Akar Icons by Arturo Wibawa - https://github.com/artcoholic/akar-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm6 14h8"/></svg></span>
-            <span>端口: ${project.port}</span>
+            <span>端口: ${project.port || '未指定'}</span>
           </div>
           <div class="info-item flex-col md:flex-row" style="margin-left: auto;">
             <span class="icon time">🕐</span>
@@ -1078,11 +1078,11 @@ function renderProjects(appendMode = false) {
           ? `<button class="btn btn-danger btn-sm" onclick="stopProject(${project.id})">停止</button>`
           : project.status === 'starting'
             ? `<button class="btn btn-success btn-sm" disabled>启动中...</button>`
-            : `<button class="btn btn-success btn-sm" onclick="startProject(${project.id})">启动</button>`
+            : `<button class="btn btn-success btn-sm" onclick="startProject('${project.id}')">启动</button>`
         }
-        <button class="btn btn-secondary btn-sm" onclick="editProject(${project.id})">编辑</button>
-        <button class="btn btn-secondary btn-sm" onclick="viewLogs(${project.id})">日志</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteProject(${project.id})">删除</button>
+        <button class="btn btn-secondary btn-sm" onclick="editProject('${project.id}')">编辑</button>
+        <button class="btn btn-secondary btn-sm" onclick="viewLogs('${project.id}')">日志</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProject('${project.id}')">删除</button>
         ${isGitRepo ? `<div class="git-actions">
           <button class="btn btn-git btn-sm ${gitInfo.behindCount > 0 ? 'btn-git-badge' : ''}" onclick="gitPull(${project.id})">
             ⬇️ 拉取 ${gitInfo.behindCount > 0 ? `<span class="git-count-badge">${gitInfo.behindCount}</span>` : ''}
@@ -1388,7 +1388,7 @@ async function importScannedProjects() {
 }
 
 function editProject(id) {
-  const project = projects.find(p => p.id === id);
+  const project = projects.find(p => p.id == id);
   if (!project) return;
 
   document.getElementById('editId').value = project.id;
@@ -1431,7 +1431,7 @@ async function saveEdit(event) {
 }
 
 function deleteProject(id) {
-  const project = projects.find(p => p.id === id);
+  const project = projects.find(p => p.id == id);
   const name = project?.name || '该项目';
   document.getElementById('confirmTitle').textContent = '确认删除';
   document.getElementById('confirmMessage').textContent = `确定要删除 "${name}" 吗？此操作不可撤销。`;
@@ -1444,11 +1444,16 @@ function deleteProject(id) {
 async function confirmDelete() {
   if (pendingDeleteId === null) return;
   
-  await fetch(`/api/projects/${pendingDeleteId}`, { method: 'DELETE' });
-  resetFilters();
-  await loadProjects();
-  pendingDeleteId = null;
-  closeModal('confirmModal');
+  let response = await fetch(`/api/projects/${pendingDeleteId}`, { method: 'DELETE' });
+  let result = await response.json();
+  if (result.error) {
+    showToast(result.error, 'error');
+  } else {
+    resetFilters();
+    await loadProjects();
+    pendingDeleteId = null;
+    closeModal('confirmModal');
+  }
 }
 
 function toggleSelectAll() {
@@ -1500,7 +1505,7 @@ async function confirmBatchDelete() {
 
 async function startProject(id) {
   // 先打开日志弹窗，显示启动中提示
-  const project = projects.find(p => p.id === id);
+  const project = projects.find(p => p.id == id);
   currentLogsProjectId = id;
   document.getElementById('logsTitle').textContent = `${project.name} - 日志`;
   updateStopButton(id);
@@ -1581,7 +1586,7 @@ function pollProjectStatus(id) {
         clearInterval(interval);
         return;
       }
-      const project = projects.find(p => p.id === id);
+      const project = projects.find(p => p.id == id);
       const statusChanged = project && project.status !== result.status;
       
       if (statusChanged) {
@@ -1610,7 +1615,7 @@ function pollProjectStatus(id) {
 }
 
 function stopProject(id) {
-  const project = projects.find(p => p.id === id);
+  const project = projects.find(p => p.id == id);
   const name = project?.name || '该项目';
   document.getElementById('confirmTitle').textContent = '确认停止';
   document.getElementById('confirmMessage').textContent = `确定要停止 "${name}" 吗？`;
@@ -1647,7 +1652,7 @@ const lastLogIndexMap = {};
 
 function viewLogs(id) {
   currentLogsProjectId = id;
-  const project = projects.find(p => p.id === id);
+  const project = projects.find(p => p.id == id);
   document.getElementById('logsTitle').textContent = `${project.name} - 日志`;
   updateStopButton(id);
   openModal('logsModal');
@@ -1682,7 +1687,7 @@ function syntaxHighlight(json) {
 }
 
 async function viewPackageJson(id) {
-  const project = projects.find(p => p.id === id);
+  const project = projects.find(p => p.id == id);
   const response = await fetch(`/api/projects/${id}/package-json`);
   const result = await response.json();
   
@@ -1697,7 +1702,7 @@ async function viewPackageJson(id) {
 }
 
 function updateStopButton(id) {
-  const project = projects.find(p => p.id === id);
+  const project = projects.find(p => p.id == id);
   const stopBtn = document.getElementById('stopProjectBtn');
   if (project && project.status === 'running') {
     stopBtn.style.display = 'inline-block';
