@@ -843,7 +843,7 @@ let gitInfoRefreshInterval = null;
 
 // 刷新所有项目的 Git 信息
 async function refreshAllGitInfo() {
-  if (projects.length === 0) return;
+  if (!projects || projects.length === 0) return;
   
   try {
     await Promise.all(projects.map(p => fetchGitInfo(p.id)));
@@ -925,26 +925,28 @@ async function loadProjects(shouldFetchGitInfo = false, resetPagination = true) 
     const result = await response.json();
     
     if (resetPagination) {
-      projects = result.projects;
+      projects = result.list;
     } else {
       // 追加模式，避免重复
       const existingIds = new Set(projects.map(p => p.id));
-      const newProjects = result.projects.filter(p => !existingIds.has(p.id));
+      const newProjects = result.list.filter(p => !existingIds.has(p.id));
       projects = [...projects, ...newProjects];
     }
     
-    paginationState.total = result.total;
-    paginationState.hasMore = result.hasMore;
-    paginationState.page = result.page;
+    paginationState.total = result.pagination.total;
+    paginationState.hasMore = result.pagination.hasMore;
+    paginationState.page = result.pagination.page;
     if (result.groupStats) {
       paginationState.groupStats = result.groupStats;
     }
     
     resetPagination && showLoading();
     if (shouldFetchGitInfo) {
-      // 页面加载时，刷新所有项目的 Git 信息
-      gitInfoCache = {};
-      await Promise.all(projects.map(p => fetchGitInfo(p.id)));
+      if (projects && projects.length > 0) {
+        // 页面加载时，刷新所有项目的 Git 信息
+        gitInfoCache = {};
+        await Promise.all(projects.map(p => fetchGitInfo(p.id)));
+      }
     }
     resetPagination && hideLoading();
     
@@ -1006,7 +1008,7 @@ function renderProjects(appendMode = false) {
   
   document.getElementById('projectCount').textContent = `共 ${paginationState.total} 个项目`;
   
-  if (projects.length === 0) {
+  if (!projects || projects.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="icon">📋</div>
