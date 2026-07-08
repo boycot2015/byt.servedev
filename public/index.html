@@ -11,12 +11,12 @@
 <body>
   <div class="header">
     <div class="flex items-center justify-between w-full gap-2 max-w-[1360px] mx-auto">
-      <div class="flex items-center gap-4 md:hidden">
+      <div class="flex items-center gap-4 lg:hidden">
         <button class="menu-toggle" onclick="toggleSidebar()" id="menuToggle">
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 18q-.425 0-.712-.288T3 17t.288-.712T4 16h16q.425 0 .713.288T21 17t-.288.713T20 18zm0-5q-.425 0-.712-.288T3 12t.288-.712T4 11h16q.425 0 .713.288T21 12t-.288.713T20 13zm0-5q-.425 0-.712-.288T3 7t.288-.712T4 6h16q.425 0 .713.288T21 7t-.288.713T20 8z"/></svg>
         </button>
       </div>
-      <div class="text-center md:text-left w-full flex-1">
+      <div class="text-center lg:text-left w-full flex-1">
         <h1>项目管理工具</h1>
         <p>简化开发流程，一键启动项目</p>
       </div>
@@ -92,20 +92,22 @@
       
       <div class="card">
         <div class="card-header" style="display: flex;">
-          <div class="flex items-center justify-between w-full flex-1">
+          <div class="flex items-center justify-between flex-1">
             <div class="flex items-center gap-2">
               <label class="custom-checkbox">
                 <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
                 <span class="checkbox-checkmark"></span>
                 <span class="checkbox-label">全选</span>
               </label>
-              <h2 id="currentGroupTitle">全部项目</h2>
+              <h2 id="currentGroupTitle">全部项目
+                <span class="group-count md:hidden" id="allCount">0</span>
+              </h2>
             </div>
             <button class="btn btn-danger btn-sm batch-delete-mobile md:hidden" onclick="batchDelete()" id="batchDeleteBtnMobile" disabled>
               <span>🗑️</span> 删除
             </button>
           </div>
-          <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="md:flex items-center gap-4 hidden">
             <span id="projectCount" style="color: #6b7280; font-size: 14px;flex:1;">共 0 个项目</span>
           </div>
         </div>

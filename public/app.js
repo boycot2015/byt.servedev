@@ -1007,6 +1007,7 @@ function renderProjects(appendMode = false) {
   const container = document.getElementById('projectList');
   
   document.getElementById('projectCount').textContent = `共 ${paginationState.total} 个项目`;
+  document.getElementById('allCount').textContent = `(${paginationState.total})`;
   
   if (!projects || projects.length === 0) {
     container.innerHTML = `
@@ -1029,21 +1030,19 @@ function renderProjects(appendMode = false) {
     
     return `
     <div class="project-item ${project.status || 'stopped'}" id="project-${project.id}">
-      <div class="project-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <label class="custom-checkbox">
-            <input type="checkbox" class="project-checkbox" value="${project.id}" onchange="updateBatchDeleteBtn()">
-            <span class="checkbox-checkmark"></span>
-          </label>
-          <span class="project-name">${project.name}</span>
-          <span class="project-version">${project.version}</span>
-          ${isGitRepo && currentBranch ? `<span class="git-branch-tag" onclick="openBranchModal(${project.id})" title="点击切换分支">🌿 ${currentBranch}</span>` : ''}
-          <span class="group-tag">${project.group || '默认分组'}</span>
-          <span class="package-json-tag" onclick="viewPackageJson(${project.id})" title="点击查看 package.json">📦 package.json</span>
-          <span class="status-badge ${project.status === 'running' ? 'status-running' : project.status === 'starting' ? 'status-starting' : 'status-stopped'}">
-            ${project.status === 'running' ? '运行中' : project.status === 'starting' ? '启动中...' : '已停止'}
-          </span>
-        </div>
+      <div class="project-header flex items-center gap-4 flex-wrap">
+        <label class="custom-checkbox">
+          <input type="checkbox" class="project-checkbox" value="${project.id}" onchange="updateBatchDeleteBtn()">
+          <span class="checkbox-checkmark"></span>
+        </label>
+        <span class="project-name">${project.name}</span>
+        <span class="project-version">${project.version}</span>
+        ${isGitRepo && currentBranch ? `<span class="git-branch-tag" onclick="openBranchModal(${project.id})" title="点击切换分支">🌿 ${currentBranch}</span>` : ''}
+        <span class="group-tag">${project.group || '默认分组'}</span>
+        <span class="package-json-tag" onclick="viewPackageJson(${project.id})" title="点击查看 package.json">📦 package.json</span>
+        <span class="status-badge ${project.status === 'running' ? 'status-running' : project.status === 'starting' ? 'status-starting' : 'status-stopped'}">
+          ${project.status === 'running' ? '运行中' : project.status === 'starting' ? '启动中...' : '已停止'}
+        </span>
       </div>
       <div class="project-info">
         <div class="info-item">
@@ -1073,17 +1072,19 @@ function renderProjects(appendMode = false) {
         <span class="git-commit-time" title="提交时间">🕐 ${gitInfo.commitTime ? formatGitTimestamp(gitInfo.commitTime) : ''}</span>
         <span class="git-commit-message line-clamp-1" title="${commitMessage}">${truncateCommitMessage(commitMessage)}</span>
       </div>` : ''}
-      <div class="project-actions">
-        ${project.status === 'running' 
-          ? `<button class="btn btn-danger btn-sm" onclick="stopProject(${project.id})">停止</button>`
-          : project.status === 'starting'
-            ? `<button class="btn btn-success btn-sm" disabled>启动中...</button>`
-            : `<button class="btn btn-success btn-sm" onclick="startProject('${project.id}')">启动</button>`
-        }
-        <button class="btn btn-secondary btn-sm" onclick="editProject('${project.id}')">编辑</button>
-        <button class="btn btn-secondary btn-sm" onclick="viewLogs('${project.id}')">日志</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteProject('${project.id}')">删除</button>
-        ${isGitRepo ? `<div class="git-actions">
+      <div class="project-actions flex gap-2 flex-col justify-between md:flex-row">
+        <div class="flex gap-2 w-full justify-around md:justify-start md:w-auto">
+          ${project.status === 'running' 
+            ? `<button class="btn btn-danger btn-sm" onclick="stopProject(${project.id})">停止</button>`
+            : project.status === 'starting'
+              ? `<button class="btn btn-success btn-sm" disabled>启动中...</button>`
+              : `<button class="btn btn-success btn-sm" onclick="startProject('${project.id}')">启动</button>`
+          }
+          <button class="btn btn-secondary btn-sm" onclick="editProject('${project.id}')">编辑</button>
+          <button class="btn btn-secondary btn-sm" onclick="viewLogs('${project.id}')">日志</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProject('${project.id}')">删除</button>
+        </div>
+        ${isGitRepo ? `<div class="git-actions w-full justify-around md:justify-start md:w-auto">
           <button class="btn btn-git btn-sm ${gitInfo.behindCount > 0 ? 'btn-git-badge' : ''}" onclick="gitPull(${project.id})">
             ⬇️ 拉取 ${gitInfo.behindCount > 0 ? `<span class="git-count-badge">${gitInfo.behindCount}</span>` : ''}
           </button>
