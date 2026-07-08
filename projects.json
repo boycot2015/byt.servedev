@@ -2,7 +2,7 @@
   {
     "id": 1783475206716,
     "createdAt": 1783475206716,
-    "name": "web",
+    "name": "byt.cms/web",
     "projectPath": "/Users/boycott/Desktop/my-project/byt.cms/web",
     "group": "Boycot",
     "scripts": {
@@ -11,9 +11,9 @@
       "preview": "vite preview"
     },
     "version": "1.0.0",
-    "nodeVersion": "未指定",
+    "nodeVersion": "v24.3.0",
     "description": "视频网站前端",
-    "status": "stopped",
+    "status": "running",
     "isGitRepo": true,
     "currentBranch": "master",
     "commitId": "121af28a2cddc1867cb62ac0cf97f33bcc7a0247",
@@ -21,12 +21,16 @@
     "commitAuthor": "boycot",
     "commitTime": "1773999738",
     "aheadCount": 0,
-    "behindCount": 0
+    "behindCount": 0,
+    "port": 3000,
+    "pid": 8429,
+    "lastRunTime": "2026-07-08T08:36:51.758Z",
+    "updatedAt": 1783505951182
   },
   {
     "id": 1783475206847,
     "createdAt": 1783475206847,
-    "name": "admin",
+    "name": "byt.cms/admin",
     "projectPath": "/Users/boycott/Desktop/my-project/byt.cms/admin",
     "group": "Boycot",
     "scripts": {
@@ -36,9 +40,9 @@
       "preview": "vite preview"
     },
     "version": "1.0.2",
-    "nodeVersion": "未指定",
+    "nodeVersion": "v24.3.0",
     "description": "React + Vite  This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.  Currently, two official plugins are available:  - @vitejs/plugin-react uses Babel (or oxc when used in rolldown-vite) for Fast Refresh - @vitejs/plugin-react-swc uses SWC for Fast Refresh  React Compiler  The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see this documentation.  Expanding the ESLint configuration  If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the TS template for information on how to integrate TypeScript and typescript-eslint in your project.",
-    "status": "stopped",
+    "status": "running",
     "isGitRepo": true,
     "currentBranch": "master",
     "commitId": "121af28a2cddc1867cb62ac0cf97f33bcc7a0247",
@@ -46,12 +50,16 @@
     "commitAuthor": "boycot",
     "commitTime": "1773999738",
     "aheadCount": 0,
-    "behindCount": 0
+    "behindCount": 0,
+    "port": 5173,
+    "pid": 8000,
+    "lastRunTime": "2026-07-08T08:36:40.695Z",
+    "updatedAt": 1783505960505
   },
   {
     "id": 1783475206941,
     "createdAt": 1783475206941,
-    "name": "api",
+    "name": "byt.cms/api",
     "projectPath": "/Users/boycott/Desktop/my-project/byt.cms/api",
     "group": "Boycot",
     "scripts": {
@@ -62,9 +70,9 @@
       "cf-typegen": "wrangler types"
     },
     "version": "1.0.1",
-    "nodeVersion": "未指定",
+    "nodeVersion": "v24.3.0",
     "description": "",
-    "status": "stopped",
+    "status": "running",
     "isGitRepo": true,
     "currentBranch": "master",
     "commitId": "121af28a2cddc1867cb62ac0cf97f33bcc7a0247",
@@ -72,7 +80,11 @@
     "commitAuthor": "boycot",
     "commitTime": "1773999738",
     "aheadCount": 0,
-    "behindCount": 0
+    "behindCount": 0,
+    "port": 8787,
+    "pid": 9419,
+    "lastRunTime": "2026-07-08T08:37:52.335Z",
+    "updatedAt": 1783505969671
   },
   {
     "id": 1783475207031,
@@ -93,9 +105,9 @@
       "check": "astro check"
     },
     "version": "1.0.0",
-    "nodeVersion": "未指定",
+    "nodeVersion": "22.16.0",
     "description": "Astro blog  示例 💻  Check out the Demo, hosted on Vercel  开始使用  npm 7+ npm install  pnpm pnpm install  ![Deploy with Vercel](https://vercel.com/new/clone?repository-url=https://github.com/boycot2015/astro-blog) ![Deploy with Netlify](https://app.netlify.com/start/deploy)  预览  !Astro Theme Cactus in a light theme mode  !Astro Theme Cactus in a dark theme mode  脚本命令  Replace pnpm with your choice of npm / yarn  | Command          | Action                                                         | | :--------------- | :------------------------------------------------------------- | | pnpm install   | Installs dependencies                                          | | pnpm dev       | Starts local dev server at localhost:3000                    | | pnpm build     | Build your production site to ./dist/                        | | pnpm postbuild | Pagefind script to build the static search of your blog posts  | | pnpm preview   | Preview your build locally, before deploying                   |...",
-    "status": "stopped",
+    "status": "running",
     "isGitRepo": true,
     "currentBranch": "main",
     "commitId": "70ba351296182ff6c4e72e693b124535905e4007",
@@ -103,7 +115,10 @@
     "commitAuthor": "boycot",
     "commitTime": "1765866898",
     "aheadCount": 0,
-    "behindCount": 0
+    "behindCount": 0,
+    "port": 4323,
+    "pid": 70667,
+    "lastRunTime": "2026-07-08T10:18:09.244Z"
   },
   {
     "id": 1783475207134,
@@ -120,7 +135,7 @@
       "stop": "pm2 delete all"
     },
     "version": "1.0.10",
-    "nodeVersion": "未指定",
+    "nodeVersion": "14.19.0",
     "description": "boycot平台api",
     "status": "stopped",
     "isGitRepo": true,
@@ -130,7 +145,9 @@
     "commitAuthor": "boycot",
     "commitTime": "1766545012",
     "aheadCount": 0,
-    "behindCount": 0
+    "behindCount": 0,
+    "port": 1024,
+    "lastRunTime": "2026-07-08T10:24:56.150Z"
   },
   {
     "id": 1783475207232,
@@ -1217,19 +1234,20 @@
       "serve": "nuxt serve"
     },
     "version": "1.0.2",
-    "nodeVersion": "未指定",
+    "nodeVersion": "14.19.0",
     "description": "云中鹤官网（vue + ssr)  1. 目录结构 |——api                                  // api接口 |——apps                                 // savedPosition |——components                           // 功能组件 |——config                               // 项目配置     |——data                             // 静态数据     |——routes.js                        // 静态路由     |——sitemap.js                       // 网站sitemap配置文件 |——filters                              // 全局过滤器 |——layouts                              // 页面布局 |——middleware                           // 中间件，页面加载前处理的一下业务代码 |——pages                                // 所有页面及业务组件     |——components                       // 业务组件 |——plugins                              // 第三方插件，element-ui, axios, vue-swiper等 |——static                               // 静态文件，可直接访问，存放 favicon.ico robots.txt 等文件 |——utils                                // 工具方法 |——nuxt.config.js                       // 框架配置文件     2. 项目运行与打包配置  install dependencies $ yarn install  serve with hot reload at localhost:3001 $...",
     "status": "stopped",
     "isGitRepo": true,
-    "currentBranch": "yunzhmall",
-    "commitId": "864af024c7849200b5cadec1b16b757acb8b456b",
-    "commitMessage": "``` build: 更新.gitignore文件",
+    "currentBranch": "master",
+    "commitId": "df02d28a63f09e93c30d105d24f8600329b7b72b",
+    "commitMessage": "feat(case): 更新案例详情页面图片资源",
     "commitAuthor": "boycot",
-    "commitTime": "1782441013",
+    "commitTime": "1782377800",
     "aheadCount": 0,
     "behindCount": 0,
     "updatedAt": 1783475333210,
-    "port": null
+    "port": 3000,
+    "lastRunTime": "2026-07-08T10:17:34.848Z"
   },
   {
     "id": 1783475283159,
@@ -1870,7 +1888,7 @@
       "deploy": "start ./deploy.sh"
     },
     "version": "1.0.0",
-    "nodeVersion": "未指定",
+    "nodeVersion": "22.16.0",
     "description": "vue-admin-beautiful（ant-design-vue）    地址  - 🎉 vue2.x + element-ui（免费商用，支持 PC、平板、手机）  - ⚡️ vue3.x + ant-design-vue（beta 版本，免费商用，支持 PC、平板、手机）  - 🚀 pro 版演示地址（付费版本，支持 PC、平板、手机，客服 QQ 1204505056）  - 🌐 github 仓库地址  - 🌐 码云仓库地址  备份地址（以上地址无法使用时请访问备份站）  - 🎉 vue2.x + element-ui（免费商用，支持 PC、平板、手机）  - ⚡️ vue3.x + ant-design-vue（beta 版本，免费商用，支持 PC、平板、手机）  - 🚀 pro 版演示地址（付费版本，支持 PC、平板、客服 QQ 1204505056）  🌱 vue3.x vue3.0-antdv 分支（ant-design-vue）点击切换分支  克隆项目 git clone -b vue3.0-antdv https://github.com/chuzhixin/vue-admin-beautiful.git 进入项目目录 cd vue-admin-beautiful 安装依赖 npm i 本地开发 启动项目 npm run serve   🌱vue2.x master 分支（element-ui）点击切换分支  克隆项目 git clone -b master https://github.com/chuzhixin/vue-admin-beautiful.git 进入项目目录 cd vue-admin-beautiful 安装依赖 npm i 本地开发 启动项目 npm run serve   vue-admin-beautiful 前端讨论群 972435319，1139183756  不管您加或者不加，您都可以享受到开源的代码，感谢您的支持和信任，群内提供 vue-admin-beautiful-template 基础版本、开发工具配置及使用手册、提供问题解答。  !img !img  我们定期赞助的开源项目（感谢巨人）      鸣谢  | Project                                 ...",
     "status": "stopped",
     "isGitRepo": true,
@@ -1882,7 +1900,8 @@
     "aheadCount": 0,
     "behindCount": 0,
     "updatedAt": 1783475317356,
-    "port": null
+    "port": 1024,
+    "lastRunTime": "2026-07-08T10:17:47.434Z"
   },
   {
     "id": 1783475284984,
@@ -1909,6 +1928,73 @@
     "aheadCount": 0,
     "behindCount": 0,
     "updatedAt": 1783475309701,
+    "port": null
+  },
+  {
+    "id": 1783506091655,
+    "createdAt": 1783506091655,
+    "name": "yzh.b2b.cloud_mobile",
+    "projectPath": "/Users/boycott/Desktop/yzh-project/B2B/yzh.b2b.cloud_mobile/",
+    "group": "B2B",
+    "scripts": {
+      "serve": "npm run dev:h5",
+      "show": "cross-env NODE_ENV=production UNI_PLATFORM=h5 VUE_APP_TITLE=show VUE_APP_BASE_URL=https://gateway-show.yunzhonghe.com vue-cli-service uni-build",
+      "show:mp-weixin": "cross-env NODE_ENV=show UNI_PLATFORM=mp-weixin vue-cli-service uni-build --minimize",
+      "build": "npm run build:h5",
+      "build:app-plus": "cross-env NODE_ENV=production UNI_PLATFORM=app-plus vue-cli-service uni-build",
+      "build:custom": "cross-env NODE_ENV=production uniapp-cli custom",
+      "build:show": "cross-env NODE_ENV=show UNI_PLATFORM=h5 vue-cli-service uni-build",
+      "build:h5": "cross-env NODE_ENV=production UNI_PLATFORM=h5 VUE_APP_BASE_URL=https://public-gateway.yunzhonghe.com vue-cli-service uni-build",
+      "build:mp-360": "cross-env NODE_ENV=production UNI_PLATFORM=mp-360 vue-cli-service uni-build",
+      "build:mp-alipay": "cross-env NODE_ENV=production UNI_PLATFORM=mp-alipay vue-cli-service uni-build",
+      "build:mp-baidu": "cross-env NODE_ENV=production UNI_PLATFORM=mp-baidu vue-cli-service uni-build",
+      "build:mp-jd": "cross-env NODE_ENV=production UNI_PLATFORM=mp-jd vue-cli-service uni-build",
+      "build:mp-kuaishou": "cross-env NODE_ENV=production UNI_PLATFORM=mp-kuaishou vue-cli-service uni-build",
+      "build:mp-lark": "cross-env NODE_ENV=production UNI_PLATFORM=mp-lark vue-cli-service uni-build",
+      "build:mp-qq": "cross-env NODE_ENV=production UNI_PLATFORM=mp-qq vue-cli-service uni-build",
+      "build:mp-toutiao": "cross-env NODE_ENV=production UNI_PLATFORM=mp-toutiao vue-cli-service uni-build",
+      "build:mp-weixin": "cross-env NODE_ENV=production UNI_PLATFORM=mp-weixin vue-cli-service uni-build",
+      "build:quickapp-native": "cross-env NODE_ENV=production UNI_PLATFORM=quickapp-native vue-cli-service uni-build",
+      "build:quickapp-webview": "cross-env NODE_ENV=production UNI_PLATFORM=quickapp-webview vue-cli-service uni-build",
+      "build:quickapp-webview-huawei": "cross-env NODE_ENV=production UNI_PLATFORM=quickapp-webview-huawei vue-cli-service uni-build",
+      "build:quickapp-webview-union": "cross-env NODE_ENV=production UNI_PLATFORM=quickapp-webview-union vue-cli-service uni-build",
+      "dev:app-plus": "cross-env NODE_ENV=development UNI_PLATFORM=app-plus vue-cli-service uni-build --watch",
+      "dev:custom": "cross-env NODE_ENV=development uniapp-cli custom",
+      "dev:h5": "cross-env NODE_ENV=development UNI_PLATFORM=h5 vue-cli-service uni-serve --watch",
+      "dev:mp-360": "cross-env NODE_ENV=development UNI_PLATFORM=mp-360 vue-cli-service uni-build --watch",
+      "dev:mp-alipay": "cross-env NODE_ENV=development UNI_PLATFORM=mp-alipay vue-cli-service uni-build --watch",
+      "dev:mp-baidu": "cross-env NODE_ENV=development UNI_PLATFORM=mp-baidu vue-cli-service uni-build --watch",
+      "dev:mp-jd": "cross-env NODE_ENV=development UNI_PLATFORM=mp-jd vue-cli-service uni-build --watch",
+      "dev:mp-kuaishou": "cross-env NODE_ENV=development UNI_PLATFORM=mp-kuaishou vue-cli-service uni-build --watch",
+      "dev:mp-lark": "cross-env NODE_ENV=development UNI_PLATFORM=mp-lark vue-cli-service uni-build --watch",
+      "dev:mp-qq": "cross-env NODE_ENV=development UNI_PLATFORM=mp-qq vue-cli-service uni-build --watch",
+      "dev:mp-toutiao": "cross-env NODE_ENV=development UNI_PLATFORM=mp-toutiao vue-cli-service uni-build --watch",
+      "dev:mp-weixin": "cross-env NODE_ENV=development UNI_PLATFORM=mp-weixin vue-cli-service uni-build --watch --minimize",
+      "dev:quickapp-native": "cross-env NODE_ENV=development UNI_PLATFORM=quickapp-native vue-cli-service uni-build --watch",
+      "dev:quickapp-webview": "cross-env NODE_ENV=development UNI_PLATFORM=quickapp-webview vue-cli-service uni-build --watch",
+      "dev:quickapp-webview-huawei": "cross-env NODE_ENV=development UNI_PLATFORM=quickapp-webview-huawei vue-cli-service uni-build --watch",
+      "dev:quickapp-webview-union": "cross-env NODE_ENV=development UNI_PLATFORM=quickapp-webview-union vue-cli-service uni-build --watch",
+      "info": "node node_modules/@dcloudio/vue-cli-plugin-uni/commands/info.js",
+      "serve:quickapp-native": "node node_modules/@dcloudio/uni-quickapp-native/bin/serve.js",
+      "test:android": "cross-env UNI_PLATFORM=app-plus UNI_OS_NAME=android jest -i",
+      "test:h5": "cross-env UNI_PLATFORM=h5 jest -i",
+      "test:ios": "cross-env UNI_PLATFORM=app-plus UNI_OS_NAME=ios jest -i",
+      "test:mp-baidu": "cross-env UNI_PLATFORM=mp-baidu jest -i",
+      "test:mp-weixin": "cross-env UNI_PLATFORM=mp-weixin jest -i"
+    },
+    "version": "0.1.0",
+    "nodeVersion": "未指定",
+    "description": "Yzh.B2b.Wx Deliver  B2B小程序发货  Getting started  To make it easy for you to get started with GitLab, here's a list of recommended next steps.  Already a pro? Just edit this README.md and make it your own. Want to make it easy? Use the template at the bottom!  Add your files  - [ ] Create or upload files - [ ] Add files using the command line or push an existing Git repository with the following command:  cd existing_repo git remote add origin http://192.168.1.218:8888/YZH-WEB/yzh.b2b.wx_deliver.git git branch -M main git push -uf origin main   Integrate with your tools  - [ ] Set up project integrations  Collaborate with your team  - [ ] Invite team members and collaborators - [ ] Create a new merge request - [ ] Automatically close issues from merge requests - [ ] Enable merge request approvals - [ ] Automatically merge when pipeline succeeds  Test and Deploy  Use the built-in continuous integration in GitLab.  - [ ] Get started with GitLab CI/CD - [ ] Analyze your code for known vulne...",
+    "status": "stopped",
+    "isGitRepo": true,
+    "currentBranch": "master",
+    "commitId": "0e3a247cded21c82cf60f744cbf1003c7ce3c07a",
+    "commitMessage": "Merge branch 'feature/2026/01/20260126-front-warehouse' into 'master'",
+    "commitAuthor": "周荣",
+    "commitTime": "1773731622",
+    "aheadCount": 0,
+    "behindCount": 0,
+    "updatedAt": 1783506110033,
     "port": null
   }
 ]

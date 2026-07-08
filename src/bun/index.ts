@@ -144,47 +144,65 @@ function killPort(port: number): Promise<void> {
   });
 }
 
-async function detectNodeVersion(projectPath: string): Promise<{ version: string; manager: string }> {
+async function detectNodeVersion(projectPath: string): Promise<{ version: string; manager: string; fallback?: boolean }> {
   return new Promise((resolve) => {
-    const checkNvm = async () => {
-      return new Promise<string | null>((res) => {
-        const nvmPath = process.env.HOME + '/.nvm/nvm.sh';
-        if (!fs.existsSync(nvmPath)) {
-          res(null);
-          return;
+    const pkg = getPackageJson(projectPath);
+    
+    let nodeVersion = pkg?.engines?.node || '';
+    
+    if (!nodeVersion || nodeVersion === '未指定') {
+      const deps = { ...pkg?.dependencies, ...pkg?.devDependencies };
+      const getMajor = (v: string, len = 1) => parseInt(v.replace(/[^0-9]/g, '').substring(0, len)) || 0;
+      
+      // 框架检测规则配置 - 按优先级排序
+      const frameworks = [
+        { keys: ['vue', 'vue@next'], map: (v: string) => getMajor(v) === 3 ? '22.16.0' : '14.19.0' },
+        { keys: ['nuxt', 'nuxt3', 'nuxt-edge'], map: (v: string) => getMajor(v) === 3 ? '22.16.0' : '14.19.0' },
+        { keys: ['next', 'next@canary'], map: (v: string) => getMajor(v, 2) >= 13 ? '22.16.0' : '18.18.0' },
+        { keys: ['react', 'react-dom'], map: (v: string) => getMajor(v, 2) >= 18 ? '22.16.0' : '16.14.0' }
+      ];
+      
+      for (const { keys, map } of frameworks) {
+        const version = keys.map(k => deps?.[k]).find(Boolean);
+        if (version) {
+          nodeVersion = map(version);
+          break;
         }
-        exec(`cd "${projectPath}" && source "${nvmPath}" && nvm version 2>/dev/null`, (err, stdout) => {
-          if (err || !stdout || stdout.includes('N/A') || stdout.includes('not installed')) {
-            res(null);
+      }
+      nodeVersion = nodeVersion || '22.16.0';
+    }
+    
+    // 清理版本号（去掉 >=, ^, ~, v 等前缀）
+    const cleanVersion = nodeVersion.replace(/^[>=^~v]+/, '').replace('>=', '').replace('^', '').replace('~', '');
+    
+    // 检测 nvm（nvm 是 shell 函数，which 找不到，所以直接检查目录）
+    const nvmPath = process.env.HOME + '/.nvm/nvm.sh';
+    if (fs.existsSync(nvmPath)) {
+      exec(`bash -c "source '${nvmPath}' && nvm ls '${cleanVersion}' 2>/dev/null"`, (err, nvmOutput) => {
+        if (!err && nvmOutput.trim() && !nvmOutput.includes('N/A') && !nvmOutput.includes('not installed')) {
+          resolve({ version: cleanVersion, manager: 'nvm' });
+        } else {
+          resolve({ version: cleanVersion, manager: 'nvm', fallback: true });
+        }
+      });
+      return;
+    }
+    
+    // 检测 fnm
+    exec('which fnm 2>/dev/null', (err, output) => {
+      if (!err && output.trim()) {
+        exec(`bash -c "fnm list '${cleanVersion}' 2>/dev/null"`, (err, fnmOutput) => {
+          if (!err && fnmOutput.trim() && !fnmOutput.includes('not installed')) {
+            resolve({ version: cleanVersion, manager: 'fnm' });
           } else {
-            res(stdout.trim());
+            resolve({ version: cleanVersion, manager: 'fnm', fallback: true });
           }
         });
-      });
-    };
-
-    const checkFnm = async () => {
-      return new Promise<string | null>((res) => {
-        exec(`cd "${projectPath}" && fnm version 2>/dev/null`, (err, stdout) => {
-          if (err || !stdout) {
-            res(null);
-          } else {
-            res(stdout.trim());
-          }
-        });
-      });
-    };
-
-    checkNvm().then(nvmVersion => {
-      if (nvmVersion) {
-        resolve({ version: nvmVersion, manager: 'nvm' });
       } else {
-        checkFnm().then(fnmVersion => {
-          if (fnmVersion) {
-            resolve({ version: fnmVersion, manager: 'fnm' });
-          } else {
-            resolve({ version: process.version, manager: 'system' });
-          }
+        resolve({ 
+          version: cleanVersion || '14.19.0', 
+          manager: 'nvm',
+          fallback: true 
         });
       }
     });
@@ -426,13 +444,16 @@ const apiHandlers: { [key: string]: (params?: any) => Promise<any> | any } = {
     return { success: true, groups };
   },
 
-  getProjects: (params: { page?: number; pageSize?: number; group?: string; search?: string } = {}) => {
+  getProjects: (params: { page?: number; pageSize?: number; group?: string; status?: string; search?: string; } = {}) => {
     const page = params.page || 1;
     const pageSize = params.pageSize || 20;
     let filtered = [...projects];
 
     if (params.group && params.group !== '全部') {
       filtered = filtered.filter(p => p.group === params.group);
+    }
+    if (params.status && params.status !== 'all') {
+      filtered = filtered.filter(p => p.status === params.status);
     }
 
     if (params.search) {
@@ -446,7 +467,7 @@ const apiHandlers: { [key: string]: (params?: any) => Promise<any> | any } = {
     const total = filtered.length;
     const start = (page - 1) * pageSize;
     const end = start + pageSize;
-    const paginated = filtered.slice(start, end);
+    const paginated = filtered.slice(start, end).sort((a, b) => (b.createdAt || b.updatedAt || 0) - (a.createdAt || a.updatedAt || 0));
 
     const groupStats: GroupStats = {};
     projects.forEach(p => {
@@ -467,8 +488,8 @@ const apiHandlers: { [key: string]: (params?: any) => Promise<any> | any } = {
     return projects.find(p => p.id == params.id) || null;
   },
 
-  importProject: async (params: { path: string; group: string }) => {
-    const { path: projectPath, group } = params;
+  importProject: async (params: { projectPath: string; group?: string }) => {
+    const { projectPath, group } = params;
     if (!projectPath || !fs.existsSync(projectPath)) {
       return { success: false, error: '路径不存在' };
     }
@@ -723,7 +744,7 @@ const apiHandlers: { [key: string]: (params?: any) => Promise<any> | any } = {
 
     // 检测 Node 版本
     const nodeInfo = await detectNodeVersion(project.projectPath);
-    
+    console.log(nodeInfo, 'nodeInfo');
     // 获取端口
     let startPort = project.port || 1024;
     const portAvailable = await checkPort(startPort);
@@ -1337,6 +1358,7 @@ async function handleRequest(request: Request): Promise<Response> {
     if (url.searchParams.has('page')) params.page = parseInt(url.searchParams.get('page')!);
     if (url.searchParams.has('pageSize')) params.pageSize = parseInt(url.searchParams.get('pageSize')!);
     if (url.searchParams.has('group')) params.group = url.searchParams.get('group');
+    if (url.searchParams.has('status')) params.status = url.searchParams.get('status');
     if (url.searchParams.has('search')) params.search = url.searchParams.get('search');
     return new Response(JSON.stringify(apiHandlers.getProjects(params)), {
       headers: { 'Content-Type': 'application/json' }
@@ -1515,7 +1537,7 @@ loadData();
 
 async function main() {
   const server = Bun.serve({
-    port: 3000,
+    port: 3003,
     fetch: handleRequest
   });
 
@@ -1527,7 +1549,7 @@ async function main() {
     frame: {
       x: 0,
       y: 0,
-      width: 1000,
+      width: 1200,
       height: 600,
     },
   });

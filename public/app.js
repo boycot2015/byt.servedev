@@ -1542,7 +1542,7 @@ async function startProject(id) {
           showToast(result.error, 'error');
         }
       } else {
-        resetFilters();
+        // resetFilters();
         loadProjects();
         setTimeout(() => pollProjectStatus(id), 1000);
       }
