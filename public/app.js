@@ -1006,8 +1006,8 @@ function formatTimestamp(timestamp) {
 function renderProjects(appendMode = false) {
   const container = document.getElementById('projectList');
   
-  document.getElementById('projectCount').textContent = `共 ${paginationState.total} 个项目`;
-  document.getElementById('allCount').textContent = `(${paginationState.total})`;
+  if (document.getElementById('projectCount')) document.getElementById('projectCount').textContent = `共 ${paginationState.total} 个项目`;
+  if (document.getElementById('allCount'))document.getElementById('allCount').textContent = `(${paginationState.total})`;
   
   if (!projects || projects.length === 0) {
     container.innerHTML = `
