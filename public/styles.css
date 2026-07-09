@@ -336,9 +336,32 @@ body {
   border-radius: 0 0 7px 7px;
 }
 
+/* 搜索框样式 */
+.custom-select-search {
+  width: 100%;
+  padding: 10px 14px;
+  margin: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  font-size: 14px;
+  outline: none;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+.custom-select-search::placeholder {
+  color: var(--text-muted);
+}
+
+.custom-select-search:focus {
+  border-color: var(--color-primary);
+}
+
 /* 滚动条美化 */
 .custom-select-dropdown::-webkit-scrollbar {
   width: 6px;
+  height: 8px;
 }
 
 .custom-select-dropdown::-webkit-scrollbar-track {
@@ -541,7 +564,7 @@ body.dark .time-label-edited { background: #78350f; color: #fcd34d; }
 
 .form-group { margin-bottom: 16px; }
 .form-group label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; color: var(--text-secondary); }
-.form-group input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-dashed); border-radius: var(--border-radius-md); font-size: 14px; outline: none; transition: border-color 0.2s; background: var(--bg-secondary); color: var(--text-primary); }
+.form-group input { width: calc(100% - 16px); padding: 8px 14px; border: 1px solid var(--border-dashed); border-radius: var(--border-radius-md); font-size: 14px; outline: none; transition: border-color 0.2s; background: var(--bg-secondary); color: var(--text-primary); }
 .form-group input:focus { border-color: var(--color-primary); }
 .form-group input::placeholder { color: var(--text-muted); }
 .form-group select { width: 100%; padding: 10px 14px; border: 1px solid var(--border-dashed); border-radius: var(--border-radius-md); font-size: 14px; outline: none; background: var(--bg-secondary); color: var(--text-primary); }

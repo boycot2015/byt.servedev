@@ -167,9 +167,47 @@ function initCustomSelect(selectId, onChange) {
   const dropdown = document.createElement('div');
   dropdown.className = 'custom-select-dropdown';
 
+  // 检查是否需要搜索功能
+  const isSearchable = originalSelect.dataset.searchable === 'true';
+  let searchInput = null;
+
+  // 如果需要搜索，创建搜索框
+  if (isSearchable) {
+    searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.placeholder = '搜索分支...';
+    searchInput.className = 'custom-select-search';
+    searchInput.oninput = (e) => {
+      const searchTerm = e.target.value.toLowerCase().trim();
+      const allOptions = Array.from(dropdown.querySelectorAll('.custom-select-option'));
+      if (searchTerm === '') {
+        allOptions.forEach(opt => opt.style.display = 'block');
+      } else {
+        allOptions.forEach(opt => {
+          opt.style.display = opt.textContent.toLowerCase().includes(searchTerm) ? 'block' : 'none';
+        });
+      }
+    };
+    searchInput.onkeydown = (e) => {
+      if (e.key === 'Escape') {
+        wrapper.classList.remove('open');
+        searchInput.value = '';
+        const allOptions = Array.from(dropdown.querySelectorAll('.custom-select-option'));
+        allOptions.forEach(opt => opt.style.display = 'block');
+      }
+    };
+    dropdown.appendChild(searchInput);
+  }
+
   // 生成选项
   function renderOptions() {
     dropdown.innerHTML = '';
+    
+    // 如果需要搜索，重新添加搜索框
+    if (isSearchable && searchInput) {
+      dropdown.appendChild(searchInput);
+    }
+    
     Array.from(originalSelect.options).forEach((option, index) => {
       const optElement = document.createElement('div');
       optElement.className = `custom-select-option ${index === originalSelect.selectedIndex ? 'selected' : ''}`;
@@ -182,6 +220,10 @@ function initCustomSelect(selectId, onChange) {
         // 更新选中样式
         Array.from(dropdown.children).forEach(child => child.classList.remove('selected'));
         optElement.classList.add('selected');
+        // 清空搜索框
+        if (searchInput) {
+          searchInput.value = '';
+        }
         if (onChange) onChange(option.value);
       };
       dropdown.appendChild(optElement);
@@ -198,11 +240,22 @@ function initCustomSelect(selectId, onChange) {
       if (s !== wrapper) s.classList.remove('open');
     });
     wrapper.classList.toggle('open');
+    // 聚焦搜索框
+    if (isSearchable && searchInput && wrapper.classList.contains('open')) {
+      setTimeout(() => searchInput.focus(), 100);
+    }
   };
 
   // 点击外部关闭
-  document.addEventListener('click', () => {
-    wrapper.classList.remove('open');
+  document.addEventListener('click', (e) => {
+    if (!wrapper.contains(e.target)) {
+      wrapper.classList.remove('open');
+      if (searchInput) {
+        searchInput.value = '';
+        const allOptions = Array.from(dropdown.querySelectorAll('.custom-select-option'));
+        allOptions.forEach(opt => opt.style.display = 'block');
+      }
+    }
   });
 
   wrapper.appendChild(trigger);
