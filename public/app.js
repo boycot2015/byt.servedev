@@ -20,6 +20,16 @@ let paginationState = {
   groupStats: {}
 };
 
+// 壁纸分页状态
+let wallpaperPagination = {
+  page: 1,
+  pageSize: 12,
+  hasMore: true,
+  loading: false,
+  total: 0
+};
+let wallpapers = [];
+
 // 防抖函数
 function debounce(func, wait) {
   let timeout;
@@ -1994,6 +2004,9 @@ function openWallpaperModal() {
   const modal = document.getElementById('wallpaperModal');
   modal.classList.add('show');
   toggleSettingsPanel();
+  
+  // 打开弹框时立即请求壁纸 API
+  loadWallpapers(true);
 }
 
 // 设置自定义背景颜色
@@ -2059,23 +2072,19 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('wallpaperGrid').style.display = sectionName === 'wallhaven' ? 'grid' : 'none';
       document.getElementById('solidColorsGrid').style.display = sectionName === 'solid' ? 'grid' : 'none';
       document.getElementById('wallpaperUpload').style.display = sectionName === 'custom' ? 'block' : 'none';
+      
+      // 切换到其他分类再切回 Wallhaven 时重新加载
+      if (sectionName === 'wallhaven' && wallpapers.length === 0) {
+        loadWallpapers(true);
+      }
     });
   });
   
-  // 点击壁纸设为背景
+  // 点击壁纸设为背景（为静态壁纸项保留）
   const wallpaperItems = document.querySelectorAll('.wallpaper-item');
   wallpaperItems.forEach(item => {
-    item.addEventListener('click', function() {
-      const src = this.dataset.src;
-      document.body.style.background = `url(${src}) no-repeat center center fixed`;
-      document.body.style.backgroundSize = 'cover';
-      localStorage.setItem('appBackgroundImage', src);
-      localStorage.setItem('appBackgroundType', 'image');
-      document.getElementById('previewImage').style.backgroundImage = `url(${src})`;
-      document.getElementById('previewImage').style.backgroundSize = 'cover';
-      showToast('壁纸已更新', 'success');
-      closeModal('wallpaperModal');
-    });
+    item.removeEventListener('click', handleWallpaperClick);
+    item.addEventListener('click', handleWallpaperClick);
   });
   
   // 点击纯色设为背景
@@ -2175,4 +2184,160 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
   }, 100));
+  
+  // 壁纸滚动监听（只在壁纸模态框内生效）
+  document.addEventListener('scroll', function(e) {
+    const target = e.target;
+    if (target.closest('.wallpaper-content')) {
+      const scrollTop = target.scrollTop || target.pageYOffset;
+      const scrollHeight = target.scrollHeight;
+      const clientHeight = target.clientHeight || target.offsetHeight;
+      
+      if (scrollTop + clientHeight >= scrollHeight - 150) {
+        if (!wallpaperPagination.loading && wallpaperPagination.hasMore) {
+          loadMoreWallpapers();
+        }
+      }
+    }
+  }, true);
 });
+
+// 加载壁纸列表
+async function loadWallpapers(resetPagination = true) {
+  if (wallpaperPagination.loading) return;
+  
+  wallpaperPagination.loading = true;
+  
+  if (resetPagination) {
+    wallpaperPagination.page = 1;
+    wallpaperPagination.hasMore = true;
+    wallpapers = [];
+  }
+  
+  try {
+    const params = new URLSearchParams({
+      page: wallpaperPagination.page,
+      pageSize: wallpaperPagination.pageSize
+    });
+    
+    const response = await fetch(`/api/wallpapers?${params}`);
+    const result = await response.json();
+    
+    if (resetPagination) {
+      wallpapers = result.list;
+    } else {
+      const existingUrls = new Set(wallpapers.map(w => w.url));
+      const newWallpapers = result.list.filter(w => !existingUrls.has(w.url));
+      wallpapers = [...wallpapers, ...newWallpapers];
+    }
+    
+    wallpaperPagination.total = result.total;
+    wallpaperPagination.hasMore = result.hasMore;
+    wallpaperPagination.page = result.page;
+    
+    renderWallpapers(!resetPagination);
+  } catch (error) {
+    console.error('加载壁纸失败:', error);
+  } finally {
+    wallpaperPagination.loading = false;
+  }
+}
+
+// 加载更多壁纸
+async function loadMoreWallpapers() {
+  if (wallpaperPagination.loading || !wallpaperPagination.hasMore) return;
+  
+  wallpaperPagination.page += 1;
+  await loadWallpapers(false);
+}
+
+// 渲染壁纸列表
+function renderWallpapers(appendMode = false) {
+  const container = document.getElementById('wallpaperGrid');
+  
+  if (!wallpapers || wallpapers.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="grid-column: 1/-1;">
+        <div class="icon">🖼️</div>
+        <h3>暂无壁纸</h3>
+        <p>正在尝试加载壁纸...</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const renderWallpaper = (wallpaper) => {
+    return `
+      <div class="wallpaper-item" data-src="${wallpaper.url}">
+        <img src="${wallpaper.thumbUrl || wallpaper.url}" alt="${wallpaper.title || '壁纸'}" loading="lazy">
+        <div class="wallpaper-overlay">
+          <span>设为背景</span>
+        </div>
+      </div>
+    `;
+  };
+  
+  if (appendMode) {
+    const lastPageWallpapers = wallpapers.slice(-wallpaperPagination.pageSize);
+    const newHtml = lastPageWallpapers.map(renderWallpaper).join('');
+    container.insertAdjacentHTML('beforeend', newHtml);
+  } else {
+    container.innerHTML = wallpapers.map(renderWallpaper).join('');
+  }
+  
+  // 更新加载状态提示
+  updateWallpaperLoader();
+  
+  // 重新绑定点击事件
+  bindWallpaperClickEvents();
+}
+
+// 更新壁纸加载状态提示
+function updateWallpaperLoader() {
+  const container = document.getElementById('wallpaperGrid');
+  let loader = document.getElementById('wallpaperLoader');
+  
+  if (!loader) {
+    loader = document.createElement('div');
+    loader.id = 'wallpaperLoader';
+    loader.style.cssText = 'grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);';
+    container.appendChild(loader);
+  }
+  
+  if (wallpaperPagination.loading) {
+    loader.innerHTML = `
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span style="display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border-color); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+        <span>加载中...</span>
+      </div>
+    `;
+    loader.style.display = 'block';
+  } else if (!wallpaperPagination.hasMore && wallpapers.length > 0) {
+    loader.textContent = '已加载全部壁纸';
+    loader.style.display = 'block';
+  } else {
+    loader.style.display = 'none';
+  }
+}
+
+// 绑定壁纸点击事件
+function bindWallpaperClickEvents() {
+  const wallpaperItems = document.querySelectorAll('.wallpaper-item');
+  wallpaperItems.forEach(item => {
+    item.removeEventListener('click', handleWallpaperClick);
+    item.addEventListener('click', handleWallpaperClick);
+  });
+}
+
+// 壁纸点击处理函数
+function handleWallpaperClick() {
+  const src = this.dataset.src;
+  document.body.style.background = `url(${src}) no-repeat center center fixed`;
+  document.body.style.backgroundSize = 'cover';
+  localStorage.setItem('appBackgroundImage', src);
+  localStorage.setItem('appBackgroundType', 'image');
+  document.getElementById('previewImage').style.backgroundImage = `url(${src})`;
+  document.getElementById('previewImage').style.backgroundSize = 'cover';
+  showToast('壁纸已更新', 'success');
+  closeModal('wallpaperModal');
+}

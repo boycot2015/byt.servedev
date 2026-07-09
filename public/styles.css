@@ -557,7 +557,7 @@ body.dark .time-label-edited { background: #78350f; color: #fcd34d; }
 .modal { background: var(--bg-secondary); border-radius: 12px; width: 90%; max-width: 500px; padding: 20px; transform: scale(0.95); transition: transform 0.2s; }
 .modal-overlay.show .modal { transform: scale(1); }
 
-.modal-header { display: flex; justify-content: space-between; align-items: center; }
+.modal-header { display: flex; justify-content: space-between; align-items: center;margin-bottom: 16px; }
 .modal-title { font-size: 18px; font-weight: 600; color: var(--text-primary); }
 .modal-close { width: 32px; height: 32px; border: none; background: var(--bg-tertiary); border-radius: 50%; cursor: pointer; font-size: 18px; color: var(--text-tertiary); }
 .modal-close:hover { background: var(--bg-hover); }
@@ -1408,8 +1408,7 @@ body.dark .time-label-edited { background: #78350f; color: #fcd34d; }
 }
 
 .wallpaper-sidebar {
-  width: 140px;
-  padding: 16px 0;
+  margin-right: 10px;
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
@@ -1417,11 +1416,13 @@ body.dark .time-label-edited { background: #78350f; color: #fcd34d; }
 }
 
 .wallpaper-section {
-  padding: 10px 16px;
-  font-size: 13px;
+  padding: 0px 8px;
+  font-size: 16px;
+  line-height: 16px;
   color: var(--text-tertiary);
   cursor: pointer;
   transition: all 0.2s;
+  margin-bottom: 16px;
   border-left: 3px solid transparent;
 }
 
@@ -1437,7 +1438,9 @@ body.dark .time-label-edited { background: #78350f; color: #fcd34d; }
 
 .wallpaper-content {
   flex: 1;
-  padding: 16px;
+  min-height: 280px;
+  padding: 12px 8px;
+  overflow: hidden;
   overflow-y: auto;
 }
 

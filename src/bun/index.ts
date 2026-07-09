@@ -382,7 +382,42 @@ async function getGitBranchesInternal(projectPath: string): Promise<{ isGitRepo:
   }
 }
 
+interface Wallpaper {
+  url: string;
+  thumbUrl: string;
+  title: string;
+}
+
+const fallbackWallpapers: Wallpaper[] = [];
+
 const apiHandlers: { [key: string]: (params?: any) => Promise<any> | any } = {
+  getWallpapers: async (params: { page?: number; pageSize?: number; query?: string } = {}) => {
+    const response = await fetch(`https://api.boycot.top/api/wallpaper?query=${params.query || 'wallpaper'}&page=${params.page || 1}`);
+    const data = await response.json();
+    let { data: wallpapersData } = data;
+    const wallpapers: Wallpaper[] = wallpapersData.list.map((item: any) => ({
+      url: item.url,
+      thumbUrl: item.thumb || item.url,
+      title: item.title || item.name || '壁纸'
+    }));
+    const page = params.page || 1;
+    const pageSize = params.pageSize || 12;
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    
+    const paginatedWallpapers: Wallpaper[] = wallpapers.slice(startIndex, endIndex);
+    
+    const total = 100;
+    const hasMore = endIndex < total;
+    return {
+      list: paginatedWallpapers,
+      total,
+      page,
+      pageSize,
+      hasMore
+    };
+  },
+
   getGroups: () => groups,
 
   createGroup: (params: { name: string }) => {
@@ -1514,6 +1549,16 @@ async function handleRequest(request: Request): Promise<Response> {
   if (pathname === '/api/kill-port' && request.method === 'POST') {
     const body = await request.json();
     return new Response(JSON.stringify(apiHandlers.killPort(body)), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  if (pathname === '/api/wallpapers' && request.method === 'GET') {
+    const page = parseInt(url.searchParams.get('page') || '1');
+    const pageSize = parseInt(url.searchParams.get('pageSize') || '12');
+    const query = url.searchParams.get('query') || '';
+    let res = await apiHandlers.getWallpapers({ page, pageSize, query });
+    return new Response(JSON.stringify(res), {
       headers: { 'Content-Type': 'application/json' }
     });
   }
