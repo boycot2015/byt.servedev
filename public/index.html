@@ -22,126 +22,123 @@
   </script>
 </head>
 <body>
-  <div class="nav">
-    <div class="header">
-      <div class="flex items-center justify-between w-full gap-2 max-w-[1360px] mx-auto">
-        <div class="flex items-center gap-4 lg:hidden">
-          <button class="menu-toggle" onclick="toggleSidebar()" id="menuToggle">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 18q-.425 0-.712-.288T3 17t.288-.712T4 16h16q.425 0 .713.288T21 17t-.288.713T20 18zm0-5q-.425 0-.712-.288T3 12t.288-.712T4 11h16q.425 0 .713.288T21 12t-.288.713T20 13zm0-5q-.425 0-.712-.288T3 7t.288-.712T4 6h16q.425 0 .713.288T21 7t-.288.713T20 8z"/></svg>
-          </button>
+  <div class="header">
+    <div class="flex items-center justify-between w-full gap-2 max-w-[1360px] mx-auto">
+      <div class="flex items-center gap-4 lg:hidden">
+        <button class="menu-toggle" onclick="toggleSidebar()" id="menuToggle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 18q-.425 0-.712-.288T3 17t.288-.712T4 16h16q.425 0 .713.288T21 17t-.288.713T20 18zm0-5q-.425 0-.712-.288T3 12t.288-.712T4 11h16q.425 0 .713.288T21 12t-.288.713T20 13zm0-5q-.425 0-.712-.288T3 7t.288-.712T4 6h16q.425 0 .713.288T21 7t-.288.713T20 8z"/></svg>
+        </button>
+      </div>
+      <div class="text-center md:text-left w-full flex-1">
+        <h1>项目管理工具</h1>
+        <p>简化开发流程，一键启动项目</p>
+      </div>
+      <div class="theme-toggle-container">
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M12 21q-3.75 0-6.375-2.625T3 12t2.625-6.375T12 3q.35 0 .688.025t.662.075q-1.025.725-1.638 1.888T11.1 7.5q0 2.25 1.575 3.825T16.5 12.9q1.375 0 2.525-.613T20.9 10.65q.05.325.075.662T21 12q0 3.75-2.625 6.375T12 21"/></svg>
+        </button>
+      </div>
+      <button class="settings-btn" onclick="toggleSettingsPanel()" id="settingsBtn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>
+    </button>
+    <div class="settings-overlay backdrop-blur-sm" id="settingsOverlay" onclick="toggleSettingsPanel()"></div>
+    <div class="settings-panel backdrop-blur-md" id="settingsPanel">
+        <div class="settings-header">
+          <h3>设置</h3>
+          <button class="settings-close" onclick="toggleSettingsPanel()">&times;</button>
         </div>
-        <div class="text-center md:text-left w-full flex-1">
-          <h1>项目管理工具</h1>
-          <p>简化开发流程，一键启动项目</p>
-        </div>
-        <div class="theme-toggle-container">
-          <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M12 21q-3.75 0-6.375-2.625T3 12t2.625-6.375T12 3q.35 0 .688.025t.662.075q-1.025.725-1.638 1.888T11.1 7.5q0 2.25 1.575 3.825T16.5 12.9q1.375 0 2.525-.613T20.9 10.65q.05.325.075.662T21 12q0 3.75-2.625 6.375T12 21"/></svg>
-          </button>
-        </div>
-        <button class="settings-btn" onclick="toggleSettingsPanel()" id="settingsBtn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
-          <circle cx="12" cy="12" r="3"/>
-        </svg>
-      </button>
-      <div class="settings-overlay" id="settingsOverlay" onclick="toggleSettingsPanel()"></div>
-      <div class="settings-panel" id="settingsPanel">
-          <div class="settings-header">
-            <h3>设置</h3>
-            <button class="settings-close" onclick="toggleSettingsPanel()">&times;</button>
+        <div class="settings-body">
+          <div class="setting-section">
+            <h4>主题色</h4>
+            <div class="color-options-setting">
+              <div class="color-option-setting" style="background: #667eea;" data-color="#667eea" title="薰衣草紫"></div>
+              <div class="color-option-setting" style="background: #ff9900;" data-color="#ff9900" title="琥珀橙"></div>
+              <div class="color-option-setting" style="background: #10b981;" data-color="#10b981" title="翡翠绿"></div>
+              <div class="color-option-setting" style="background: #0ea5e9;" data-color="#0ea5e9" title="天空蓝"></div>
+              <div class="color-option-setting" style="background: #ef4444;" data-color="#ef4444" title="珊瑚红"></div>
+              <div class="color-option-setting" style="background: #f1be03;" data-color="#f1be03" title="琥珀金"></div>
+              <input type="color" class="custom-color-picker" id="customThemeColor" onchange="setCustomThemeColor()">
+            </div>
           </div>
-          <div class="settings-body">
-            <div class="setting-section">
-              <h4>主题色</h4>
-              <div class="color-options-setting">
-                <div class="color-option-setting" style="background: #667eea;" data-color="#667eea" title="薰衣草紫"></div>
-                <div class="color-option-setting" style="background: #ff9900;" data-color="#ff9900" title="琥珀橙"></div>
-                <div class="color-option-setting" style="background: #10b981;" data-color="#10b981" title="翡翠绿"></div>
-                <div class="color-option-setting" style="background: #0ea5e9;" data-color="#0ea5e9" title="天空蓝"></div>
-                <div class="color-option-setting" style="background: #ef4444;" data-color="#ef4444" title="珊瑚红"></div>
-                <div class="color-option-setting" style="background: #f1be03;" data-color="#f1be03" title="琥珀金"></div>
-                <input type="color" class="custom-color-picker" id="customThemeColor" onchange="setCustomThemeColor()">
+          <div class="setting-section">
+            <h4>字体设置</h4>
+            <div class="font-settings">
+              <div class="font-setting-item">
+                <label>字体</label>
+                <select id="fontFamilySelect" onchange="setFontFamily()">
+                  <option value="Microsoft YaHei">微软雅黑</option>
+                  <option value="cursive">宋体</option>
+                  <!-- <option value="LiSu">隶书</option> -->
+                  <option value="serif">楷体</option>
+                </select>
               </div>
-            </div>
-            <div class="setting-section">
-              <h4>字体设置</h4>
-              <div class="font-settings">
-                <div class="font-setting-item">
-                  <label>字体</label>
-                  <select id="fontFamilySelect" onchange="setFontFamily()">
-                    <option value="Microsoft YaHei">微软雅黑</option>
-                    <option value="cursive">宋体</option>
-                    <!-- <option value="LiSu">隶书</option> -->
-                    <option value="serif">楷体</option>
-                  </select>
-                </div>
-                <div class="font-setting-item">
-                  <label>字体大小</label>
-                  <select id="fontSizeSelect" onchange="setFontSize()">
-                    <option value="12px">12px</option>
-                    <option value="14px">14px</option>
-                    <option value="16px">16px</option>
-                    <option value="18px">18px</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="setting-section">
-              <h4>背景设置</h4>
-              <div class="background-preview" id="backgroundPreview" onclick="openWallpaperModal()">
-                <div class="preview-image" id="previewImage" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=800&fit=crop');">
-                  <div class="preview-overlay">
-                    <span class="preview-icon">🖼️</span>
-                    <span class="preview-text">点击更换壁纸</span>
-                  </div>
-                </div>
-              </div>
-              <div class="background-color-options">
-                <div class="bg-color-option" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" data-bg="gradient1"></div>
-                <div class="bg-color-option" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" data-bg="gradient2"></div>
-                <div class="bg-color-option" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" data-bg="gradient3"></div>
-                <div class="bg-color-option" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" data-bg="gradient4"></div>
-                <div class="bg-color-option" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" data-bg="gradient5"></div>
-                <div class="bg-color-option" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);" data-bg="gradient6"></div>
-                <input type="color" class="custom-bg-color-picker" id="customBgColor" onchange="setCustomBackgroundColor()">
+              <div class="font-setting-item">
+                <label>字体大小</label>
+                <select id="fontSizeSelect" onchange="setFontSize()">
+                  <option value="12px">12px</option>
+                  <option value="14px">14px</option>
+                  <option value="16px">16px</option>
+                  <option value="18px">18px</option>
+                </select>
               </div>
             </div>
           </div>
+          <div class="setting-section">
+            <h4>背景设置</h4>
+            <div class="background-preview" id="backgroundPreview" onclick="openWallpaperModal()">
+              <div class="preview-image" id="previewImage" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=800&fit=crop');">
+                <div class="preview-overlay">
+                  <span class="preview-icon">🖼️</span>
+                  <span class="preview-text">点击更换壁纸</span>
+                </div>
+              </div>
+            </div>
+            <div class="background-color-options">
+              <div class="bg-color-option" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" data-bg="gradient1"></div>
+              <div class="bg-color-option" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" data-bg="gradient2"></div>
+              <div class="bg-color-option" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" data-bg="gradient3"></div>
+              <div class="bg-color-option" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" data-bg="gradient4"></div>
+              <div class="bg-color-option" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" data-bg="gradient5"></div>
+              <div class="bg-color-option" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);" data-bg="gradient6"></div>
+              <input type="color" class="custom-bg-color-picker" id="customBgColor" onchange="setCustomBackgroundColor()">
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="operation flex-col md:flex-row max-w-[1400px] mx-auto">
-      <div class="actions grid items-center grid-cols-3 xs:flex text-center">
-          <button class="btn btn-primary justify-center" onclick="openImportModal()">
-            <span>+</span> 导入项目
-          </button>
-          <button class="btn btn-info justify-center" onclick="openGitImportModal()">
-            <span>🔗</span> Git 导入
-          </button>
-          <button class="btn btn-success justify-center" onclick="openScanModal()">
-            <span>📁</span> 批量扫描
-          </button>
-          <button class="btn btn-danger justify-center hidden xs:block batch-delete-desktop" onclick="batchDelete()" id="batchDeleteBtnDesktop" disabled>
-              <span>🗑️</span> 批量删除
-          </button>
-      </div>
-      <div class="flex filter-box items-center justify-between gap-3 w-full">
-        <select id="statusFilter">
-          <option value="all">全部状态</option>
-          <option value="running">运行中</option>
-          <option value="starting">启动中</option>
-          <option value="stopped">已停止</option>
-        </select>
-        <input type="text" class="search-box" id="searchInput" placeholder="搜索项目..." oninput="filterProjects()">
       </div>
     </div>
   </div>
-  
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-  <div class="main-content">
+  <div class="sidebar-overlay backdrop-blur-sm" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+  <div class="main-content my-4 gap-4 sticky top-4">
     <div class="content-area">
-      <div class="card">
+      <div class="operation flex-col mb-4 md:flex-row max-w-[1400px] mx-auto">
+        <div class="actions grid items-center grid-cols-3 xs:flex text-center">
+            <button class="btn btn-primary justify-center" onclick="openImportModal()">
+              <span>+</span> 导入项目
+            </button>
+            <button class="btn btn-info justify-center" onclick="openGitImportModal()">
+              <span>🔗</span> Git 导入
+            </button>
+            <button class="btn btn-success justify-center" onclick="openScanModal()">
+              <span>📁</span> 批量扫描
+            </button>
+            <button class="btn btn-danger justify-center hidden xs:block batch-delete-desktop" onclick="batchDelete()" id="batchDeleteBtnDesktop" disabled>
+                <span>🗑️</span> 批量删除
+            </button>
+        </div>
+        <div class="flex filter-box items-center justify-between gap-3 w-full">
+          <select id="statusFilter">
+            <option value="all">全部状态</option>
+            <option value="running">运行中</option>
+            <option value="starting">启动中</option>
+            <option value="stopped">已停止</option>
+          </select>
+          <input type="text" class="search-box" id="searchInput" placeholder="搜索项目..." oninput="filterProjects()">
+        </div>
+      </div>
+      <div class="card backdrop-blur-md shadow-xl">
         <div class="card-header" style="display: flex;">
           <div class="flex items-center justify-between flex-1">
             <div class="flex items-center gap-2">
@@ -191,7 +188,7 @@
     </div>
   </div>
 
-  <div id="importModal" class="modal-overlay">
+  <div id="importModal" class="modal-overlay backdrop-blur-sm">
     <div class="modal">
       <div class="modal-header">
         <h2 class="modal-title">导入项目</h2>
@@ -219,7 +216,7 @@
     </div>
   </div>
 
-  <div id="gitImportModal" class="modal-overlay">
+  <div id="gitImportModal" class="modal-overlay backdrop-blur-sm">
     <div class="modal">
       <div class="modal-header">
         <h2 class="modal-title">从 Git 仓库导入</h2>
@@ -261,7 +258,7 @@
     </div>
   </div>
 
-  <div id="scanModal" class="modal-overlay">
+  <div id="scanModal" class="modal-overlay backdrop-blur-sm">
     <div class="modal">
       <div class="modal-header">
         <h2 class="modal-title">批量扫描项目</h2>
@@ -291,7 +288,7 @@
     </div>
   </div>
 
-  <div id="editModal" class="modal-overlay">
+  <div id="editModal" class="modal-overlay backdrop-blur-sm">
     <div class="modal">
       <div class="modal-header">
         <h2 class="modal-title">编辑项目</h2>
@@ -325,7 +322,7 @@
     </div>
   </div>
 
-  <div id="addGroupModal" class="modal-overlay">
+  <div id="addGroupModal" class="modal-overlay backdrop-blur-sm">
     <div class="modal">
       <div class="modal-header">
         <h2 class="modal-title">新建分组</h2>
@@ -344,7 +341,7 @@
     </div>
   </div>
 
-  <div id="renameGroupModal" class="modal-overlay">
+  <div id="renameGroupModal" class="modal-overlay backdrop-blur-sm">
     <div class="modal">
       <div class="modal-header">
         <h2 class="modal-title">重命名分组</h2>
@@ -364,7 +361,7 @@
     </div>
   </div>
 
-  <div id="branchModal" class="modal-overlay">
+  <div id="branchModal" class="modal-overlay backdrop-blur-sm">
     <div class="modal" style="max-width: 500px;">
       <div class="modal-header">
         <h2 class="modal-title">切换分支</h2>
@@ -387,7 +384,7 @@
     </div>
   </div>
 
-  <div id="mergeModal" class="modal-overlay">
+  <div id="mergeModal" class="modal-overlay backdrop-blur-sm">
     <div class="modal" style="max-width: 500px;">
       <div class="modal-header">
         <h2 class="modal-title">合并分支</h2>
@@ -409,7 +406,7 @@
     </div>
   </div>
 
-  <div id="logsModal" class="modal-overlay">
+  <div id="logsModal" class="modal-overlay backdrop-blur-sm">
     <div class="modal" style="max-width: 800px;">
       <div class="modal-header">
         <h2 class="modal-title" id="logsTitle">项目日志</h2>
@@ -428,15 +425,15 @@
     </div>
   </div>
 
-  <div id="confirmModal" class="modal-overlay">
+  <div id="confirmModal" class="modal-overlay backdrop-blur-sm">
     <div class="modal" style="max-width: 400px;">
       <div class="modal-header">
         <h2 class="modal-title" id="confirmTitle">确认操作</h2>
         <button class="modal-close" onclick="closeModal('confirmModal')">&times;</button>
       </div>
       <div class="modal-body">
-        <p id="confirmMessage" style="text-align: center; margin-bottom: 20px;">确定要执行此操作吗？</p>
-        <div class="form-actions" style="justify-content: center;">
+        <p id="confirmMessage" style="text-align: left; margin-bottom: 20px;">确定要执行此操作吗？</p>
+        <div class="form-actions" style="justify-content: end;">
           <button class="btn btn-secondary" onclick="closeModal('confirmModal')">取消</button>
           <button class="btn btn-danger" id="confirmActionBtn">确认</button>
         </div>
@@ -444,7 +441,7 @@
     </div>
   </div>
 
-  <div id="packageJsonModal" class="modal-overlay">
+  <div id="packageJsonModal" class="modal-overlay backdrop-blur-sm">
     <div class="modal" style="max-width: 900px;">
       <div class="modal-header">
         <h2 class="modal-title" id="packageJsonTitle">package.json</h2>
@@ -459,7 +456,7 @@
     </div>
   </div>
 
-  <div id="wallpaperModal" class="modal-overlay">
+  <div id="wallpaperModal" class="modal-overlay backdrop-blur-sm">
     <div class="modal wallpaper-modal">
       <div class="modal-header">
         <h2 class="modal-title">壁纸库</h2>

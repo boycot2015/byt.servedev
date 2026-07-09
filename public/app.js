@@ -1122,7 +1122,7 @@ function renderProjects(appendMode = false) {
   // 显示加载状态（有数据时才显示加载中/已加载全部，数据大于20且已加载全部才显示"已加载全部项目"）
   if (projects.length > 0 && paginationState.loading) {
     loader.innerHTML = '<span class="loading-spinner" style="display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border-color); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle;"></span><span style="vertical-align: middle;">加载中...</span>';
-  } else if (!paginationState.hasMore && projects.length > 20) {
+  } else if (!paginationState.hasMore && projects.length > 0) {
     loader.textContent = '已加载全部项目';
   } else {
     loader.textContent = '';
@@ -1181,7 +1181,7 @@ function openRenameGroupModal(oldName) {
 const modalIds = [
   'importModal', 'gitImportModal', 'scanModal', 'editModal',
   'addGroupModal', 'renameGroupModal', 'branchModal', 'mergeModal',
-  'logsModal', 'confirmModal', 'packageJsonModal'
+  'logsModal', 'confirmModal', 'packageJsonModal', 'settingsPanel'
 ];
 
 // 检查是否有弹框打开
@@ -1482,7 +1482,7 @@ async function batchDelete() {
   });
   
   document.getElementById('confirmTitle').textContent = '确认批量删除';
-  document.getElementById('confirmMessage').textContent = `确定要删除以下 ${ids.length} 个项目吗？此操作不可撤销。\n${names.join('\n')}`;
+  document.getElementById('confirmMessage').textContent = `确定要删除以下 ${ids.length} 个项目吗？此操作不可撤销。\n${names.join('、')}`;
   document.getElementById('confirmActionBtn').textContent = '确认删除';
   document.getElementById('confirmActionBtn').onclick = confirmBatchDelete;
   pendingDeleteIds = ids;
@@ -1817,6 +1817,7 @@ function showPortConflictAlert(projectId, port) {
 window.onclick = function(e) {
   if (e.target.classList.contains('modal-overlay')) {
     e.target.classList.remove('show');
+    updateBodyScroll();
   }
 }
 
@@ -1908,6 +1909,7 @@ function toggleSettingsPanel() {
     panel.classList.add('show');
     overlay.classList.add('show');
   }
+  updateBodyScroll();
 }
 
 // 设置自定义主题色
