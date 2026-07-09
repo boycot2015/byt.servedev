@@ -7,45 +7,172 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="favicon.ico">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        screens: {
+          xs: '490px',
+          sm: '768px',
+          md: '1024px',
+          lg: '1200px',
+          xl: '1366px',
+        }
+      }
+    }
+  </script>
 </head>
 <body>
-  <div class="header">
-    <div class="flex items-center justify-between w-full gap-2 max-w-[1360px] mx-auto">
-      <div class="flex items-center gap-4 lg:hidden">
-        <button class="menu-toggle" onclick="toggleSidebar()" id="menuToggle">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 18q-.425 0-.712-.288T3 17t.288-.712T4 16h16q.425 0 .713.288T21 17t-.288.713T20 18zm0-5q-.425 0-.712-.288T3 12t.288-.712T4 11h16q.425 0 .713.288T21 12t-.288.713T20 13zm0-5q-.425 0-.712-.288T3 7t.288-.712T4 6h16q.425 0 .713.288T21 7t-.288.713T20 8z"/></svg>
-        </button>
-      </div>
-      <div class="text-center lg:text-left w-full flex-1">
-        <h1>项目管理工具</h1>
-        <p>简化开发流程，一键启动项目</p>
-      </div>
-      <div class="theme-toggle-container">
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M12 21q-3.75 0-6.375-2.625T3 12t2.625-6.375T12 3q.35 0 .688.025t.662.075q-1.025.725-1.638 1.888T11.1 7.5q0 2.25 1.575 3.825T16.5 12.9q1.375 0 2.525-.613T20.9 10.65q.05.325.075.662T21 12q0 3.75-2.625 6.375T12 21"/></svg>
-        </button>
-        <div class="color-picker-panel" id="colorPickerPanel">
-          <!-- <div class="color-picker-title">主题色</div> -->
-          <div class="color-options">
-            <div class="color-option" style="background: #667eea;" data-color="#667eea" title="薰衣草紫"></div>
-            <div class="color-option" style="background: #ff9900;" data-color="#ff9900" title="琥珀橙"></div>
-            <div class="color-option" style="background: #10b981;" data-color="#10b981" title="翡翠绿"></div>
-            <div class="color-option" style="background: #0ea5e9;" data-color="#0ea5e9" title="天空蓝"></div>
-            <div class="color-option" style="background: #ef4444;" data-color="#ef4444" title="珊瑚红"></div>
-            <div class="color-option" style="background: #f1be03;" data-color="#f1be03" title="琥珀金"></div>
-            <div class="color-option" style="background: #8b5cf6;" data-color="#8b5cf6" title="紫罗兰"></div>
-            <div class="color-option" style="background: #06b6d4;" data-color="#06b6d4" title="青色"></div>
-            <div class="color-option" style="background: #ec4899;" data-color="#ec4899" title="粉红"></div>
-            <div class="color-option" style="background: #64748b;" data-color="#64748b" title="石板灰"></div>
+  <div class="nav">
+    <div class="header">
+      <div class="flex items-center justify-between w-full gap-2 max-w-[1360px] mx-auto">
+        <div class="flex items-center gap-4 lg:hidden">
+          <button class="menu-toggle" onclick="toggleSidebar()" id="menuToggle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M4 18q-.425 0-.712-.288T3 17t.288-.712T4 16h16q.425 0 .713.288T21 17t-.288.713T20 18zm0-5q-.425 0-.712-.288T3 12t.288-.712T4 11h16q.425 0 .713.288T21 12t-.288.713T20 13zm0-5q-.425 0-.712-.288T3 7t.288-.712T4 6h16q.425 0 .713.288T21 7t-.288.713T20 8z"/></svg>
+          </button>
+        </div>
+        <div class="text-center md:text-left w-full flex-1">
+          <h1>项目管理工具</h1>
+          <p>简化开发流程，一键启动项目</p>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M12 21q-3.75 0-6.375-2.625T3 12t2.625-6.375T12 3q.35 0 .688.025t.662.075q-1.025.725-1.638 1.888T11.1 7.5q0 2.25 1.575 3.825T16.5 12.9q1.375 0 2.525-.613T20.9 10.65q.05.325.075.662T21 12q0 3.75-2.625 6.375T12 21"/></svg>
+          </button>
+        </div>
+        <button class="settings-btn" onclick="toggleSettingsPanel()" id="settingsBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+      <div class="settings-overlay" id="settingsOverlay" onclick="toggleSettingsPanel()"></div>
+      <div class="settings-panel" id="settingsPanel">
+          <div class="settings-header">
+            <h3>设置</h3>
+            <button class="settings-close" onclick="toggleSettingsPanel()">&times;</button>
+          </div>
+          <div class="settings-body">
+            <div class="setting-section">
+              <h4>主题色</h4>
+              <div class="color-options-setting">
+                <div class="color-option-setting" style="background: #667eea;" data-color="#667eea" title="薰衣草紫"></div>
+                <div class="color-option-setting" style="background: #ff9900;" data-color="#ff9900" title="琥珀橙"></div>
+                <div class="color-option-setting" style="background: #10b981;" data-color="#10b981" title="翡翠绿"></div>
+                <div class="color-option-setting" style="background: #0ea5e9;" data-color="#0ea5e9" title="天空蓝"></div>
+                <div class="color-option-setting" style="background: #ef4444;" data-color="#ef4444" title="珊瑚红"></div>
+                <div class="color-option-setting" style="background: #f1be03;" data-color="#f1be03" title="琥珀金"></div>
+                <input type="color" class="custom-color-picker" id="customThemeColor" onchange="setCustomThemeColor()">
+              </div>
+            </div>
+            <div class="setting-section">
+              <h4>字体设置</h4>
+              <div class="font-settings">
+                <div class="font-setting-item">
+                  <label>字体</label>
+                  <select id="fontFamilySelect" onchange="setFontFamily()">
+                    <option value="Microsoft YaHei">微软雅黑</option>
+                    <option value="cursive">宋体</option>
+                    <!-- <option value="LiSu">隶书</option> -->
+                    <option value="serif">楷体</option>
+                  </select>
+                </div>
+                <div class="font-setting-item">
+                  <label>字体大小</label>
+                  <select id="fontSizeSelect" onchange="setFontSize()">
+                    <option value="12px">12px</option>
+                    <option value="14px">14px</option>
+                    <option value="16px">16px</option>
+                    <option value="18px">18px</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="setting-section">
+              <h4>背景设置</h4>
+              <div class="background-preview" id="backgroundPreview" onclick="openWallpaperModal()">
+                <div class="preview-image" id="previewImage" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=800&fit=crop');">
+                  <div class="preview-overlay">
+                    <span class="preview-icon">🖼️</span>
+                    <span class="preview-text">点击更换壁纸</span>
+                  </div>
+                </div>
+              </div>
+              <div class="background-color-options">
+                <div class="bg-color-option" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);" data-bg="gradient1"></div>
+                <div class="bg-color-option" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" data-bg="gradient2"></div>
+                <div class="bg-color-option" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" data-bg="gradient3"></div>
+                <div class="bg-color-option" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);" data-bg="gradient4"></div>
+                <div class="bg-color-option" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" data-bg="gradient5"></div>
+                <div class="bg-color-option" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);" data-bg="gradient6"></div>
+                <input type="color" class="custom-bg-color-picker" id="customBgColor" onchange="setCustomBackgroundColor()">
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="operation flex-col md:flex-row max-w-[1400px] mx-auto">
+      <div class="actions grid items-center grid-cols-3 xs:flex text-center">
+          <button class="btn btn-primary justify-center" onclick="openImportModal()">
+            <span>+</span> 导入项目
+          </button>
+          <button class="btn btn-info justify-center" onclick="openGitImportModal()">
+            <span>🔗</span> Git 导入
+          </button>
+          <button class="btn btn-success justify-center" onclick="openScanModal()">
+            <span>📁</span> 批量扫描
+          </button>
+          <button class="btn btn-danger justify-center hidden xs:block batch-delete-desktop" onclick="batchDelete()" id="batchDeleteBtnDesktop" disabled>
+              <span>🗑️</span> 批量删除
+          </button>
+      </div>
+      <div class="flex filter-box items-center justify-between gap-3 w-full">
+        <select id="statusFilter">
+          <option value="all">全部状态</option>
+          <option value="running">运行中</option>
+          <option value="starting">启动中</option>
+          <option value="stopped">已停止</option>
+        </select>
+        <input type="text" class="search-box" id="searchInput" placeholder="搜索项目..." oninput="filterProjects()">
       </div>
     </div>
   </div>
   
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-  
   <div class="main-content">
+    <div class="content-area">
+      <div class="card">
+        <div class="card-header" style="display: flex;">
+          <div class="flex items-center justify-between flex-1">
+            <div class="flex items-center gap-2">
+              <label class="custom-checkbox">
+                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                <span class="checkbox-checkmark"></span>
+                <span class="checkbox-label">全选</span>
+              </label>
+              <h2 id="currentGroupTitle">全部项目
+                <span class="group-count xs:hidden" id="allCount">0</span>
+              </h2>
+            </div>
+            <button class="btn btn-danger btn-sm batch-delete-mobile xs:hidden" onclick="batchDelete()" id="batchDeleteBtnMobile" disabled>
+              <span>🗑️</span> 删除
+            </button>
+          </div>
+          <div class="xs:flex items-center gap-4 hidden">
+            <span id="projectCount" style="color: #6b7280; font-size: 14px;flex:1;">共 0 个项目</span>
+          </div>
+        </div>
+        <div class="card-body card-body-relative">
+          <div id="projectList" class="project-list">
+            <div class="empty-state">
+              <div class="icon">📋</div>
+              <h3>暂无项目</h3>
+              <p>点击上方按钮导入或扫描项目</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="sidebar">
       <div class="sidebar-card">
         <div class="sidebar-header">
@@ -59,66 +186,6 @@
             </li>
           </ul>
           <button class="add-group-btn" onclick="openAddGroupModal()">+ 新建分组</button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="content-area">
-      <div class="operation flex-col md:flex-row" style="background: var(--bg-primary);position: sticky;top:0px;z-index: 100;">
-        <div class="actions flex items-center">
-            <button class="btn btn-primary" onclick="openImportModal()">
-              <span>+</span> 导入项目
-            </button>
-            <button class="btn btn-info" onclick="openGitImportModal()">
-              <span>🔗</span> Git 导入
-            </button>
-            <button class="btn btn-success" onclick="openScanModal()">
-              <span>📁</span> 批量扫描
-            </button>
-            <button class="btn btn-danger hidden md:block batch-delete-desktop" onclick="batchDelete()" id="batchDeleteBtnDesktop" disabled>
-                <span>🗑️</span> 批量删除
-            </button>
-        </div>
-        <div class="flex filter-box items-center justify-between gap-3 w-full">
-          <select id="statusFilter">
-            <option value="all">全部状态</option>
-            <option value="running">运行中</option>
-            <option value="starting">启动中</option>
-            <option value="stopped">已停止</option>
-          </select>
-          <input type="text" class="search-box" id="searchInput" placeholder="搜索项目..." oninput="filterProjects()">
-        </div>
-      </div>
-      
-      <div class="card">
-        <div class="card-header" style="display: flex;">
-          <div class="flex items-center justify-between flex-1">
-            <div class="flex items-center gap-2">
-              <label class="custom-checkbox">
-                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
-                <span class="checkbox-checkmark"></span>
-                <span class="checkbox-label">全选</span>
-              </label>
-              <h2 id="currentGroupTitle">全部项目
-                <span class="group-count md:hidden" id="allCount">0</span>
-              </h2>
-            </div>
-            <button class="btn btn-danger btn-sm batch-delete-mobile md:hidden" onclick="batchDelete()" id="batchDeleteBtnMobile" disabled>
-              <span>🗑️</span> 删除
-            </button>
-          </div>
-          <div class="md:flex items-center gap-4 hidden">
-            <span id="projectCount" style="color: #6b7280; font-size: 14px;flex:1;">共 0 个项目</span>
-          </div>
-        </div>
-        <div class="card-body card-body-relative">
-          <div id="projectList" class="project-list">
-            <div class="empty-state">
-              <div class="icon">📋</div>
-              <h3>暂无项目</h3>
-              <p>点击上方按钮导入或扫描项目</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -387,6 +454,80 @@
         <div id="packageJsonContent" class="code-display"></div>
         <div class="form-actions" style="margin-top: 16px;">
           <button class="btn btn-secondary" onclick="closeModal('packageJsonModal')">关闭</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="wallpaperModal" class="modal-overlay">
+    <div class="modal wallpaper-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">壁纸库</h2>
+        <button class="modal-close" onclick="closeModal('wallpaperModal')">&times;</button>
+      </div>
+      <div class="modal-body wallpaper-body">
+        <div class="wallpaper-sidebar">
+          <div class="wallpaper-section active" data-section="wallhaven">Wallhaven</div>
+          <div class="wallpaper-section" data-section="solid">纯色背景</div>
+          <div class="wallpaper-section" data-section="custom">自定义上传</div>
+        </div>
+        <div class="wallpaper-content">
+          <div class="wallpaper-grid" id="wallpaperGrid">
+            <div class="wallpaper-item" data-src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=800&fit=crop">
+              <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop" alt="壁纸1">
+              <div class="wallpaper-overlay">
+                <span>设为背景</span>
+              </div>
+            </div>
+            <div class="wallpaper-item" data-src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1200&h=800&fit=crop">
+              <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=300&h=200&fit=crop" alt="壁纸2">
+              <div class="wallpaper-overlay">
+                <span>设为背景</span>
+              </div>
+            </div>
+            <div class="wallpaper-item" data-src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&h=800&fit=crop">
+              <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300&h=200&fit=crop" alt="壁纸3">
+              <div class="wallpaper-overlay">
+                <span>设为背景</span>
+              </div>
+            </div>
+            <div class="wallpaper-item" data-src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&h=800&fit=crop">
+              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=200&fit=crop" alt="壁纸4">
+              <div class="wallpaper-overlay">
+                <span>设为背景</span>
+              </div>
+            </div>
+            <div class="wallpaper-item" data-src="https://images.unsplash.com/photo-1504595403659-9088ce801e29?w=1200&h=800&fit=crop">
+              <img src="https://images.unsplash.com/photo-1504595403659-9088ce801e29?w=300&h=200&fit=crop" alt="壁纸5">
+              <div class="wallpaper-overlay">
+                <span>设为背景</span>
+              </div>
+            </div>
+            <div class="wallpaper-item" data-src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=1200&h=800&fit=crop">
+              <img src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=300&h=200&fit=crop" alt="壁纸6">
+              <div class="wallpaper-overlay">
+                <span>设为背景</span>
+              </div>
+            </div>
+          </div>
+          <div class="wallpaper-grid solid-colors" id="solidColorsGrid" style="display: none;">
+            <div class="solid-color-item" style="background: #1a1a2e;" data-color="#1a1a2e"></div>
+            <div class="solid-color-item" style="background: #16213e;" data-color="#16213e"></div>
+            <div class="solid-color-item" style="background: #0f3460;" data-color="#0f3460"></div>
+            <div class="solid-color-item" style="background: #533483;" data-color="#533483"></div>
+            <div class="solid-color-item" style="background: #f8f9fa;" data-color="#f8f9fa"></div>
+            <div class="solid-color-item" style="background: #e9ecef;" data-color="#e9ecef"></div>
+            <div class="solid-color-item" style="background: #dee2e6;" data-color="#dee2e6"></div>
+            <div class="solid-color-item" style="background: #ced4da;" data-color="#ced4da"></div>
+            <input type="color" class="custom-solid-color" id="customSolidColor" onchange="setCustomSolidColor()">
+          </div>
+          <div class="wallpaper-upload" id="wallpaperUpload" style="display: none;">
+            <div class="upload-area" id="uploadArea" onclick="document.getElementById('uploadInput').click()">
+              <span class="upload-icon">📁</span>
+              <span class="upload-text">点击或拖拽上传图片</span>
+              <input type="file" id="uploadInput" accept="image/*" onchange="handleWallpaperUpload()">
+            </div>
+          </div>
         </div>
       </div>
     </div>

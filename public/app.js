@@ -1056,12 +1056,12 @@ function renderProjects(appendMode = false) {
           </div>
           <div class="info-item flex-col md:flex-row">
             <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><!-- Icon from Akar Icons by Arturo Wibawa - https://github.com/artcoholic/akar-icons/blob/master/LICENSE --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm6 14h8"/></svg></span>
-            <span>端口: ${project.port || '未指定'}</span>
+            <span>Port: ${project.port || '未指定'}</span>
           </div>
-          <div class="info-item flex-col md:flex-row" style="margin-left: auto;">
+          <div class="info-item flex-col md:flex-row">
             <span class="icon time">🕐</span>
-            <span class="time-label">创建: ${formatTimestamp(project.createdAt || project.id || Date.now())}</span>
-            ${project.updatedAt ? `<span class="time-label time-label-edited" style="margin-left: 8px;">编辑: ${formatTimestamp(project.updatedAt)}</span>` : ''}
+            ${!project.updatedAt ? `<span class="time-label">${formatTimestamp(project.createdAt || project.id || Date.now())}</span>` : ''}
+            ${project.updatedAt ? `<span class="time-label time-label-edited ml-0 md:ml-8">编辑: ${formatTimestamp(project.updatedAt)}</span>` : ''}
           </div>
         </div>
       </div>
@@ -1894,6 +1894,212 @@ document.addEventListener('visibilitychange', () => {
 // 页面卸载时清理定时器
 window.addEventListener('beforeunload', () => {
   stopGitInfoRefresh();
+});
+
+// 切换设置面板
+function toggleSettingsPanel() {
+  const panel = document.getElementById('settingsPanel');
+  const overlay = document.getElementById('settingsOverlay');
+  
+  if (panel.classList.contains('show')) {
+    panel.classList.remove('show');
+    overlay.classList.remove('show');
+  } else {
+    panel.classList.add('show');
+    overlay.classList.add('show');
+  }
+}
+
+// 设置自定义主题色
+function setCustomThemeColor() {
+  const color = document.getElementById('customThemeColor').value;
+  setThemeColor(color);
+  showToast('主题色已更新', 'success');
+}
+
+// 设置字体
+function setFontFamily() {
+  const fontFamily = document.getElementById('fontFamilySelect').value;
+  document.documentElement.style.fontFamily = fontFamily;
+  document.body.style.fontFamily = fontFamily;
+  localStorage.setItem('appFontFamily', fontFamily);
+  showToast('字体已更新', 'success');
+}
+
+// 设置字体大小
+function setFontSize() {
+  const fontSize = document.getElementById('fontSizeSelect').value;
+  document.documentElement.style.fontSize = fontSize;
+  localStorage.setItem('appFontSize', fontSize);
+  showToast('字体大小已更新', 'success');
+}
+
+// 打开壁纸选择弹窗
+function openWallpaperModal() {
+  const modal = document.getElementById('wallpaperModal');
+  modal.classList.add('show');
+  toggleSettingsPanel();
+}
+
+// 设置自定义背景颜色
+function setCustomBackgroundColor() {
+  const color = document.getElementById('customBgColor').value;
+  document.body.style.background = `linear-gradient(135deg, ${color} 0%, ${adjustColor(color, -30)} 100%)`;
+  localStorage.setItem('appBackgroundColor', color);
+  document.getElementById('previewImage').style.background = `linear-gradient(135deg, ${color} 0%, ${adjustColor(color, -30)} 100%)`;
+  localStorage.setItem('appBackgroundType', 'gradient');
+  showToast('背景色已更新', 'success');
+}
+
+// 调整颜色亮度
+function adjustColor(color, amount) {
+  const num = parseInt(color.replace('#', ''), 16);
+  const r = Math.min(255, Math.max(0, (num >> 16) + amount));
+  const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amount));
+  const b = Math.min(255, Math.max(0, (num & 0x0000FF) + amount));
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+}
+
+// 设置自定义纯色背景
+function setCustomSolidColor() {
+  const color = document.getElementById('customSolidColor').value;
+  document.body.style.background = color;
+  localStorage.setItem('appBackgroundColor', color);
+  document.getElementById('previewImage').style.background = color;
+  document.getElementById('previewImage').style.backgroundSize = 'cover';
+  localStorage.setItem('appBackgroundType', 'solid');
+  showToast('背景色已更新', 'success');
+  closeModal('wallpaperModal');
+}
+
+// 处理壁纸上传
+function handleWallpaperUpload() {
+  let file = document.getElementById('uploadInput').files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const imageUrl = e.target.result;
+      document.body.style.background = `url(${imageUrl}) no-repeat center center fixed`;
+      document.body.style.backgroundSize = 'cover';
+      localStorage.setItem('appBackgroundImage', imageUrl);
+      localStorage.setItem('appBackgroundType', 'image');
+      document.getElementById('previewImage').style.backgroundImage = `url(${imageUrl})`;
+      document.getElementById('previewImage').style.backgroundSize = 'cover';
+      showToast('壁纸已更新', 'success');
+      closeModal('wallpaperModal');
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+// 壁纸侧边栏切换
+document.addEventListener('DOMContentLoaded', function() {
+  const wallpaperSections = document.querySelectorAll('.wallpaper-section');
+  wallpaperSections.forEach(section => {
+    section.addEventListener('click', function() {
+      wallpaperSections.forEach(s => s.classList.remove('active'));
+      this.classList.add('active');
+      
+      const sectionName = this.dataset.section;
+      document.getElementById('wallpaperGrid').style.display = sectionName === 'wallhaven' ? 'grid' : 'none';
+      document.getElementById('solidColorsGrid').style.display = sectionName === 'solid' ? 'grid' : 'none';
+      document.getElementById('wallpaperUpload').style.display = sectionName === 'custom' ? 'block' : 'none';
+    });
+  });
+  
+  // 点击壁纸设为背景
+  const wallpaperItems = document.querySelectorAll('.wallpaper-item');
+  wallpaperItems.forEach(item => {
+    item.addEventListener('click', function() {
+      const src = this.dataset.src;
+      document.body.style.background = `url(${src}) no-repeat center center fixed`;
+      document.body.style.backgroundSize = 'cover';
+      localStorage.setItem('appBackgroundImage', src);
+      localStorage.setItem('appBackgroundType', 'image');
+      document.getElementById('previewImage').style.backgroundImage = `url(${src})`;
+      document.getElementById('previewImage').style.backgroundSize = 'cover';
+      showToast('壁纸已更新', 'success');
+      closeModal('wallpaperModal');
+    });
+  });
+  
+  // 点击纯色设为背景
+  const solidColorItems = document.querySelectorAll('.solid-color-item');
+  solidColorItems.forEach(item => {
+    item.addEventListener('click', function() {
+      const color = this.dataset.color;
+      document.body.style.background = color;
+      localStorage.setItem('appBackgroundColor', color);
+      document.getElementById('previewImage').style.background = color;
+      document.getElementById('previewImage').style.backgroundSize = 'cover';
+      localStorage.setItem('appBackgroundType', 'solid');
+      showToast('背景色已更新', 'success');
+      closeModal('wallpaperModal');
+    });
+  });
+  
+  // 主题色点击选择
+  const colorOptionsSetting = document.querySelectorAll('.color-option-setting');
+  colorOptionsSetting.forEach(option => {
+    option.addEventListener('click', function() {
+      const color = this.dataset.color;
+      setThemeColor(color);
+      document.getElementById('customThemeColor').value = color;
+      showToast('主题色已更新', 'success');
+    });
+  });
+  
+  // 预设背景渐变点击
+  const bgColorOptions = document.querySelectorAll('.bg-color-option');
+  const gradients = {
+    gradient1: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    gradient2: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    gradient3: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    gradient4: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    gradient5: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+    gradient6: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)'
+  };
+  bgColorOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      const gradient = gradients[this.dataset.bg];
+      document.body.style.background = gradient;
+      document.getElementById('previewImage').style.background = gradient;
+      document.getElementById('previewImage').style.backgroundSize = 'cover';
+      localStorage.setItem('appBackgroundGradient', this.dataset.bg);
+      localStorage.setItem('appBackgroundType', 'gradient');
+      showToast('背景已更新', 'success');
+    });
+  });
+  
+  // 加载保存的设置
+  const savedFontFamily = localStorage.getItem('appFontFamily');
+  const savedFontSize = localStorage.getItem('appFontSize');
+  const savedBgType = localStorage.getItem('appBackgroundType');
+  const savedBgImage = localStorage.getItem('appBackgroundImage');
+  const savedBgColor = localStorage.getItem('appBackgroundColor');
+  
+  if (savedFontFamily) {
+    document.getElementById('fontFamilySelect').value = savedFontFamily;
+    document.documentElement.style.fontFamily = savedFontFamily;
+    document.body.style.fontFamily = savedFontFamily;
+  }
+  if (savedFontSize) {
+    document.getElementById('fontSizeSelect').value = savedFontSize;
+    document.documentElement.style.fontSize = savedFontSize;
+  }
+  if (savedBgType === 'image' && savedBgImage) {
+    document.body.style.background = `url(${savedBgImage}) no-repeat center center fixed`;
+    document.body.style.backgroundSize = 'cover';
+    document.getElementById('previewImage').style.backgroundImage = `url(${savedBgImage})`;
+    document.getElementById('previewImage').style.backgroundSize = 'cover';
+  } else if (savedBgType === 'gradient' && savedBgColor) {
+    document.body.style.background = `linear-gradient(135deg, ${savedBgColor} 0%, ${adjustColor(savedBgColor, -30)} 100%)`;
+    document.getElementById('previewImage').style.background = `linear-gradient(135deg, ${savedBgColor} 0%, ${adjustColor(savedBgColor, -30)} 100%)`;
+  } else if (savedBgType === 'solid' && savedBgColor) {
+    document.body.style.background = savedBgColor;
+    document.getElementById('previewImage').style.background = savedBgColor;
+    document.getElementById('previewImage').style.backgroundSize = 'cover';
+  }
 });
 
 // DOM 加载完成后初始化
