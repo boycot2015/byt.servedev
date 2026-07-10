@@ -23,7 +23,7 @@ let paginationState = {
 // 壁纸分页状态
 let wallpaperPagination = {
   page: 1,
-  pageSize: 12,
+  pageSize: 12,  // 增加每页数量，让内容可以撑开滚动
   hasMore: true,
   loading: false,
   total: 0
@@ -2006,8 +2006,37 @@ function openWallpaperModal() {
   toggleSettingsPanel();
   
   // 打开弹框时立即请求壁纸 API
+  renderWallpapers();
   loadWallpapers(true);
+  
+  // 延迟初始化滚动监听，确保模态框完全渲染
+  setTimeout(() => {
+    const wallpaperContent = document.querySelector('.wallpaper-content');
+    if (wallpaperContent) {
+      // 移除旧的监听，防止重复添加
+      wallpaperContent.removeEventListener('scroll', wallpaperScrollHandler);
+      // 添加新的滚动监听
+      wallpaperContent.addEventListener('scroll', wallpaperScrollHandler);
+    }
+  }, 100);
 }
+
+// 壁纸滚动处理函数
+const wallpaperScrollHandler = debounce(function() {
+  const container = document.querySelector('.wallpaper-content');
+  if (!container) return;
+  
+  const scrollTop = container.scrollTop;
+  const scrollHeight = container.scrollHeight;
+  const clientHeight = container.clientHeight;
+  
+  // 滚动到底部附近（提前150px触发加载）
+  if (scrollTop + clientHeight >= scrollHeight - 150) {
+    if (!wallpaperPagination.loading && wallpaperPagination.hasMore) {
+      loadMoreWallpapers();
+    }
+  }
+}, 100);
 
 // 设置自定义背景颜色
 function setCustomBackgroundColor() {
@@ -2184,22 +2213,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
   }, 100));
-  
-  // 壁纸滚动监听（只在壁纸模态框内生效）
-  document.addEventListener('scroll', function(e) {
-    const target = e.target;
-    if (target.closest('.wallpaper-content')) {
-      const scrollTop = target.scrollTop || target.pageYOffset;
-      const scrollHeight = target.scrollHeight;
-      const clientHeight = target.clientHeight || target.offsetHeight;
-      
-      if (scrollTop + clientHeight >= scrollHeight - 150) {
-        if (!wallpaperPagination.loading && wallpaperPagination.hasMore) {
-          loadMoreWallpapers();
-        }
-      }
-    }
-  }, true);
 });
 
 // 加载壁纸列表
@@ -2259,8 +2272,10 @@ function renderWallpapers(appendMode = false) {
     container.innerHTML = `
       <div class="empty-state" style="grid-column: 1/-1;">
         <div class="icon">🖼️</div>
-        <h3>暂无壁纸</h3>
-        <p>正在尝试加载壁纸...</p>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <span style="display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border-color); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+          <span>正在加载壁纸...</span>
+        </div>
       </div>
     `;
     return;
@@ -2301,7 +2316,6 @@ function updateWallpaperLoader() {
     loader = document.createElement('div');
     loader.id = 'wallpaperLoader';
     loader.style.cssText = 'grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);';
-    container.appendChild(loader);
   }
   
   if (wallpaperPagination.loading) {
@@ -2311,13 +2325,10 @@ function updateWallpaperLoader() {
         <span>加载中...</span>
       </div>
     `;
-    loader.style.display = 'block';
   } else if (!wallpaperPagination.hasMore && wallpapers.length > 0) {
     loader.textContent = '已加载全部壁纸';
-    loader.style.display = 'block';
-  } else {
-    loader.style.display = 'none';
   }
+  container.appendChild(loader);
 }
 
 // 绑定壁纸点击事件

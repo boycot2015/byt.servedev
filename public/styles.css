@@ -98,9 +98,7 @@ body.dark {
   --log-stderr: #fca5a5;
   --log-system: #fcd34d;
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 /* Mac WebView 字体渲染优化 */
 html {
   -webkit-font-smoothing: antialiased;
@@ -169,7 +167,7 @@ body {
 .btn-secondary { background: var(--color-secondary); color: var(--text-white); }
 .btn-secondary:hover { background: var(--color-tertiary); }
 .btn-sm { padding: var(--btn-padding-y-sm) var(--btn-padding-x-sm); font-size: var(--btn-font-size-sm); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+.btn:disabled { opacity: 0.8; cursor: not-allowed; pointer-events: none; }
 
 /* 按钮 Loading 状态 */
 .btn-loading { position: relative; color: transparent !important; }
@@ -201,7 +199,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--bg-secondary);
+  /* background: var(--bg-secondary); */
   display: none;
   flex-direction: column;
   align-items: center;
@@ -459,7 +457,7 @@ body {
 
 .project-list { display: flex; flex-direction: column; }
 
-.project-item { background: var(--bg-secondary); padding: 20px; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: transform 0.2s, box-shadow 0.2s; }
+.project-item { background: transparent; padding: 20px; border-bottom: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: transform 0.2s, box-shadow 0.2s; }
 /* .project-item:hover { box-shadow: 0 10px 30px var(--color-primary); } */
 .project-item.running { border-left-color: #10b981; }
 .project-item.starting { border-left-color: #f59e0b; }
@@ -1439,6 +1437,7 @@ body.dark .time-label-edited { background: #78350f; color: #fcd34d; }
 .wallpaper-content {
   flex: 1;
   min-height: 280px;
+  max-height: 400px;
   padding: 12px 8px;
   overflow: hidden;
   overflow-y: auto;
