@@ -2003,7 +2003,7 @@ function setFontSize() {
 function openWallpaperModal() {
   const modal = document.getElementById('wallpaperModal');
   modal.classList.add('show');
-  toggleSettingsPanel();
+  // toggleSettingsPanel();
   
   // 打开弹框时立即请求壁纸 API
   renderWallpapers();
@@ -2098,12 +2098,11 @@ document.addEventListener('DOMContentLoaded', function() {
       this.classList.add('active');
       
       const sectionName = this.dataset.section;
-      document.getElementById('wallpaperGrid').style.display = sectionName === 'wallhaven' ? 'grid' : 'none';
-      document.getElementById('solidColorsGrid').style.display = sectionName === 'solid' ? 'grid' : 'none';
+      document.getElementById('wallpaperGrid').style.display = sectionName === 'recommended' ? 'grid' : 'none';
       document.getElementById('wallpaperUpload').style.display = sectionName === 'custom' ? 'block' : 'none';
       
-      // 切换到其他分类再切回 Wallhaven 时重新加载
-      if (sectionName === 'wallhaven' && wallpapers.length === 0) {
+      // 切换到其他分类再切回 recommended 时重新加载
+      if (sectionName === 'recommended' && wallpapers.length === 0) {
         loadWallpapers(true);
       }
     });
@@ -2114,21 +2113,6 @@ document.addEventListener('DOMContentLoaded', function() {
   wallpaperItems.forEach(item => {
     item.removeEventListener('click', handleWallpaperClick);
     item.addEventListener('click', handleWallpaperClick);
-  });
-  
-  // 点击纯色设为背景
-  const solidColorItems = document.querySelectorAll('.solid-color-item');
-  solidColorItems.forEach(item => {
-    item.addEventListener('click', function() {
-      const color = this.dataset.color;
-      document.body.style.background = color;
-      localStorage.setItem('appBackgroundColor', color);
-      document.getElementById('previewImage').style.background = color;
-      document.getElementById('previewImage').style.backgroundSize = 'cover';
-      localStorage.setItem('appBackgroundType', 'solid');
-      showToast('背景色已更新', 'success');
-      closeModal('wallpaperModal');
-    });
   });
   
   // 主题色点击选择
@@ -2351,4 +2335,5 @@ function handleWallpaperClick() {
   document.getElementById('previewImage').style.backgroundSize = 'cover';
   showToast('壁纸已更新', 'success');
   closeModal('wallpaperModal');
+  toggleSettingsPanel();
 }

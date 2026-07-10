@@ -465,24 +465,12 @@
         <button class="modal-close" onclick="closeModal('wallpaperModal')">&times;</button>
       </div>
       <div class="modal-body wallpaper-body">
-        <div class="wallpaper-sidebar">
-          <div class="wallpaper-section active" data-section="wallhaven">Wallhaven</div>
-          <div class="wallpaper-section" data-section="solid">纯色背景</div>
-          <div class="wallpaper-section" data-section="custom">自定义上传</div>
+        <div class="wallpaper-sidebar pr-2">
+          <div class="wallpaper-section active" data-section="recommended">精选壁纸</div>
+          <div class="wallpaper-section" data-section="custom">上传壁纸</div>
         </div>
         <div class="wallpaper-content">
           <div class="wallpaper-grid" id="wallpaperGrid">
-          </div>
-          <div class="wallpaper-grid solid-colors" id="solidColorsGrid" style="display: none;">
-            <div class="solid-color-item" style="background: #1a1a2e;" data-color="#1a1a2e"></div>
-            <div class="solid-color-item" style="background: #16213e;" data-color="#16213e"></div>
-            <div class="solid-color-item" style="background: #0f3460;" data-color="#0f3460"></div>
-            <div class="solid-color-item" style="background: #533483;" data-color="#533483"></div>
-            <div class="solid-color-item" style="background: #f8f9fa;" data-color="#f8f9fa"></div>
-            <div class="solid-color-item" style="background: #e9ecef;" data-color="#e9ecef"></div>
-            <div class="solid-color-item" style="background: #dee2e6;" data-color="#dee2e6"></div>
-            <div class="solid-color-item" style="background: #ced4da;" data-color="#ced4da"></div>
-            <input type="color" class="custom-solid-color" id="customSolidColor" onchange="setCustomSolidColor()">
           </div>
           <div class="wallpaper-upload" id="wallpaperUpload" style="display: none;">
             <div class="upload-area" id="uploadArea" onclick="document.getElementById('uploadInput').click()">

@@ -1032,7 +1032,7 @@ body.dark .time-label-edited { background: #78350f; color: #fcd34d; }
 }
 .toast-container {
     position: fixed;
-  top: 20px;
+  top: 100px;
   right: 20px;
   z-index: 10000;
   display: flex;
@@ -1436,8 +1436,7 @@ body.dark .time-label-edited { background: #78350f; color: #fcd34d; }
 
 .wallpaper-content {
   flex: 1;
-  min-height: 280px;
-  max-height: 400px;
+  height: 400px;
   padding: 12px 8px;
   overflow: hidden;
   overflow-y: auto;
